@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/ssjc_appbar.dart'; // <-- IMPORT THE CUSTOM APPBAR
 
 class ExamCategoryListPage extends StatefulWidget {
   const ExamCategoryListPage({super.key});
@@ -16,6 +17,37 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
 
   String _query = "";
 
+  // ---------------- REQUIRED VARIABLES FOR APPBAR ----------------
+  bool showSearch = false;
+  String selectedYear = "2025-2026";
+
+  final List<String> years = [
+    "2023-2024",
+    "2024-2025",
+    "2025-2026",
+    "2026-2027",
+  ];
+  // ---------------- GRID MENU FUNCTION ----------------
+  void _openGridMenu() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.black.withOpacity(0.6),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+      ),
+      builder: (_) => SizedBox(
+        height: 200,
+        child: Center(
+          child: Text(
+            "Grid Menu",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ---------------- CATEGORY DATA ----------------
   final List<Map<String, String>> _categories = [
     {"sno": "1", "category": "MAINS", "branch": "SSJC-ADARSA CAMPUS"},
     {"sno": "2", "category": "EAMCET", "branch": "SSJC-ADARSA CAMPUS"},
@@ -34,16 +66,18 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
 
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
-          "Exam Category List",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
+      // ------------------ CUSTOM APPBAR HERE ------------------
+      appBar: SSJCAppBar(
+        title: "Exam Category List",
+        showSearch: showSearch,
+        selectedYear: selectedYear,
+        years: years,
+        onGridMenu: _openGridMenu,
+
+        onYearChanged: (value) => setState(() => selectedYear = value),
       ),
 
+      // ------------------ MAIN BODY ------------------
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -57,19 +91,18 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
           children: [
             const SizedBox(height: 95),
 
-            // ------------ WHITE SEARCH BAR -------------
+            // ------------------ WHITE SEARCH BAR ------------------
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white, // white background
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(color: Color(0xFFE0E0E0)),
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 14),
                 child: Row(
                   children: [
-                    // White circle around the search icon
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: const BoxDecoration(
@@ -78,7 +111,7 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
                       ),
                       child: const Icon(
                         Icons.search,
-                        color: Colors.black, // black icon
+                        color: Colors.black,
                         size: 22,
                       ),
                     ),
@@ -103,7 +136,7 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
 
             const SizedBox(height: 15),
 
-            // ------------ LIST OF CARDS -------------
+            // ------------------ CATEGORY LIST ------------------
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

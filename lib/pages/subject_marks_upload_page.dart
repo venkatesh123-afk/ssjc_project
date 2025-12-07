@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/ssjc_appbar.dart'; // <-- SSJC APPBAR IMPORT
 
 // REUSABLE BACKGROUND WIDGET
 class SSJCBackground extends StatelessWidget {
@@ -36,6 +37,16 @@ class SubjectMarksUploadPage extends StatefulWidget {
 class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
   static const Color neon = Color(0xFF00FFF5);
 
+  // SSJC AppBar Fields
+  String selectedYear = "2025-2026";
+  final List<String> years = [
+    "2023–2024",
+    "2024–2025",
+    "2025–2026",
+    "2026–2027",
+  ];
+
+  // FORM FIELDS
   String? branch, group, course, batch, exam, subject;
 
   @override
@@ -44,27 +55,26 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
 
-      // APP BAR
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
-          "Subject Level Marks Upload",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
+      // ⭐ SSJC APP BAR ADDED ⭐
+      appBar: SSJCAppBar(
+        title: "Subject Level Marks Upload",
+        showSearch: false,
+        selectedYear: selectedYear,
+        years: years,
+        onGridMenu: () {},
+        onYearChanged: (value) => setState(() => selectedYear = value),
       ),
 
       // PAGE BACKGROUND
       body: SSJCBackground(
         child: Stack(
           children: [
-            // MAIN CONTENT SCROLLABLE AREA
+            // MAIN CONTENT (Scroll View)
             SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(18, 120, 18, 160),
               child: Column(
                 children: [
-                  // NEON CONTAINER
+                  // NEON FORM CONTAINER
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
@@ -195,7 +205,7 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
               ),
             ),
 
-            // FIXED BOTTOM BUTTONS
+            // FIXED BOTTOM BUTTON ROW
             Positioned(
               bottom: 0,
               left: 0,
@@ -208,10 +218,7 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                       child: ElevatedButton.icon(
                         onPressed: () {},
                         icon: const Icon(Icons.download, color: Colors.white),
-                        label: const Text(
-                          "Download Format",
-                          style: TextStyle(color: Colors.white),
-                        ),
+                        label: const Text("Download Format"),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
                           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -229,10 +236,7 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                           Icons.cloud_upload,
                           color: Colors.white,
                         ),
-                        label: const Text(
-                          "Marks Bulk Upload",
-                          style: TextStyle(color: Colors.white),
-                        ),
+                        label: const Text("Marks Bulk Upload"),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
                           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -252,7 +256,7 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
     );
   }
 
-  // ========================= FIELD BUILDER FIXED =========================
+  // ========================= FIELD BUILDER =========================
   Widget buildField({
     required String label,
     required IconData icon,
@@ -269,7 +273,6 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: Colors.white24),
       ),
-
       child: Row(
         children: [
           Icon(icon, color: iconColor, size: 22),
@@ -280,12 +283,8 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
               child: DropdownButton<String>(
                 isExpanded: true,
                 value: value,
-
-                // DARK BLUE DROPDOWN BACKGROUND
                 dropdownColor: const Color(0xFF0f1d3a),
-
                 icon: const Icon(Icons.arrow_drop_down, color: neon),
-
                 hint: Text(
                   label,
                   style: const TextStyle(
@@ -293,8 +292,6 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                     fontSize: 16,
                   ),
                 ),
-
-                // FIXED WHITE TEXT INSIDE DROPDOWN
                 items: items
                     .map(
                       (e) => DropdownMenuItem(
@@ -302,14 +299,13 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                         child: Text(
                           e,
                           style: const TextStyle(
-                            color: Colors.white, // FIXED HERE
+                            color: Colors.white,
                             fontSize: 16,
                           ),
                         ),
                       ),
                     )
                     .toList(),
-
                 onChanged: onChanged,
               ),
             ),

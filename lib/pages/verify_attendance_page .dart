@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/ssjc_appbar.dart';
 import 'package:ssjc_p/model/model1.dart';
 
 class VerifyAttendancePage extends StatefulWidget {
@@ -12,13 +13,23 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     with SingleTickerProviderStateMixin {
   String? selectedBranch;
   String? selectedShift;
+
   bool isLoading = false;
   List<AttendanceRecord> attendanceData = [];
+
+  // SSJC APPBAR
+  String selectedYear = "2025-2026";
+  final List<String> years = [
+    "2023-2024",
+    "2024-2025",
+    "2025-2026",
+    "2026-2027",
+  ];
+
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
   final List<String> branches = ['SSJC-ADARSHA', 'SSJC-SSG'];
-
   final List<String> shifts = [
     'Morning Shift',
     'Afternoon Shift',
@@ -28,12 +39,15 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
   @override
   void initState() {
     super.initState();
+
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 800),
     );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
+
+    _fadeAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeIn,
     );
   }
 
@@ -43,21 +57,19 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     super.dispose();
   }
 
+  // ---------------------------------------------------------
+  // FETCH MOCK DATA
+  // ---------------------------------------------------------
   Future<void> _fetchAttendanceData() async {
     if (selectedBranch == null || selectedShift == null) {
       _showSnackBar('⚠ Please select Branch and Shift', Colors.orange);
       return;
     }
 
-    setState(() {
-      isLoading = true;
-    });
+    setState(() => isLoading = true);
+    await Future.delayed(const Duration(seconds: 2));
 
-    // Simulate API call
-    await Future.delayed(Duration(seconds: 2));
-
-    // Mock data
-    final List<AttendanceRecord> mockData = [
+    final mockData = [
       AttendanceRecord(
         batch: 'ADA-SR-IIITIC',
         total: 59,
@@ -107,34 +119,6 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
         absent: 5,
         outing: 0,
       ),
-      AttendanceRecord(
-        batch: 'ADM-JR-SM1',
-        total: 70,
-        present: 63,
-        absent: 5,
-        outing: 2,
-      ),
-      AttendanceRecord(
-        batch: 'ADM-JR-SM2',
-        total: 83,
-        present: 73,
-        absent: 9,
-        outing: 1,
-      ),
-      AttendanceRecord(
-        batch: 'ADM-JR-SM3',
-        total: 72,
-        present: 65,
-        absent: 5,
-        outing: 2,
-      ),
-      AttendanceRecord(
-        batch: 'ADM-JR-SM4',
-        total: 73,
-        present: 67,
-        absent: 6,
-        outing: 0,
-      ),
     ];
 
     setState(() {
@@ -153,50 +137,61 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
         backgroundColor: color,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        duration: Duration(seconds: 2),
       ),
     );
   }
 
+  // ---------------------------------------------------------
+  // UI STARTS HERE
+  // ---------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+
+      // ⭐ SSJC APP BAR ⭐
+      appBar: SSJCAppBar(
+        title: "Verify Attendance",
+        showSearch: false,
+        selectedYear: selectedYear,
+        years: years,
+        onGridMenu: () {},
+        onYearChanged: (v) => setState(() => selectedYear = v),
+      ),
+
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
             colors: [
               Color(0xFF1a1a2e),
               Color(0xFF16213e),
               Color(0xFF0f3460),
               Color(0xFF533483),
             ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
+
         child: SafeArea(
           child: Column(
             children: [
               const SizedBox(height: 20),
-              _buildAppTitle(context),
+
               Expanded(
                 child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildFilterCard(),
-                        SizedBox(height: 20),
-                        _buildVerifyButton(),
-                        SizedBox(height: 20),
-                        if (attendanceData.isNotEmpty) _buildAttendanceTable(),
-                        if (attendanceData.isEmpty && !isLoading)
-                          _buildEmptyState(),
-                        if (isLoading) _buildLoadingState(),
-                      ],
-                    ),
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      _buildFilterCard(),
+                      const SizedBox(height: 20),
+                      _buildVerifyButton(),
+                      const SizedBox(height: 20),
+                      if (attendanceData.isNotEmpty) _buildAttendanceTable(),
+                      if (attendanceData.isEmpty && !isLoading)
+                        _buildEmptyState(),
+                      if (isLoading) _buildLoadingState(),
+                    ],
                   ),
                 ),
               ),
@@ -207,27 +202,9 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     );
   }
 
-  Widget _buildAppTitle(BuildContext context) {
-    return InkWell(
-      onTap: () => Navigator.pop(context),
-      child: Row(
-        children: const [
-          SizedBox(width: 14),
-          Icon(Icons.arrow_back, color: Colors.white),
-          SizedBox(width: 6),
-          Text(
-            "Verify Attendence",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
+  // ---------------------------------------------------------
+  // FILTER BOX
+  // ---------------------------------------------------------
   Widget _buildFilterCard() {
     return Container(
       padding: EdgeInsets.all(20),
@@ -239,6 +216,7 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
           BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 20),
         ],
       ),
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -255,22 +233,19 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
                 child: Icon(Icons.fact_check, color: Colors.white, size: 24),
               ),
               SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Select filters to verify attendance',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+              Text(
+                'Select filters to verify attendance',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
+
           SizedBox(height: 20),
+
           Row(
             children: [
               Expanded(
@@ -316,17 +291,11 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
           children: [
             Icon(icon, color: iconColor, size: 16),
             SizedBox(width: 6),
-            Text(
-              label,
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            Text(label, style: TextStyle(color: Colors.white70, fontSize: 12)),
           ],
         ),
         SizedBox(height: 8),
+
         Container(
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.1),
@@ -336,22 +305,16 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               value: value,
-              hint: Text(
-                'Select',
-                style: TextStyle(color: Colors.white60, fontSize: 13),
-              ),
+              hint: Text("Select", style: TextStyle(color: Colors.white60)),
               isExpanded: true,
-              icon: Icon(
-                Icons.keyboard_arrow_down,
-                color: Colors.white60,
-                size: 20,
-              ),
+              icon: Icon(Icons.keyboard_arrow_down, color: Colors.white60),
               dropdownColor: Color(0xFF1a1a2e),
               style: TextStyle(color: Colors.white, fontSize: 13),
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              items: items.map((String item) {
-                return DropdownMenuItem<String>(value: item, child: Text(item));
+
+              items: items.map((item) {
+                return DropdownMenuItem(value: item, child: Text(item));
               }).toList(),
+
               onChanged: onChanged,
             ),
           ),
@@ -360,6 +323,9 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     );
   }
 
+  // ---------------------------------------------------------
+  // VERIFY BUTTON
+  // ---------------------------------------------------------
   Widget _buildVerifyButton() {
     return Container(
       width: double.infinity,
@@ -382,23 +348,17 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
         child: InkWell(
           onTap: isLoading ? null : _fetchAttendanceData,
           borderRadius: BorderRadius.circular(16),
+
           child: Center(
             child: isLoading
-                ? SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  )
+                ? CircularProgressIndicator(color: Colors.white)
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.verified, color: Colors.white, size: 22),
+                      Icon(Icons.verified, color: Colors.white),
                       SizedBox(width: 8),
                       Text(
-                        'Verify Attendance',
+                        "Verify Attendance",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -413,260 +373,175 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     );
   }
 
+  // ---------------------------------------------------------
+  // TABLE + SUMMARY + LIST
+  // ---------------------------------------------------------
   Widget _buildAttendanceTable() {
     return FadeTransition(
       opacity: _fadeAnimation,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.05),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
-        ),
-        child: Column(
-          children: [
-            // Summary Cards
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _buildSummaryCard(
-                      'Total',
-                      _calculateTotal(),
-                      Color(0xFF3B82F6),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: _buildSummaryCard(
-                      'Present',
-                      _calculatePresent(),
-                      Color(0xFF10B981),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: _buildSummaryCard(
-                      'Absent',
-                      _calculateAbsent(),
-                      Color(0xFFEF4444),
-                    ),
-                  ),
-                ],
-              ),
-            ),
 
-            // Table Header
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF10B981), Color(0xFF059669)],
-                ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(flex: 3, child: _buildHeaderText('Batch')),
-                  Expanded(flex: 1, child: _buildHeaderText('Total')),
-                  Expanded(flex: 1, child: _buildHeaderText('Present')),
-                  Expanded(flex: 1, child: _buildHeaderText('Absent')),
-                  Expanded(flex: 1, child: _buildHeaderText('Out')),
-                ],
-              ),
-            ),
-
-            // Table Body
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: attendanceData.length,
-              itemBuilder: (context, index) {
-                return _buildTableRow(attendanceData[index], index);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSummaryCard(String label, int value, Color color) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 12),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
       child: Column(
         children: [
-          Text(
-            '$value',
-            style: TextStyle(
-              color: color,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.white70,
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-            ),
+          _buildSummaryCards(),
+          SizedBox(height: 12),
+          _buildTableHeader(),
+
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: attendanceData.length,
+            itemBuilder: (_, i) => _buildTableRow(attendanceData[i], i),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildHeaderText(String text) {
-    return Text(
-      text,
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 13,
-        fontWeight: FontWeight.bold,
-      ),
-      textAlign: TextAlign.center,
+  Widget _buildSummaryCards() {
+    return Row(
+      children: [
+        Expanded(child: _summary("Total", _calculateTotal(), Colors.blue)),
+        SizedBox(width: 8),
+        Expanded(child: _summary("Present", _calculatePresent(), Colors.green)),
+        SizedBox(width: 8),
+        Expanded(child: _summary("Absent", _calculateAbsent(), Colors.red)),
+      ],
     );
   }
 
-  Widget _buildTableRow(AttendanceRecord record, int index) {
-    final bool isEven = index % 2 == 0;
+  Widget _summary(String label, int value, Color color) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      padding: EdgeInsets.symmetric(vertical: 14),
       decoration: BoxDecoration(
-        color: isEven ? Colors.white.withOpacity(0.03) : Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+        color: color.withOpacity(0.12),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+
+      child: Column(
+        children: [
+          Text(
+            "$value",
+            style: TextStyle(
+              color: color,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(label, style: TextStyle(color: Colors.white70)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTableHeader() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: [Colors.green, Colors.teal]),
+      ),
+
+      child: Row(
+        children: const [
+          Expanded(
+            flex: 3,
+            child: Text(
+              "Batch",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text("Total", style: TextStyle(color: Colors.white)),
+          ),
+          Expanded(
+            child: Text("Present", style: TextStyle(color: Colors.white)),
+          ),
+          Expanded(
+            child: Text("Absent", style: TextStyle(color: Colors.white)),
+          ),
+          Expanded(
+            child: Text("Out", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTableRow(AttendanceRecord rec, int index) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+      decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: Colors.white.withOpacity(0.05)),
+          bottom: BorderSide(color: Colors.white.withOpacity(0.07)),
         ),
       ),
+
       child: Row(
         children: [
           Expanded(
             flex: 3,
-            child: Text(
-              record.batch,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            child: Text(rec.batch, style: TextStyle(color: Colors.white)),
           ),
-          Expanded(
-            flex: 1,
-            child: _buildCellText(record.total.toString(), Colors.blue),
-          ),
-          Expanded(
-            flex: 1,
-            child: _buildCellText(record.present.toString(), Colors.green),
-          ),
-          Expanded(
-            flex: 1,
-            child: _buildCellText(record.absent.toString(), Colors.red),
-          ),
-          Expanded(
-            flex: 1,
-            child: _buildCellText(record.outing.toString(), Colors.orange),
-          ),
+          Expanded(child: _cell(rec.total.toString(), Colors.blue)),
+          Expanded(child: _cell(rec.present.toString(), Colors.green)),
+          Expanded(child: _cell(rec.absent.toString(), Colors.red)),
+          Expanded(child: _cell(rec.outing.toString(), Colors.orange)),
         ],
       ),
     );
   }
 
-  Widget _buildCellText(String text, Color color) {
+  Widget _cell(String text, Color color) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+      padding: EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withOpacity(0.12),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
         text,
-        style: TextStyle(
-          color: color,
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-        ),
+        style: TextStyle(color: color, fontWeight: FontWeight.bold),
         textAlign: TextAlign.center,
       ),
     );
   }
 
+  // ---------------------------------------------------------
+  // EMPTY + LOADING STATES
+  // ---------------------------------------------------------
   Widget _buildEmptyState() {
-    return Container(
-      padding: EdgeInsets.all(40),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
-      ),
-      child: Column(
-        children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF00D4FF), Color(0xFF0099FF)],
-              ),
-              borderRadius: BorderRadius.circular(40),
-            ),
-            child: Icon(Icons.table_chart, color: Colors.white, size: 40),
-          ),
-          SizedBox(height: 16),
-          Text(
-            'No Data Available',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Select filters and click "Verify Attendance"',
-            style: TextStyle(color: Colors.white60, fontSize: 14),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
+    return Column(
+      children: const [
+        Icon(Icons.table_chart, color: Colors.white70, size: 60),
+        SizedBox(height: 10),
+        Text(
+          "No Data Available",
+          style: TextStyle(color: Colors.white, fontSize: 18),
+        ),
+        SizedBox(height: 5),
+        Text(
+          "Select filters and tap Verify Attendance",
+          style: TextStyle(color: Colors.white54),
+        ),
+      ],
     );
   }
 
   Widget _buildLoadingState() {
-    return Container(
-      padding: EdgeInsets.all(40),
-      child: Center(
-        child: Column(
-          children: [
-            CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF00D4FF)),
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Loading attendance data...',
-              style: TextStyle(color: Colors.white70, fontSize: 14),
-            ),
-          ],
-        ),
-      ),
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: CircularProgressIndicator(color: Colors.cyan),
     );
   }
 
-  int _calculateTotal() {
-    return attendanceData.fold(0, (sum, record) => sum + record.total);
-  }
-
-  int _calculatePresent() {
-    return attendanceData.fold(0, (sum, record) => sum + record.present);
-  }
-
-  int _calculateAbsent() {
-    return attendanceData.fold(0, (sum, record) => sum + record.absent);
-  }
+  // ---------------------------------------------------------
+  // CALCULATIONS
+  // ---------------------------------------------------------
+  int _calculateTotal() => attendanceData.fold(0, (sum, r) => sum + r.total);
+  int _calculatePresent() =>
+      attendanceData.fold(0, (sum, r) => sum + r.present);
+  int _calculateAbsent() => attendanceData.fold(0, (sum, r) => sum + r.absent);
 }

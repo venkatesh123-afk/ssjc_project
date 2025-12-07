@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/search_field.dart';
+import '../widgets/ssjc_appbar.dart'; // <-- ADD THIS IMPORT
 
 class HostelMembersPage extends StatefulWidget {
   const HostelMembersPage({super.key});
@@ -16,6 +17,15 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
   static const Color purpleDark = Color(0xFF533483);
   static const Color neon = Color(0xFF00FFF5);
 
+  // SSJC APPBAR REQUIRED FIELDS
+  String selectedYear = "2025-2026";
+  final List<String> years = [
+    "2023-2024",
+    "2024-2025",
+    "2025-2026",
+    "2026-2027",
+  ];
+
   // FILTER STATE
   String _viewBy = 'Hostel Wise';
   String _selectedHostel = 'SSJC-ADARSA CAMPUS';
@@ -31,7 +41,6 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
   ];
 
   final List<String> _hostels = ['SSJC-ADARSA CAMPUS', 'SSJC-NEET CAMPUS'];
-
   final List<String> _branches = ['ADARSA', 'NEET', 'MAINS'];
 
   // DUMMY MEMBERS
@@ -52,20 +61,16 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
 
-      // APPBAR ------------------------
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        toolbarHeight: 70,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
-          'Hostel Members',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+      // ⭐ SSJC APP BAR HERE ⭐
+      appBar: SSJCAppBar(
+        title: "Hostel Members",
+        showSearch: false,
+        selectedYear: selectedYear,
+        years: years,
+        onGridMenu: () {},
+        onYearChanged: (value) {
+          setState(() => selectedYear = value);
+        },
       ),
 
       // BACKGROUND ------------------------
@@ -80,9 +85,9 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
 
         child: Column(
           children: [
-            const SizedBox(height: 90),
+            const SizedBox(height: 95),
 
-            // 🔥 FILTER SECTION (TOP) ------------------------
+            // 🔥 FILTER SECTION ------------------------
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(

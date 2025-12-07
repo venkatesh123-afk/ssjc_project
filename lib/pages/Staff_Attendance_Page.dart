@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../widgets/ssjc_appbar.dart'; // <-- IMPORTANT
+// If you have custom SearchField, import here (not used in this page)
 
 class StaffAttendancePage extends StatefulWidget {
   const StaffAttendancePage({super.key});
@@ -14,6 +16,15 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
   static const Color dark3 = Color(0xFF0f3460);
   static const Color purpleDark = Color(0xFF533483);
   static const Color neon = Color(0xFF00FFF5);
+
+  // SSJC APPBAR REQUIRED FIELDS
+  String selectedYear = "2025-2026";
+  final List<String> years = [
+    "2023-2024",
+    "2024-2025",
+    "2025-2026",
+    "2026-2027",
+  ];
 
   String query = "";
 
@@ -51,24 +62,21 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
 
-      // ----------------------- APP BAR -----------------------
-      appBar: AppBar(
-        title: const Text(
-          "Staff Attendance",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
+      // ⭐ SSJC APPBAR REPLACES OLD APPBAR ⭐
+      appBar: SSJCAppBar(
+        title: "Staff Attendance",
+        showSearch: false,
+        selectedYear: selectedYear,
+        years: years,
+        onGridMenu: () {},
+        onYearChanged: (value) {
+          setState(() => selectedYear = value);
+        },
       ),
 
       body: Stack(
         children: [
-          // ---------------- BACKGROUND ----------------
+          // BACKGROUND
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -81,8 +89,8 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
 
           Column(
             children: [
-              const SizedBox(height: 90), // PERFECT SPACING BELOW APPBAR
-              // ---------------- SEARCH BAR ----------------
+              const SizedBox(height: 95), // spacing below ssjc appbar
+              // SEARCH BAR
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Container(
@@ -94,7 +102,6 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Row(
                     children: [
-                      // search icon
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: const BoxDecoration(
@@ -107,10 +114,7 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
                           size: 22,
                         ),
                       ),
-
                       const SizedBox(width: 10),
-
-                      // input field
                       Expanded(
                         child: TextField(
                           onChanged: (v) => setState(() => query = v),
@@ -135,7 +139,7 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
 
               const SizedBox(height: 18),
 
-              // ---------------- TITLE ----------------
+              // TITLE
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
@@ -150,7 +154,7 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
 
               const SizedBox(height: 16),
 
-              // ---------------- STAFF LIST ----------------
+              // STAFF LIST
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -205,7 +209,7 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
 
                           const SizedBox(height: 16),
 
-                          // -------- DAYS ROW --------
+                          // DAYS DISPLAY
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
@@ -260,7 +264,7 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
             ],
           ),
 
-          // ---------------- BOTTOM BUTTONS ----------------
+          // BOTTOM BUTTONS
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(

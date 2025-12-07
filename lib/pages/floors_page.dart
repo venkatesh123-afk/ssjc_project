@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/search_field.dart';
+import '../widgets/ssjc_appbar.dart'; // <-- IMPORT SSJC APPBAR
 
 class FloorsPage extends StatefulWidget {
   const FloorsPage({super.key});
@@ -16,6 +17,15 @@ class _FloorsPageState extends State<FloorsPage> {
   static const Color dark3 = Color(0xFF0f3460);
   static const Color purpleDark = Color(0xFF533483);
   static const Color neon = Color(0xFF00FFF5);
+
+  // REQUIRED FOR SSJC APPBAR
+  String selectedYear = "2025-2026";
+  final List<String> years = [
+    "2023-2024",
+    "2024-2025",
+    "2025-2026",
+    "2026-2027",
+  ];
 
   final List<Map<String, String>> _floors = [
     {
@@ -37,35 +47,24 @@ class _FloorsPageState extends State<FloorsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final filtered = _floors
-        .where(
-          (f) =>
-              f['floor']!.toLowerCase().contains(_query.toLowerCase()) ||
-              f['hostel']!.toLowerCase().contains(_query.toLowerCase()),
-        )
-        .toList();
+    final filtered = _floors.where((f) {
+      return f['floor']!.toLowerCase().contains(_query.toLowerCase()) ||
+          f['hostel']!.toLowerCase().contains(_query.toLowerCase());
+    }).toList();
 
     return Scaffold(
       extendBodyBehindAppBar: true,
 
-      // ------------------ FIXED APPBAR ------------------
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        toolbarHeight: 70,
-        iconTheme: const IconThemeData(color: Colors.white),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'Floors Management',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+      // ⭐ SSJC APP BAR HERE ⭐
+      appBar: SSJCAppBar(
+        title: "Floors Management",
+        showSearch: false,
+        selectedYear: selectedYear,
+        years: years,
+        onGridMenu: () {},
+        onYearChanged: (value) {
+          setState(() => selectedYear = value);
+        },
       ),
 
       // ---------------- BACKGROUND ----------------
@@ -80,8 +79,8 @@ class _FloorsPageState extends State<FloorsPage> {
 
         child: Column(
           children: [
-            // ---------------- SMALL SPACE BELOW APPBAR ----------------
-            const SizedBox(height: 90),
+            // SPACE BELOW SSJC APP BAR
+            const SizedBox(height: 95),
 
             // ---------------- SEARCH BOX ----------------
             Padding(

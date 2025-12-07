@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/ssjc_appbar.dart';
 
 class AddHostelPage extends StatefulWidget {
   const AddHostelPage({super.key});
@@ -37,14 +38,34 @@ class _AddHostelPageState extends State<AddHostelPage> {
     "NEET": Icons.local_hospital,
   };
 
+  // SSJC AppBar Data
+  String selectedYear = "2025-2026";
+  final List<String> years = [
+    "2023-2024",
+    "2024-2025",
+    "2025-2026",
+    "2026-2027",
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+
+      // ⭐ SSJC APP BAR ADDED HERE ⭐
+      appBar: SSJCAppBar(
+        title: "Add Hostel",
+        showSearch: false,
+        selectedYear: selectedYear,
+        years: years,
+        onGridMenu: () {},
+        onYearChanged: (v) => setState(() => selectedYear = v),
+      ),
+
       body: Container(
         width: double.infinity,
         height: double.infinity,
 
-        // MAIN BACKGROUND GRADIENT
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [dark1, dark2, dark3, purpleDark],
@@ -55,30 +76,11 @@ class _AddHostelPageState extends State<AddHostelPage> {
 
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(18),
+            padding: const EdgeInsets.fromLTRB(18, 20, 18, 18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // APP BAR BACK + TITLE
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                    const Text(
-                      "Add Hostel",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 20),
-
+                const SizedBox(height: 20), // space under SSJC AppBar
                 // =================== NEON CARD ===================
                 Container(
                   padding: const EdgeInsets.all(22),
@@ -108,7 +110,6 @@ class _AddHostelPageState extends State<AddHostelPage> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        // BUILDING NAME
                         _inputField(
                           label: "Building Name *",
                           controller: _buildingCtrl,
@@ -116,7 +117,6 @@ class _AddHostelPageState extends State<AddHostelPage> {
                         ),
                         const SizedBox(height: 20),
 
-                        // CATEGORY DROPDOWN
                         _dropdownField(
                           label: "Category",
                           value: _category,
@@ -127,7 +127,6 @@ class _AddHostelPageState extends State<AddHostelPage> {
                         ),
                         const SizedBox(height: 20),
 
-                        // ADDRESS
                         _inputField(
                           label: "Address *",
                           controller: _addressCtrl,
@@ -135,7 +134,6 @@ class _AddHostelPageState extends State<AddHostelPage> {
                         ),
                         const SizedBox(height: 20),
 
-                        // INCHARGE
                         _dropdownField(
                           label: "Incharge *",
                           value: _incharge,
@@ -145,7 +143,6 @@ class _AddHostelPageState extends State<AddHostelPage> {
                         ),
                         const SizedBox(height: 20),
 
-                        // BRANCH DROPDOWN WITH ICONS
                         _dropdownField(
                           label: "Branch *",
                           value: _branch,
@@ -156,7 +153,6 @@ class _AddHostelPageState extends State<AddHostelPage> {
                         ),
                         const SizedBox(height: 20),
 
-                        // STATUS
                         _dropdownField(
                           label: "Status",
                           value: _status,
@@ -238,12 +234,10 @@ class _AddHostelPageState extends State<AddHostelPage> {
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: Colors.white24),
       ),
-
       child: Row(
         children: [
           Icon(icon, color: neon, size: 22),
           const SizedBox(width: 12),
-
           Expanded(
             child: TextFormField(
               controller: controller,
@@ -289,20 +283,16 @@ class _AddHostelPageState extends State<AddHostelPage> {
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: Colors.white24),
       ),
-
       child: DropdownButtonHideUnderline(
         child: DropdownButtonFormField<String>(
           value: value,
           dropdownColor: const Color(0xFF16213e),
           decoration: const InputDecoration(border: InputBorder.none),
-
           icon: const Icon(Icons.arrow_drop_down, color: neon),
-
           hint: Text(
             label,
             style: const TextStyle(color: Color(0xFFB5C7E8), fontSize: 14),
           ),
-
           items: items.map((e) {
             return DropdownMenuItem(
               value: e,
@@ -315,7 +305,6 @@ class _AddHostelPageState extends State<AddHostelPage> {
               ),
             );
           }).toList(),
-
           onChanged: onChanged,
         ),
       ),

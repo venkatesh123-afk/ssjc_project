@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/ssjc_appbar.dart'; // <-- IMPORT YOUR CUSTOM APPBAR
 
 class ExamsListPage extends StatefulWidget {
   const ExamsListPage({super.key});
@@ -14,7 +15,16 @@ class _ExamsListPageState extends State<ExamsListPage> {
   static const Color purpleDark = Color(0xFF533483);
   static const Color neon = Color(0xFF00FFF5);
 
-  String _query = '';
+  String _query = "";
+
+  // REQUIRED FOR SSJC APPBAR
+  String selectedYear = "2025-2026";
+  final List<String> years = [
+    "2023-2024",
+    "2024-2025",
+    "2025-2026",
+    "2026-2027",
+  ];
 
   final List<Map<String, String>> _exams = [
     {
@@ -60,14 +70,18 @@ class _ExamsListPageState extends State<ExamsListPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
 
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
-          "Exams List",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
+      // ⭐ USE SSJC APPBAR HERE ⭐
+      appBar: SSJCAppBar(
+        title: "Exams List",
+        showSearch: false,
+        selectedYear: selectedYear,
+        years: years,
+
+        onGridMenu: () {},
+
+        onYearChanged: (value) {
+          setState(() => selectedYear = value);
+        },
       ),
 
       body: Container(
@@ -83,19 +97,18 @@ class _ExamsListPageState extends State<ExamsListPage> {
           children: [
             const SizedBox(height: 95),
 
-            // ⭐ WHITE SEARCH BAR ⭐
+            // ⭐ SEARCH BAR ⭐
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white, // white background
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(color: Color(0xFFE0E0E0)),
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 14),
                 child: Row(
                   children: [
-                    // 🔍 WHITE CIRCLE + BLACK ICON
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: const BoxDecoration(
@@ -129,7 +142,7 @@ class _ExamsListPageState extends State<ExamsListPage> {
 
             const SizedBox(height: 15),
 
-            // ⭐ EXAM CARDS LIST ⭐
+            // ⭐ EXAMS LIST ⭐
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/search_field.dart';
+import '../widgets/ssjc_appbar.dart'; // <-- ADD THIS IMPORT
 
 class StaffListPage extends StatefulWidget {
   const StaffListPage({super.key});
@@ -15,6 +16,15 @@ class _StaffListPageState extends State<StaffListPage> {
   static const Color dark3 = Color(0xFF0f3460);
   static const Color purpleDark = Color(0xFF533483);
   static const Color neon = Color(0xFF00FFF5);
+
+  // ---------------- SSJC APPBAR FIELDS ----------------
+  String selectedYear = "2025-2026";
+  final List<String> years = [
+    "2023-2024",
+    "2024-2025",
+    "2025-2026",
+    "2026-2027",
+  ];
 
   // ---------------- STAFF DATA ----------------
   final List<Map<String, String>> _allStaff = [
@@ -44,19 +54,14 @@ class _StaffListPageState extends State<StaffListPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
 
-      // ---------------- APPBAR ----------------
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
-          'Staff List',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+      // ⭐ SSJC APP BAR ADDED ⭐
+      appBar: SSJCAppBar(
+        title: "Staff List",
+        showSearch: false,
+        selectedYear: selectedYear,
+        years: years,
+        onGridMenu: () {},
+        onYearChanged: (value) => setState(() => selectedYear = value),
       ),
 
       // ---------------- BODY ----------------
@@ -76,8 +81,7 @@ class _StaffListPageState extends State<StaffListPage> {
           // ---------------- MAIN CONTENT ----------------
           Column(
             children: [
-              const SizedBox(height: 95),
-
+              const SizedBox(height: 95), // PERFECT SPACE BELOW APPBAR
               // SEARCH BAR
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

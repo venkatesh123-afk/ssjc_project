@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/ssjc_appbar.dart'; // <-- ADD THIS IMPORT
 
 class StudentAttendancePage extends StatefulWidget {
   const StudentAttendancePage({super.key});
@@ -33,28 +34,29 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
 
   static const Color neon = Color(0xFF00FFF5);
 
+  // ⭐ SSJC APPBAR FIELDS
+  String selectedYear = "2025-2026";
+  final List<String> years = [
+    "2023-2024",
+    "2024-2025",
+    "2025-2026",
+    "2026-2027",
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
 
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 26),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          "Student Attendance",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+      // ⭐ SSJC APP BAR ADDED HERE ⭐
+      appBar: SSJCAppBar(
+        title: "Student Attendance",
+        showSearch: false,
+        selectedYear: selectedYear,
+        years: years,
+        onGridMenu: () {}, // optional grid menu
+        onYearChanged: (value) => setState(() => selectedYear = value),
       ),
 
       // ------------------ BACKGROUND ------------------
@@ -105,7 +107,7 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
 
                     const SizedBox(height: 22),
 
-                    // ------------------ FILTER FIELDS ------------------
+                    // ------------------ FILTER BOXES ------------------
                     _filterBox(
                       label: "Select Branch",
                       icon: Icons.school,
@@ -223,7 +225,7 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
   }
 
   // ********************************************************************
-  //        🔥 EXACT NEON SSJC DROPDOWN (MATCHES YOUR FIRST IMAGE)
+  //                🔥 NEON SSJC DROPDOWN STYLE
   // ********************************************************************
   Widget _filterBox({
     required String label,
@@ -249,9 +251,7 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
         ),
         borderRadius: BorderRadius.circular(22),
         border: Border.all(color: Colors.white24),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.45), blurRadius: 15),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 15)],
       ),
 
       child: Row(

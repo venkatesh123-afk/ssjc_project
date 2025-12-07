@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../widgets/base_screen.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  bool showSearch = false;
+  String selectedYear = "2025-2026";
+
+  final List<String> years = [
+    "2023-2024",
+    "2024-2025",
+    "2025-2026",
+    "2026-2027",
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -20,119 +34,94 @@ class DashboardPage extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
       ),
-      child: BaseScreen(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
         drawer: _buildDrawer(),
 
-        // -------------------------------------------------------
-        //                    CUSTOM APP BAR
-        // -------------------------------------------------------
+        // -------------------- APP BAR --------------------
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
           automaticallyImplyLeading: false,
-
           title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // LEFT SIDE: GLOWING ICON + TITLE
-              Row(
-                children: [
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF00D4FF), Color(0xFF0099FF)],
-                      ),
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF0099FF).withOpacity(0.5),
-                          blurRadius: 12,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'S',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-
-                  const Text(
-                    "Sri Saraswathi College",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+              const CircleAvatar(
+                radius: 18,
+                backgroundImage: AssetImage("assets/ssjc.jpg"),
               ),
 
-              // RIGHT SIDE: MENU BUTTON ONLY
+              const SizedBox(width: 12),
+
               Builder(
-                builder: (context) => GestureDetector(
-                  onTap: () => Scaffold.of(context).openDrawer(),
-                  child: const Icon(Icons.menu, color: Colors.white, size: 30),
+                builder: (context) => IconButton(
+                  icon: const Icon(Icons.menu, color: Colors.white),
+                  onPressed: () => Scaffold.of(context).openDrawer(),
                 ),
               ),
-            ],
-          ),
-        ),
 
-        // -------------------------------------------------------
-        //                       BODY
-        // -------------------------------------------------------
-        body: Padding(
-          padding: const EdgeInsets.only(top: 120, left: 16, right: 16),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: _neonCard(
-                      color1: Colors.blueAccent,
-                      color2: Colors.lightBlue,
-                      icon: Icons.check_circle,
-                      title: "Hostel Attendance",
-                      onTap: () => Get.toNamed('/hostelAttendanceFilter'),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _neonCard(
-                      color1: Colors.purpleAccent,
-                      color2: Colors.deepPurple,
-                      icon: Icons.hiking,
-                      title: "Issue Outing",
-                      onTap: () => Get.toNamed('/outingList'),
-                    ),
-                  ),
-                ],
+              IconButton(
+                icon: const Icon(Icons.grid_view_rounded, color: Colors.white),
+                onPressed: () => _openGridMenu(),
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(width: 10),
 
-              Row(
-                children: [
-                  Expanded(
-                    child: _neonCard(
-                      color1: Colors.orangeAccent,
-                      color2: Colors.deepOrange,
-                      icon: Icons.verified_user,
-                      title: "Outing Pending",
-                      onTap: () => Get.toNamed('/outingPending'),
+              showSearch
+                  ? Expanded(
+                      child: Container(
+                        height: 38,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: TextField(
+                          autofocus: true,
+                          decoration: InputDecoration(
+                            hintText: "Search…",
+                            border: InputBorder.none,
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.close, size: 16),
+                              onPressed: () {
+                                setState(() => showSearch = false);
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : IconButton(
+                      icon: const Icon(Icons.search, color: Colors.white),
+                      onPressed: () => setState(() => showSearch = true),
                     ),
+
+              const SizedBox(width: 10),
+
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: selectedYear,
+                    icon: const Icon(Icons.arrow_drop_down),
+                    items: years
+                        .map((y) => DropdownMenuItem(value: y, child: Text(y)))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() => selectedYear = value!);
+                    },
                   ),
-                ],
+                ),
+              ),
+
+              const Spacer(),
+
+              const CircleAvatar(
+                radius: 20,
+                child: Icon(Icons.person, color: Colors.black),
               ),
             ],
           ),
@@ -142,7 +131,127 @@ class DashboardPage extends StatelessWidget {
   }
 
   // -------------------------------------------------------
-  //                    DRAWER
+  //           GRID MENU (OPEN BELOW APP BAR)
+  // -------------------------------------------------------
+  void _openGridMenu() {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: '',
+      transitionDuration: const Duration(milliseconds: 350),
+      pageBuilder: (_, __, ___) {
+        return Align(
+          alignment: Alignment.topCenter,
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              margin: const EdgeInsets.only(top: kToolbarHeight + 10),
+
+              height: MediaQuery.of(context).size.height * 0.73,
+              width: MediaQuery.of(context).size.width,
+
+              decoration: const BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(25),
+                ),
+              ),
+              padding: const EdgeInsets.all(16),
+
+              child: GridView.count(
+                crossAxisCount: 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                childAspectRatio: 1.1,
+                children: [
+                  _menuCard(
+                    color: const Color(0xFF2196F3),
+                    icon: Icons.groups_rounded,
+                    title: "Class Attendance",
+                    onTap: () {},
+                  ),
+                  _menuCard(
+                    color: const Color(0xFFFFC107),
+                    icon: Icons.fact_check_rounded,
+                    title: "Hostel Attendance",
+                    onTap: () => Get.toNamed('/hostelAttendanceFilter'),
+                  ),
+                  _menuCard(
+                    color: const Color(0xFF4CAF50),
+                    icon: Icons.hiking,
+                    title: "Issue Outing",
+                    onTap: () => Get.toNamed('/outingList'),
+                  ),
+                  _menuCard(
+                    color: const Color(0xFFE53935),
+                    icon: Icons.verified_user_rounded,
+                    title: "Verify Outing",
+                    onTap: () => Get.toNamed('/outingPending'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+
+      // Smooth Slide Animation
+      transitionBuilder: (_, anim, __, child) {
+        return SlideTransition(
+          position: Tween(
+            begin: const Offset(0, -1),
+            end: Offset.zero,
+          ).animate(anim),
+          child: child,
+        );
+      },
+    );
+  }
+
+  // -------------------------------------------------------
+  //                    MENU CARD WIDGET
+  // -------------------------------------------------------
+  static Widget _menuCard({
+    required Color color,
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.4),
+              blurRadius: 10,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: Colors.white, size: 45),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // -------------------------------------------------------
+  //                      DRAWER
   // -------------------------------------------------------
   Widget _buildDrawer() {
     return ClipRRect(
@@ -159,8 +268,6 @@ class DashboardPage extends StatelessWidget {
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [Color(0xFF0f3460), Color(0xFF533483)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
                 ),
               ),
               child: const Center(
@@ -196,9 +303,8 @@ class DashboardPage extends StatelessWidget {
                   () => Get.toNamed('/verifyAttendance'),
                 ),
                 _drawerSubItem("Outings", () => Get.toNamed('/outingList')),
-
                 _drawerSubItem(
-                  "Outings pending",
+                  "Outings Pending",
                   () => Get.toNamed('/outingPending'),
                 ),
               ],
@@ -220,7 +326,6 @@ class DashboardPage extends StatelessWidget {
                 ),
               ],
             ),
-
             _drawerExpandable(
               icon: Icons.apartment,
               iconColor: Colors.orangeAccent,
@@ -245,7 +350,6 @@ class DashboardPage extends StatelessWidget {
                 ),
               ],
             ),
-
             _drawerItem(
               icon: Icons.message_outlined,
               title: "Communication",
@@ -258,60 +362,6 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  // -------------------------------------------------------
-  //                    Neon Card Widget
-  // -------------------------------------------------------
-  Widget _neonCard({
-    required Color color1,
-    required Color color2,
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        height: 140,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [color1, color2],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(22),
-          boxShadow: [
-            BoxShadow(
-              color: color1.withOpacity(0.6),
-              blurRadius: 12,
-              spreadRadius: 1,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: Colors.white, size: 45),
-              const SizedBox(height: 10),
-              Text(
-                title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // -------------------------------------------------------
-  //                    Drawer Items
-  // -------------------------------------------------------
   Widget _drawerItem({
     required IconData icon,
     required String title,
