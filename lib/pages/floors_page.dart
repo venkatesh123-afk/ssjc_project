@@ -18,15 +18,6 @@ class _FloorsPageState extends State<FloorsPage> {
   static const Color purpleDark = Color(0xFF533483);
   static const Color neon = Color(0xFF00FFF5);
 
-  // REQUIRED FOR SSJC APPBAR
-  String selectedYear = "2025-2026";
-  final List<String> years = [
-    "2023-2024",
-    "2024-2025",
-    "2025-2026",
-    "2026-2027",
-  ];
-
   final List<Map<String, String>> _floors = [
     {
       'floor': 'GROUND FLOOR',
@@ -59,12 +50,10 @@ class _FloorsPageState extends State<FloorsPage> {
       appBar: SSJCAppBar(
         title: "Floors Management",
         showSearch: false,
-        selectedYear: selectedYear,
-        years: years,
         onGridMenu: () {},
-        onYearChanged: (value) {
-          setState(() => selectedYear = value);
-        },
+        body: Container(),
+        years: [],
+        selectedYear: '',
       ),
 
       // ---------------- BACKGROUND ----------------

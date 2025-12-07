@@ -17,15 +17,6 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
   bool isLoading = false;
   List<AttendanceRecord> attendanceData = [];
 
-  // SSJC APPBAR
-  String selectedYear = "2025-2026";
-  final List<String> years = [
-    "2023-2024",
-    "2024-2025",
-    "2025-2026",
-    "2026-2027",
-  ];
-
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
@@ -153,10 +144,10 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
       appBar: SSJCAppBar(
         title: "Verify Attendance",
         showSearch: false,
-        selectedYear: selectedYear,
-        years: years,
+        years: const [],
+        selectedYear: "",
+        body: Container(),
         onGridMenu: () {},
-        onYearChanged: (v) => setState(() => selectedYear = v),
       ),
 
       body: Container(
@@ -537,9 +528,8 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     );
   }
 
-  // ---------------------------------------------------------
   // CALCULATIONS
-  // ---------------------------------------------------------
+
   int _calculateTotal() => attendanceData.fold(0, (sum, r) => sum + r.total);
   int _calculatePresent() =>
       attendanceData.fold(0, (sum, r) => sum + r.present);

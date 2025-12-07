@@ -17,15 +17,6 @@ class _StaffListPageState extends State<StaffListPage> {
   static const Color purpleDark = Color(0xFF533483);
   static const Color neon = Color(0xFF00FFF5);
 
-  // ---------------- SSJC APPBAR FIELDS ----------------
-  String selectedYear = "2025-2026";
-  final List<String> years = [
-    "2023-2024",
-    "2024-2025",
-    "2025-2026",
-    "2026-2027",
-  ];
-
   // ---------------- STAFF DATA ----------------
   final List<Map<String, String>> _allStaff = [
     {'name': 'SRI SARASWATHI GROUPS', 'empId': '666667'},
@@ -58,16 +49,15 @@ class _StaffListPageState extends State<StaffListPage> {
       appBar: SSJCAppBar(
         title: "Staff List",
         showSearch: false,
-        selectedYear: selectedYear,
-        years: years,
         onGridMenu: () {},
-        onYearChanged: (value) => setState(() => selectedYear = value),
+        years: const [],
+        selectedYear: "",
+        body: Container(),
       ),
 
       // ---------------- BODY ----------------
       body: Stack(
         children: [
-          // ---------------- BACKGROUND ----------------
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(

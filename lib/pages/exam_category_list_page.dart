@@ -19,14 +19,7 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
 
   // ---------------- REQUIRED VARIABLES FOR APPBAR ----------------
   bool showSearch = false;
-  String selectedYear = "2025-2026";
 
-  final List<String> years = [
-    "2023-2024",
-    "2024-2025",
-    "2025-2026",
-    "2026-2027",
-  ];
   // ---------------- GRID MENU FUNCTION ----------------
   void _openGridMenu() {
     showModalBottomSheet(
@@ -70,11 +63,10 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
       appBar: SSJCAppBar(
         title: "Exam Category List",
         showSearch: showSearch,
-        selectedYear: selectedYear,
-        years: years,
         onGridMenu: _openGridMenu,
-
-        onYearChanged: (value) => setState(() => selectedYear = value),
+        years: [],
+        selectedYear: '',
+        body: Container(),
       ),
 
       // ------------------ MAIN BODY ------------------

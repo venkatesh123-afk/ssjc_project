@@ -17,15 +17,6 @@ class _ExamsListPageState extends State<ExamsListPage> {
 
   String _query = "";
 
-  // REQUIRED FOR SSJC APPBAR
-  String selectedYear = "2025-2026";
-  final List<String> years = [
-    "2023-2024",
-    "2024-2025",
-    "2025-2026",
-    "2026-2027",
-  ];
-
   final List<Map<String, String>> _exams = [
     {
       "sno": "1",
@@ -74,14 +65,10 @@ class _ExamsListPageState extends State<ExamsListPage> {
       appBar: SSJCAppBar(
         title: "Exams List",
         showSearch: false,
-        selectedYear: selectedYear,
-        years: years,
-
+        years: [],
+        selectedYear: "",
+        body: Container(),
         onGridMenu: () {},
-
-        onYearChanged: (value) {
-          setState(() => selectedYear = value);
-        },
       ),
 
       body: Container(

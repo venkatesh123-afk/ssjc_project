@@ -8,17 +8,14 @@ class SSJCAppBar extends StatelessWidget implements PreferredSizeWidget {
   final List<String> years;
   final Function() onGridMenu;
 
-  final Function(String) onYearChanged;
-
   const SSJCAppBar({
     super.key,
     required this.title,
-    required this.showSearch,
-    required this.selectedYear,
     required this.years,
     required this.onGridMenu,
-
-    required this.onYearChanged,
+    required this.showSearch,
+    required this.selectedYear,
+    required Container body,
   });
 
   @override
@@ -48,31 +45,6 @@ class SSJCAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
 
           const SizedBox(width: 10),
-
-          const SizedBox(width: 10),
-
-          // ---------- YEAR DROPDOWN ----------
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: selectedYear,
-                icon: const Icon(Icons.arrow_drop_down),
-                items: years
-                    .map((y) => DropdownMenuItem(value: y, child: Text(y)))
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    onYearChanged(value);
-                  }
-                },
-              ),
-            ),
-          ),
         ],
       ),
     );

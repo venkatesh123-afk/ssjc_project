@@ -17,15 +17,6 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
   static const Color purpleDark = Color(0xFF533483);
   static const Color neon = Color(0xFF00FFF5);
 
-  // SSJC APPBAR REQUIRED FIELDS
-  String selectedYear = "2025-2026";
-  final List<String> years = [
-    "2023-2024",
-    "2024-2025",
-    "2025-2026",
-    "2026-2027",
-  ];
-
   String query = "";
 
   // SAMPLE DATA
@@ -65,13 +56,11 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
       // ⭐ SSJC APPBAR REPLACES OLD APPBAR ⭐
       appBar: SSJCAppBar(
         title: "Staff Attendance",
+        years: const [],
         showSearch: false,
-        selectedYear: selectedYear,
-        years: years,
+        selectedYear: "",
         onGridMenu: () {},
-        onYearChanged: (value) {
-          setState(() => selectedYear = value);
-        },
+        body: Container(),
       ),
 
       body: Stack(

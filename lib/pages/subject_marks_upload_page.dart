@@ -37,15 +37,6 @@ class SubjectMarksUploadPage extends StatefulWidget {
 class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
   static const Color neon = Color(0xFF00FFF5);
 
-  // SSJC AppBar Fields
-  String selectedYear = "2025-2026";
-  final List<String> years = [
-    "2023–2024",
-    "2024–2025",
-    "2025–2026",
-    "2026–2027",
-  ];
-
   // FORM FIELDS
   String? branch, group, course, batch, exam, subject;
 
@@ -59,22 +50,19 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
       appBar: SSJCAppBar(
         title: "Subject Level Marks Upload",
         showSearch: false,
-        selectedYear: selectedYear,
-        years: years,
         onGridMenu: () {},
-        onYearChanged: (value) => setState(() => selectedYear = value),
+        selectedYear: '',
+        years: [],
+        body: Container(),
       ),
 
-      // PAGE BACKGROUND
       body: SSJCBackground(
         child: Stack(
           children: [
-            // MAIN CONTENT (Scroll View)
             SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(18, 120, 18, 160),
               child: Column(
                 children: [
-                  // NEON FORM CONTAINER
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(

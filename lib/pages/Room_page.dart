@@ -20,15 +20,6 @@ class _RoomsPageState extends State<RoomsPage> {
   static const Color purpleDark = Color(0xFF533483);
   static const Color neon = Color(0xFF00FFF5);
 
-  // SSJC APPBAR REQUIRED
-  String selectedYear = "2025-2026";
-  final List<String> years = [
-    "2023-2024",
-    "2024-2025",
-    "2025-2026",
-    "2026-2027",
-  ];
-
   // ROOM DATA
   final List<Map<String, String>> _rooms = [
     {'room': '101', 'floor': 'Ground Floor', 'hostel': 'SSG EAMCET CAMPUS'},
@@ -103,15 +94,10 @@ class _RoomsPageState extends State<RoomsPage> {
       appBar: SSJCAppBar(
         title: "Room Management",
         showSearch: false,
-        selectedYear: selectedYear,
-        years: years,
-
-        // Grid menu (if needed)
         onGridMenu: () {},
-
-        onYearChanged: (value) {
-          setState(() => selectedYear = value);
-        },
+        years: const [],
+        selectedYear: '',
+        body: Container(),
       ),
 
       // BACKGROUND ---------------------------

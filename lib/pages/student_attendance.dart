@@ -34,15 +34,6 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
 
   static const Color neon = Color(0xFF00FFF5);
 
-  // ⭐ SSJC APPBAR FIELDS
-  String selectedYear = "2025-2026";
-  final List<String> years = [
-    "2023-2024",
-    "2024-2025",
-    "2025-2026",
-    "2026-2027",
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,13 +44,12 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
       appBar: SSJCAppBar(
         title: "Student Attendance",
         showSearch: false,
-        selectedYear: selectedYear,
-        years: years,
-        onGridMenu: () {}, // optional grid menu
-        onYearChanged: (value) => setState(() => selectedYear = value),
+        selectedYear: "",
+        years: const [],
+        onGridMenu: () {},
+        body: Container(),
       ),
 
-      // ------------------ BACKGROUND ------------------
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(

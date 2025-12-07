@@ -39,13 +39,6 @@ class _AddHostelPageState extends State<AddHostelPage> {
   };
 
   // SSJC AppBar Data
-  String selectedYear = "2025-2026";
-  final List<String> years = [
-    "2023-2024",
-    "2024-2025",
-    "2025-2026",
-    "2026-2027",
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -56,10 +49,10 @@ class _AddHostelPageState extends State<AddHostelPage> {
       appBar: SSJCAppBar(
         title: "Add Hostel",
         showSearch: false,
-        selectedYear: selectedYear,
-        years: years,
         onGridMenu: () {},
-        onYearChanged: (v) => setState(() => selectedYear = v),
+        years: [],
+        selectedYear: '',
+        body: Container(),
       ),
 
       body: Container(

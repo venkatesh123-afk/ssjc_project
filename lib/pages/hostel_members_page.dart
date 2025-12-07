@@ -17,15 +17,6 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
   static const Color purpleDark = Color(0xFF533483);
   static const Color neon = Color(0xFF00FFF5);
 
-  // SSJC APPBAR REQUIRED FIELDS
-  String selectedYear = "2025-2026";
-  final List<String> years = [
-    "2023-2024",
-    "2024-2025",
-    "2025-2026",
-    "2026-2027",
-  ];
-
   // FILTER STATE
   String _viewBy = 'Hostel Wise';
   String _selectedHostel = 'SSJC-ADARSA CAMPUS';
@@ -65,12 +56,10 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
       appBar: SSJCAppBar(
         title: "Hostel Members",
         showSearch: false,
-        selectedYear: selectedYear,
-        years: years,
+        years: const [],
+        selectedYear: '',
         onGridMenu: () {},
-        onYearChanged: (value) {
-          setState(() => selectedYear = value);
-        },
+        body: Container(),
       ),
 
       // BACKGROUND ------------------------
