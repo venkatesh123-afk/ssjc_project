@@ -97,11 +97,11 @@ class _RoomsPageState extends State<RoomsPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         toolbarHeight: 70,
-        iconTheme: const IconThemeData(color: neon),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Rooms Management',
           style: TextStyle(
-            color: neon,
+            color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),

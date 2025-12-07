@@ -63,10 +63,10 @@ class _ExamsListPageState extends State<ExamsListPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: neon),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           "Exams List",
-          style: TextStyle(color: neon, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
 

@@ -53,15 +53,15 @@ class _FloorsPageState extends State<FloorsPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         toolbarHeight: 70,
-        iconTheme: const IconThemeData(color: neon),
+        iconTheme: const IconThemeData(color: Colors.white),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: neon),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           'Floors Management',
           style: TextStyle(
-            color: neon,
+            color: Colors.white,
             fontSize: 22,
             fontWeight: FontWeight.bold,
           ),

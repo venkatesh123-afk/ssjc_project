@@ -50,24 +50,25 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
+
+      // ----------------------- APP BAR -----------------------
       appBar: AppBar(
         title: const Text(
           "Staff Attendance",
           style: TextStyle(
-            color: neon,
+            color: Colors.white,
             fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        centerTitle: true,
-        iconTheme: const IconThemeData(color: neon),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
 
       body: Stack(
         children: [
-          // BACKGROUND --------------------------
+          // ---------------- BACKGROUND ----------------
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -80,21 +81,20 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
 
           Column(
             children: [
-              const SizedBox(height: 100),
-
-              // ⭐ SEARCH BAR (Exactly like Staff List Page) ⭐
+              const SizedBox(height: 90), // PERFECT SPACING BELOW APPBAR
+              // ---------------- SEARCH BAR ----------------
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white, // White background
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(30),
                     border: Border.all(color: Color(0xFFE0E0E0)),
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Row(
                     children: [
-                      // White circular search icon
+                      // search icon
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: const BoxDecoration(
@@ -103,26 +103,25 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
                         ),
                         child: const Icon(
                           Icons.search,
-                          color:
-                              Colors.black, // Black icon (same as staff list)
+                          color: Colors.black,
                           size: 22,
                         ),
                       ),
 
                       const SizedBox(width: 10),
 
-                      // Input field
+                      // input field
                       Expanded(
                         child: TextField(
                           onChanged: (v) => setState(() => query = v),
                           style: const TextStyle(
-                            color: Colors.black, // black text
+                            color: Colors.black,
                             fontSize: 16,
                           ),
                           decoration: const InputDecoration(
                             hintText: "Search by name / user ID",
                             hintStyle: TextStyle(
-                              color: Colors.grey, // soft grey hint
+                              color: Colors.grey,
                               fontSize: 15,
                             ),
                             border: InputBorder.none,
@@ -136,6 +135,7 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
 
               const SizedBox(height: 18),
 
+              // ---------------- TITLE ----------------
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
@@ -150,7 +150,7 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
 
               const SizedBox(height: 16),
 
-              // ⭐ CARD LIST ⭐
+              // ---------------- STAFF LIST ----------------
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -192,7 +192,9 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+
                           const SizedBox(height: 4),
+
                           Text(
                             "User ID: ${staff["id"]}",
                             style: const TextStyle(
@@ -200,9 +202,10 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
                               fontSize: 14,
                             ),
                           ),
+
                           const SizedBox(height: 16),
 
-                          // ⭐ DAYS ROW ⭐
+                          // -------- DAYS ROW --------
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
@@ -257,7 +260,7 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
             ],
           ),
 
-          // ⭐ Bottom Buttons ⭐
+          // ---------------- BOTTOM BUTTONS ----------------
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -275,7 +278,7 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       child: const Text(
-                        "View Staff Biometric Logs",
+                        "Staff Biometric Logs",
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,

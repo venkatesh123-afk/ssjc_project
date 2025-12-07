@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/search_field.dart'; // IMPORTANT: Your custom SearchField
 
 class HostelAttendanceResultPage extends StatefulWidget {
   const HostelAttendanceResultPage({super.key});
@@ -18,8 +19,8 @@ class _HostelAttendanceResultPageState
   String? _selectedRoom;
   String? _selectedIncharge;
 
-  // Neon Theme Colors
-  static const Color neonCyan = Color(0xFF00FFF5);
+  // Theme Colors
+  static const Color neon = Color(0xFF00FFF5);
   static const Color darkNavy = Color(0xFF1a1a2e);
   static const Color darkBlue = Color(0xFF16213e);
   static const Color midBlue = Color(0xFF0f3460);
@@ -32,15 +33,13 @@ class _HostelAttendanceResultPageState
     ['4', 'C-204', '2ND FLOOR C & D BLOCKS', 'GOSU ABHISHEK SAGAR', '9', '0'],
   ];
 
-  // Floor extraction logic
+  // FLOOR PARSING
   String _floorFromRoom(String room) {
     final match = RegExp(r'\d+').firstMatch(room);
     if (match == null) return 'Unknown';
 
     final num = match.group(0)!;
-
     switch (num[0]) {
-      case '0':
       case '1':
         return '1st Floor';
       case '2':
@@ -50,228 +49,6 @@ class _HostelAttendanceResultPageState
       default:
         return '${num[0]}th Floor';
     }
-  }
-
-  // ---------------------- FILTER BOTTOM SHEET ----------------------
-  void _openFilters() {
-    String tempAttendance = _attendanceFilter;
-    String tempFloor = _selectedFloor;
-    String? tempRoom = _selectedRoom;
-    String? tempIncharge = _selectedIncharge;
-
-    final floors = <String>{};
-    final rooms = <String>{};
-    final incharges = <String>{};
-
-    for (var row in _rows) {
-      floors.add(_floorFromRoom(row[1]));
-      rooms.add(row[1]);
-      incharges.add(row[3]);
-    }
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
-      ),
-      builder: (ctx) {
-        return Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF16213e), Color(0xFF0f3460)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
-          ),
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-          child: StatefulBuilder(
-            builder: (context, setModal) {
-              return SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // HEADER
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Filters",
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.close, color: Colors.white70),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 10),
-                    _sectionTitle("Attendance"),
-
-                    _radio("All", tempAttendance, (v) {
-                      setModal(() => tempAttendance = v!);
-                    }),
-                    _radio("Present", tempAttendance, (v) {
-                      setModal(() => tempAttendance = v!);
-                    }),
-                    _radio("Absent", tempAttendance, (v) {
-                      setModal(() => tempAttendance = v!);
-                    }),
-
-                    const SizedBox(height: 12),
-                    _sectionTitle("Floor Wise"),
-
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        _chip("All", tempFloor == "All", () {
-                          setModal(() => tempFloor = "All");
-                        }),
-                        ...floors.map(
-                          (f) => _chip(f, tempFloor == f, () {
-                            setModal(() => tempFloor = f);
-                          }),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 12),
-                    _sectionTitle("Room Wise"),
-
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        _chip("All", tempRoom == null, () {
-                          setModal(() => tempRoom = null);
-                        }),
-                        ...rooms.map(
-                          (r) => _chip(r, tempRoom == r, () {
-                            setModal(() => tempRoom = r);
-                          }),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 12),
-                    _sectionTitle("Incharge Wise"),
-
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        _chip("All", tempIncharge == null, () {
-                          setModal(() => tempIncharge = null);
-                        }),
-                        ...incharges.map(
-                          (i) => _chip(i, tempIncharge == i, () {
-                            setModal(() => tempIncharge = i);
-                          }),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 22),
-
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: neonCyan,
-                          foregroundColor: Colors.black,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _attendanceFilter = tempAttendance;
-                            _selectedFloor = tempFloor;
-                            _selectedRoom = tempRoom;
-                            _selectedIncharge = tempIncharge;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          "Apply Filters",
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  // ---------------- UI ELEMENTS -----------------
-
-  Widget _radio(String title, String group, Function(String?) onChanged) {
-    return RadioListTile<String>(
-      title: Text(
-        title,
-        style: const TextStyle(
-          color: Color(0xFFB5C7E8),
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      value: title,
-      groupValue: group,
-      activeColor: neonCyan,
-      fillColor: MaterialStateProperty.resolveWith(
-        (states) => states.contains(MaterialState.selected)
-            ? neonCyan
-            : const Color(0xFFB5C7E8),
-      ),
-      onChanged: onChanged,
-    );
-  }
-
-  Widget _sectionTitle(String txt) {
-    return Text(
-      txt,
-      style: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.bold,
-        color: Color(0xFF9BB0D3),
-      ),
-    );
-  }
-
-  Widget _chip(String label, bool selected, VoidCallback onTap) {
-    return ChoiceChip(
-      selected: selected,
-      label: Text(label),
-      labelStyle: TextStyle(
-        color: selected ? Colors.black : const Color(0xFFB5C7E8),
-        fontWeight: FontWeight.w600,
-      ),
-      selectedColor: neonCyan,
-      backgroundColor: const Color(0xFF2b3350),
-      elevation: selected ? 3 : 0,
-      shadowColor: Colors.black54,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: BorderSide(
-          color: selected ? neonCyan : Colors.white24,
-          width: 1.2,
-        ),
-      ),
-      onSelected: (_) => onTap(),
-    );
   }
 
   // ------------------------------ MAIN UI ------------------------------
@@ -289,13 +66,14 @@ class _HostelAttendanceResultPageState
       if (_attendanceFilter == "Present" && present == 0) return false;
       if (_attendanceFilter == "Absent" && absent == 0) return false;
 
-      if (_selectedFloor != "All" && _floorFromRoom(room) != _selectedFloor)
+      if (_selectedFloor != "All" && _floorFromRoom(room) != _selectedFloor) {
         return false;
+      }
 
       if (_selectedRoom != null && room != _selectedRoom) return false;
-
-      if (_selectedIncharge != null && incharge != _selectedIncharge)
+      if (_selectedIncharge != null && incharge != _selectedIncharge) {
         return false;
+      }
 
       if (_query.isNotEmpty) {
         if (!(room.toLowerCase().contains(_query.toLowerCase()) ||
@@ -317,7 +95,7 @@ class _HostelAttendanceResultPageState
         ),
       ),
       child: Scaffold(
-        extendBodyBehindAppBar: true,
+        extendBodyBehindAppBar: false,
         backgroundColor: Colors.transparent,
 
         appBar: AppBar(
@@ -331,50 +109,43 @@ class _HostelAttendanceResultPageState
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.pop(context),
           ),
-          actions: [
-            TextButton.icon(
-              onPressed: _openFilters,
-              icon: const Icon(Icons.filter_list, color: neonCyan),
-              label: const Text("Filters", style: TextStyle(color: neonCyan)),
-            ),
-          ],
         ),
 
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 110, 16, 16),
-          child: Column(
-            children: [
-              // SEARCH BAR
-              Container(
+        body: Column(
+          children: [
+            const SizedBox(height: 12),
+
+            // ---------------- WHITE SEARCH BAR (YOUR REQUEST) ----------------
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white12,
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.white24),
+                  color: Colors.white, // PURE WHITE BG
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: Colors.white, width: 1),
                 ),
-                child: TextField(
-                  style: const TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.search, color: Colors.white70),
-                    hintText: "Search by room / floor / incharge / S.No",
-                    hintStyle: TextStyle(color: Colors.white54),
-                    border: InputBorder.none,
-                  ),
+                child: SearchField(
+                  hint: 'Search floor / hostel',
+                  hintStyle: const TextStyle(color: Colors.black54),
+                  textColor: Colors.black,
+                  iconColor: Colors.black87,
                   onChanged: (v) => setState(() => _query = v),
                 ),
               ),
+            ),
 
-              const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
-              Expanded(
-                child: ListView.builder(
-                  itemCount: filtered.length,
-                  itemBuilder: (context, index) {
-                    return _neonCard(filtered[index]);
-                  },
-                ),
+            // ---------------- LIST DATA ----------------
+            Expanded(
+              child: ListView.builder(
+                itemCount: filtered.length,
+                itemBuilder: (context, index) {
+                  return _neonCard(filtered[index]);
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -391,7 +162,7 @@ class _HostelAttendanceResultPageState
     final absent = int.parse(total) - int.parse(present);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 14),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -400,10 +171,10 @@ class _HostelAttendanceResultPageState
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: neonCyan.withOpacity(0.35), width: 1.4),
+        border: Border.all(color: neon.withOpacity(0.35), width: 1.4),
         boxShadow: [
           BoxShadow(
-            color: neonCyan.withOpacity(0.25),
+            color: neon.withOpacity(0.25),
             blurRadius: 15,
             spreadRadius: 2,
           ),
@@ -413,7 +184,7 @@ class _HostelAttendanceResultPageState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ROW 1
+          // TOP ROW
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -431,7 +202,7 @@ class _HostelAttendanceResultPageState
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: neonCyan,
+                  color: neon,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
@@ -449,6 +220,7 @@ class _HostelAttendanceResultPageState
 
           Text("Floor: $floor", style: const TextStyle(color: Colors.white70)),
           const SizedBox(height: 6),
+
           Text(
             "Incharge: $incharge",
             style: const TextStyle(color: Colors.white70),
@@ -460,7 +232,7 @@ class _HostelAttendanceResultPageState
             spacing: 12,
             runSpacing: 12,
             children: [
-              _badge(Icons.people, "Total: $total", neonCyan),
+              _badge(Icons.people, "Total: $total", neon),
               _badge(
                 Icons.check_circle,
                 "Present: $present",
@@ -474,7 +246,7 @@ class _HostelAttendanceResultPageState
     );
   }
 
-  // Badge UI
+  // Badge
   Widget _badge(IconData icon, String text, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

@@ -37,10 +37,10 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: neon),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           "Exam Category List",
-          style: TextStyle(color: neon, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
 

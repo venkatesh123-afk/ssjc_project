@@ -33,11 +33,14 @@ class _HostelAttendanceFilterPageState
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarIconBrightness: Brightness.light,
       ),
+
       child: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
 
-        // ---------------------------- APPBAR ----------------------------
+        // -----------------------------------------------------------------------
+        //                              APP BAR
+        // -----------------------------------------------------------------------
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(60),
           child: Container(
@@ -56,7 +59,6 @@ class _HostelAttendanceFilterPageState
             child: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
-              centerTitle: true,
               title: const Text(
                 "View Hostel Attendance",
                 style: TextStyle(
@@ -73,30 +75,39 @@ class _HostelAttendanceFilterPageState
           ),
         ),
 
-        // ---------------------------- BODY ----------------------------
-        body: SafeArea(
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color(0xFF1a1a2e),
-                  Color(0xFF16213e),
-                  Color(0xFF0f3460),
-                  Color(0xFF533483),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
+        // -----------------------------------------------------------------------
+        //                          FULL PAGE GRADIENT FIXED
+        // -----------------------------------------------------------------------
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
 
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF1a1a2e),
+                Color(0xFF16213e),
+                Color(0xFF0f3460),
+                Color(0xFF533483),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+
+          child: SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 40),
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
+
               child: Column(
                 children: [
-                  // ================= DROPDOWNS =================
+                  // -----------------------------------------------------------------------
+                  //                               DROPDOWNS
+                  // -----------------------------------------------------------------------
                   _neonDropdown(
                     label: "Select Branch",
+                    icon: Icons.school,
+                    iconColor: Color(0xFF00FFF5),
                     value: _branch,
                     items: const [
                       DropdownMenuItem(
@@ -114,6 +125,8 @@ class _HostelAttendanceFilterPageState
 
                   _neonDropdown(
                     label: "Select Hostel",
+                    icon: Icons.apartment,
+                    iconColor: Color(0xFFD06BFF),
                     value: _hostel,
                     items: const [
                       DropdownMenuItem(value: 'ADARSA', child: Text('ADARSA')),
@@ -125,6 +138,8 @@ class _HostelAttendanceFilterPageState
 
                   _neonDropdown(
                     label: "Select Floor",
+                    icon: Icons.layers,
+                    iconColor: Color(0xFF4DA3FF),
                     value: _floor,
                     items: const [
                       DropdownMenuItem(value: '1', child: Text('First Floor')),
@@ -136,6 +151,8 @@ class _HostelAttendanceFilterPageState
 
                   _neonDropdown(
                     label: "Select Room",
+                    icon: Icons.meeting_room,
+                    iconColor: Color(0xFFFF72C6),
                     value: _room,
                     items: const [
                       DropdownMenuItem(value: 'C-201', child: Text('C-201')),
@@ -149,6 +166,8 @@ class _HostelAttendanceFilterPageState
 
                   _neonDropdown(
                     label: "Select Month",
+                    icon: Icons.calendar_month,
+                    iconColor: Color(0xFFFFE066),
                     value: _month,
                     items: const [
                       DropdownMenuItem(value: 'Jan', child: Text('January')),
@@ -169,7 +188,9 @@ class _HostelAttendanceFilterPageState
 
                   const SizedBox(height: 30),
 
-                  // ================= GET STUDENTS BUTTON =================
+                  // -----------------------------------------------------------------------
+                  //                          GET STUDENTS BUTTON
+                  // -----------------------------------------------------------------------
                   SizedBox(
                     width: double.infinity,
                     height: 52,
@@ -196,7 +217,9 @@ class _HostelAttendanceFilterPageState
 
                   const SizedBox(height: 20),
 
-                  // ================= ACTION BUTTONS =================
+                  // -----------------------------------------------------------------------
+                  //                          ACTION BUTTONS
+                  // -----------------------------------------------------------------------
                   Row(
                     children: [
                       Expanded(
@@ -229,37 +252,55 @@ class _HostelAttendanceFilterPageState
     );
   }
 
-  // ======================= NEON DROPDOWN =======================
+  // -----------------------------------------------------------------------
+  //                              NEON DROPDOWN
+  // -----------------------------------------------------------------------
   Widget _neonDropdown({
     required String label,
+    required IconData icon,
+    required Color iconColor,
     required String? value,
     required List<DropdownMenuItem<String>> items,
     required void Function(String?) onChanged,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.08),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: Colors.white24),
       ),
-      child: DropdownButtonFormField<String>(
-        dropdownColor: const Color(0xFF16213e),
-        style: const TextStyle(color: Colors.white),
-        iconEnabledColor: Colors.cyanAccent,
-        value: value,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(color: Colors.white70),
-          border: InputBorder.none,
-        ),
-        items: items,
-        onChanged: onChanged,
+
+      child: Row(
+        children: [
+          Icon(icon, color: iconColor, size: 22),
+          const SizedBox(width: 12),
+
+          Expanded(
+            child: DropdownButtonFormField<String>(
+              dropdownColor: const Color(0xFF16213e),
+              style: const TextStyle(color: Colors.white),
+              iconEnabledColor: Colors.cyanAccent,
+              value: value,
+
+              decoration: InputDecoration(
+                labelText: label,
+                labelStyle: const TextStyle(color: Colors.white70),
+                border: InputBorder.none,
+              ),
+
+              items: items,
+              onChanged: onChanged,
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  // ======================= NEON BUTTON =======================
+  // -----------------------------------------------------------------------
+  //                              NEON BUTTON
+  // -----------------------------------------------------------------------
   Widget _neonButton({
     required String label,
     required IconData icon,

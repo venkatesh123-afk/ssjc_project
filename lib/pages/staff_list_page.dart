@@ -48,16 +48,15 @@ class _StaffListPageState extends State<StaffListPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: neon),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Staff List',
           style: TextStyle(
-            color: neon,
+            color: Colors.white,
             fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
         ),
-        centerTitle: true,
       ),
 
       // ---------------- BODY ----------------

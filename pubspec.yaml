@@ -60,7 +60,7 @@ flutter:
   assets:
     - assets/saraswati1.jpg
     - assets/ssjc.jpg
-
+    - assets/girl.jpg
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

@@ -22,36 +22,75 @@ class DashboardPage extends StatelessWidget {
       ),
       child: BaseScreen(
         drawer: _buildDrawer(),
+
+        // -------------------------------------------------------
+        //                    CUSTOM APP BAR
+        // -------------------------------------------------------
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
+          automaticallyImplyLeading: false,
 
-          leading: Builder(
-            builder: (context) => Tooltip(
-              message: "Open navigation menu",
-              textStyle: const TextStyle(color: Colors.white),
-              decoration: BoxDecoration(
-                color: Colors.black87,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.menu, color: Colors.white, size: 28),
-                onPressed: () => Scaffold.of(context).openDrawer(),
-              ),
-            ),
-          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // LEFT SIDE: GLOWING ICON + TITLE
+              Row(
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF00D4FF), Color(0xFF0099FF)],
+                      ),
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF0099FF).withOpacity(0.5),
+                          blurRadius: 12,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'S',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
 
-          title: const Text(
-            "Dashboard",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
+                  const Text(
+                    "Sri Saraswathi College",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+
+              // RIGHT SIDE: MENU BUTTON ONLY
+              Builder(
+                builder: (context) => GestureDetector(
+                  onTap: () => Scaffold.of(context).openDrawer(),
+                  child: const Icon(Icons.menu, color: Colors.white, size: 30),
+                ),
+              ),
+            ],
           ),
-          centerTitle: true,
         ),
 
+        // -------------------------------------------------------
+        //                       BODY
+        // -------------------------------------------------------
         body: Padding(
           padding: const EdgeInsets.only(top: 120, left: 16, right: 16),
           child: Column(
@@ -74,7 +113,7 @@ class DashboardPage extends StatelessWidget {
                       color2: Colors.deepPurple,
                       icon: Icons.hiking,
                       title: "Issue Outing",
-                      onTap: () => Get.toNamed('/issueOuting'),
+                      onTap: () => Get.toNamed('/outingList'),
                     ),
                   ),
                 ],
@@ -89,8 +128,8 @@ class DashboardPage extends StatelessWidget {
                       color1: Colors.orangeAccent,
                       color2: Colors.deepOrange,
                       icon: Icons.verified_user,
-                      title: "Verify Outing",
-                      onTap: () => Get.toNamed('/verifyOuting'),
+                      title: "Outing Pending",
+                      onTap: () => Get.toNamed('/outingPending'),
                     ),
                   ),
                 ],
@@ -102,10 +141,9 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  // ==========================================================
-  //                       DRAWER
-  // ==========================================================
-
+  // -------------------------------------------------------
+  //                    DRAWER
+  // -------------------------------------------------------
   Widget _buildDrawer() {
     return ClipRRect(
       borderRadius: const BorderRadius.only(
@@ -117,7 +155,6 @@ class DashboardPage extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            // ------------ HEADER ------------
             DrawerHeader(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -138,7 +175,6 @@ class DashboardPage extends StatelessWidget {
               ),
             ),
 
-            // ------------ CHAT ------------
             _drawerItem(
               icon: Icons.chat_bubble_outline,
               title: "Chat",
@@ -146,7 +182,6 @@ class DashboardPage extends StatelessWidget {
               onTap: () {},
             ),
 
-            // ------------ ATTENDANCE ------------
             _drawerExpandable(
               icon: Icons.calendar_today,
               iconColor: Colors.blueAccent,
@@ -160,15 +195,15 @@ class DashboardPage extends StatelessWidget {
                   "Verify Attendance",
                   () => Get.toNamed('/verifyAttendance'),
                 ),
-                _drawerSubItem("Outings", () => Get.toNamed('/issueOuting')),
+                _drawerSubItem("Outings", () => Get.toNamed('/outingList')),
+
                 _drawerSubItem(
-                  "Verify Outings",
-                  () => Get.toNamed('/verifyOuting'),
+                  "Outings pending",
+                  () => Get.toNamed('/outingPending'),
                 ),
               ],
             ),
 
-            // ------------ EXAMS ------------
             _drawerExpandable(
               icon: Icons.assignment_outlined,
               iconColor: Colors.greenAccent,
@@ -179,10 +214,13 @@ class DashboardPage extends StatelessWidget {
                   () => Get.toNamed('/examCategoryList'),
                 ),
                 _drawerSubItem("Exams List", () => Get.toNamed('/examsList')),
+                _drawerSubItem(
+                  "Student Marks Upload",
+                  () => Get.toNamed('/marksUpload'),
+                ),
               ],
             ),
 
-            // ------------ HOSTEL ------------
             _drawerExpandable(
               icon: Icons.apartment,
               iconColor: Colors.orangeAccent,
@@ -195,7 +233,6 @@ class DashboardPage extends StatelessWidget {
               ],
             ),
 
-            // ------------ HR MANAGEMENT ------------
             _drawerExpandable(
               icon: Icons.groups_2_outlined,
               iconColor: Colors.pinkAccent,
@@ -209,7 +246,6 @@ class DashboardPage extends StatelessWidget {
               ],
             ),
 
-            // ------------ COMMUNICATION ------------
             _drawerItem(
               icon: Icons.message_outlined,
               title: "Communication",
@@ -222,10 +258,9 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  // ==========================================================
-  //                     Neon Card Widget
-  // ==========================================================
-
+  // -------------------------------------------------------
+  //                    Neon Card Widget
+  // -------------------------------------------------------
   Widget _neonCard({
     required Color color1,
     required Color color2,
@@ -274,10 +309,9 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  // ==========================================================
-  //                     Drawer Items
-  // ==========================================================
-
+  // -------------------------------------------------------
+  //                    Drawer Items
+  // -------------------------------------------------------
   Widget _drawerItem({
     required IconData icon,
     required String title,

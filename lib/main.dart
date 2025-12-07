@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 import 'package:ssjc_p/pages/Room_page.dart';
 import 'package:ssjc_p/pages/Staff_Attendance_Page.dart';
 import 'package:ssjc_p/pages/exam_category_list_page.dart';
 import 'package:ssjc_p/pages/exam_list_page.dart';
+import 'package:ssjc_p/pages/outing_list_page.dart';
+import 'package:ssjc_p/pages/outing_pending_listPage.dart';
 import 'package:ssjc_p/pages/splash_page.dart';
+import 'package:ssjc_p/pages/student_attendance.dart';
+import 'package:ssjc_p/pages/subject_marks_upload_page.dart';
+import 'package:ssjc_p/pages/verify_attendance_page%20.dart';
 import 'theme/app_theme.dart';
 import 'pages/login_page.dart';
 import 'pages/dashboard_page.dart';
@@ -19,6 +25,7 @@ void main() {
   runApp(const ssjcApp());
 }
 
+// ignore: camel_case_types
 class ssjcApp extends StatelessWidget {
   const ssjcApp({super.key});
 
@@ -30,10 +37,22 @@ class ssjcApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       initialRoute: '/splash',
       getPages: [
-        // ⭐ Correct Staff List Route
+        //  Correct Staff List Route
         GetPage(name: '/staff', page: () => const StaffListPage()),
-
-        // ⭐ Correct Staff Attendance Route (NO SPACES)
+        GetPage(name: '/outingList', page: () => const OutingListPage()),
+        GetPage(
+          name: '/outingPending',
+          page: () => const OutingPendingListPage(),
+        ),
+        GetPage(
+          name: '/verifyAttendance',
+          page: () => const VerifyAttendancePage(),
+        ),
+        GetPage(
+          name: '/marksUpload',
+          page: () => const SubjectMarksUploadPage(),
+        ),
+        //  Correct Staff Attendance Route
         GetPage(
           name: '/staffAttendance',
           page: () => const StaffAttendancePage(),
@@ -45,7 +64,10 @@ class ssjcApp extends StatelessWidget {
           page: () => const ExamCategoryListPage(),
         ),
         GetPage(name: '/examsList', page: () => const ExamsListPage()),
-
+        GetPage(
+          name: '/studentAttendance',
+          page: () => const StudentAttendancePage(),
+        ),
         // Rooms Page
         GetPage(name: '/rooms', page: () => const RoomsPage()),
 
