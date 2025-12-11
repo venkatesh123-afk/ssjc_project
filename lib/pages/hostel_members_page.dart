@@ -9,14 +9,12 @@ class HostelMembersPage extends StatefulWidget {
 }
 
 class _HostelMembersPageState extends State<HostelMembersPage> {
-  // THEME COLORS
   static const Color dark1 = Color(0xFF1a1a2e);
   static const Color dark2 = Color(0xFF16213e);
   static const Color dark3 = Color(0xFF0f3460);
   static const Color purpleDark = Color(0xFF533483);
   static const Color neon = Color(0xFF00FFF5);
 
-  // FILTER STATE
   String _viewBy = 'Hostel Wise';
   String _selectedHostel = 'SSJC-ADARSA CAMPUS';
   String _selectedBranch = 'ADARSA';
@@ -33,7 +31,6 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
   final List<String> _hostels = ['SSJC-ADARSA CAMPUS', 'SSJC-NEET CAMPUS'];
   final List<String> _branches = ['ADARSA', 'NEET', 'MAINS'];
 
-  // DUMMY MEMBERS
   final List<Map<String, String>> _members = [
     {'admNo': '240018', 'name': 'PATHAN AFFAN', 'room': '101'},
     {'admNo': '240025', 'name': 'KUMAR SAI', 'room': '101'},
@@ -63,7 +60,6 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
         ),
       ),
 
-      // BACKGROUND ------------------------
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -77,7 +73,7 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
           children: [
             const SizedBox(height: 95),
 
-            // 🔥 FILTER SECTION ------------------------
+            // FILTER SECTION
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
@@ -107,7 +103,6 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
 
                     const SizedBox(height: 14),
 
-                    // BUTTONS ROW ------------------------
                     Row(
                       children: [
                         Expanded(
@@ -164,7 +159,6 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
 
             const SizedBox(height: 18),
 
-            // TITLE ------------------------
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Align(
@@ -182,7 +176,6 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
 
             const SizedBox(height: 12),
 
-            // LIST + SEARCH ------------------------
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -206,7 +199,7 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
 
                     const SizedBox(height: 10),
 
-                    // MEMBERS LIST ------------------------
+                    // MEMBERS LIST
                     Expanded(
                       child: ListView.builder(
                         itemCount: filtered.length,
@@ -297,7 +290,7 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
     );
   }
 
-  // --------------------- DROPDOWN WIDGET ---------------------
+  //  DROPDOWN
   Widget _dropdown(
     String label,
     String value,

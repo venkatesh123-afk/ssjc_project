@@ -92,7 +92,7 @@ class _ExamsListPageState extends State<ExamsListPage> {
           children: [
             const SizedBox(height: 95),
 
-            // ⭐ SEARCH BAR ⭐
+            //  SEARCH BAR
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
@@ -136,7 +136,7 @@ class _ExamsListPageState extends State<ExamsListPage> {
 
             const SizedBox(height: 15),
 
-            // ⭐ EXAMS LIST ⭐
+            //  EXAMS LIST
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

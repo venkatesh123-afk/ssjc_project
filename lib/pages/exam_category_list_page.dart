@@ -8,7 +8,6 @@ class ExamCategoryListPage extends StatefulWidget {
 }
 
 class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
-  // ---------------- THEME COLORS ----------------
   static const Color dark1 = Color(0xFF1a1a2e);
   static const Color dark2 = Color(0xFF16213e);
   static const Color dark3 = Color(0xFF0f3460);
@@ -17,7 +16,6 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
 
   String _query = "";
 
-  // ---------------- CATEGORY DATA ----------------
   final List<Map<String, String>> _categories = [
     {"sno": "1", "category": "MAINS", "branch": "SSJC-ADARSA CAMPUS"},
     {"sno": "2", "category": "EAMCET", "branch": "SSJC-ADARSA CAMPUS"},
@@ -65,7 +63,6 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
             children: [
               const SizedBox(height: 10),
 
-              // ------------------ WHITE SEARCH BAR ------------------
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Container(
@@ -99,7 +96,6 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
 
               const SizedBox(height: 15),
 
-              // ------------------ CATEGORY LIST ------------------
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),

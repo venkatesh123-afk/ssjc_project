@@ -114,7 +114,7 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // ---------------- Dashboard Body (SMALL CARDS) ----------------
+  // Dashboard Body
 
   Widget _buildDashboardBody() {
     return SafeArea(
@@ -177,7 +177,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
             const SizedBox(height: 20),
 
-            // Attendance container unchanged
+            // Attendance container
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
@@ -220,8 +220,6 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // ---------------- SMALL CARD WIDGET ----------------
-
   Widget smallCard(
     String title,
     String value,
@@ -229,7 +227,7 @@ class _DashboardPageState extends State<DashboardPage> {
     IconData icon,
   ) {
     return Container(
-      height: 85, // SMALL CARD HEIGHT
+      height: 85,
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -284,7 +282,7 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // ---------------- GRID MENU (unchanged) ----------------
+  //  GRID MENU
 
   void toggleGridMenu() {
     if (isGridMenuOpen) {
@@ -400,7 +398,7 @@ class _DashboardPageState extends State<DashboardPage> {
     });
   }
 
-  // ---------------- MENU CARD ----------------
+  //  MENU CARD
 
   static Widget _menuCard({
     required Color color,
@@ -443,7 +441,7 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // ---------------- DRAWER ----------------
+  //  DRAWER
 
   Widget _buildDrawer() {
     return ClipRRect(
@@ -595,7 +593,7 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 }
 
-// ---------------- ATTENDANCE ITEM ----------------
+// ATTENDANCE
 
 class AttendanceItem extends StatelessWidget {
   final String title;
