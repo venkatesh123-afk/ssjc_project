@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/ssjc_appbar.dart';
+import 'package:get/get.dart';
 
 class AddHostelPage extends StatefulWidget {
   const AddHostelPage({super.key});
@@ -19,46 +19,46 @@ class _AddHostelPageState extends State<AddHostelPage> {
   String? _branch;
   String? _status;
 
-  // Theme Colors
   static const Color dark1 = Color(0xFF1a1a2e);
   static const Color dark2 = Color(0xFF16213e);
   static const Color dark3 = Color(0xFF0f3460);
   static const Color purpleDark = Color(0xFF533483);
   static const Color neon = Color(0xFF00FFF5);
 
-  // Gender Icons
   final Map<String, IconData> genderIcons = {
     "Boys": Icons.male,
     "Girls": Icons.female,
   };
 
-  // Branch Icons
   final Map<String, IconData> branchIcons = {
     "EAMCET": Icons.engineering,
     "NEET": Icons.local_hospital,
   };
 
-  // SSJC AppBar Data
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-
-      // ⭐ SSJC APP BAR ADDED HERE ⭐
-      appBar: SSJCAppBar(
-        title: "Add Hostel",
-        showSearch: false,
-        onGridMenu: () {},
-        years: [],
-        selectedYear: '',
-        body: Container(),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 26),
+          onPressed: () => Get.back(),
+        ),
+        title: const Text(
+          "Add Hostel",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
-
       body: Container(
         width: double.infinity,
         height: double.infinity,
-
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [dark1, dark2, dark3, purpleDark],
@@ -66,15 +66,14 @@ class _AddHostelPageState extends State<AddHostelPage> {
             end: Alignment.bottomCenter,
           ),
         ),
-
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(18, 20, 18, 18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20), // space under SSJC AppBar
-                // =================== NEON CARD ===================
+                const SizedBox(height: 20),
+
                 Container(
                   padding: const EdgeInsets.all(22),
                   decoration: BoxDecoration(
@@ -205,7 +204,6 @@ class _AddHostelPageState extends State<AddHostelPage> {
     );
   }
 
-  // ===================== INPUT FIELD =====================
   Widget _inputField({
     required String label,
     required TextEditingController controller,
@@ -251,7 +249,7 @@ class _AddHostelPageState extends State<AddHostelPage> {
     );
   }
 
-  // ===================== DROPDOWN FIELD =====================
+  // DROPDOWN FIELD
   Widget _dropdownField({
     required String label,
     required String? value,

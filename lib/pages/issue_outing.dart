@@ -28,7 +28,6 @@ class _IssueOutingPageState extends State<IssueOutingPage> {
     );
 
     return Scaffold(
-      // FULL PAGE GRADIENT BACKGROUND
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -56,13 +55,10 @@ class _IssueOutingPageState extends State<IssueOutingPage> {
 
                 const SizedBox(height: 20),
 
-                // FORM CARD
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(
-                      0.10,
-                    ), // <-- SAME AS TEXTFIELD FILLED COLOR
+                    color: Colors.white.withOpacity(0.10),
                     borderRadius: BorderRadius.circular(18),
                     border: Border.all(color: Colors.white30, width: 1.2),
                     boxShadow: [
@@ -76,7 +72,6 @@ class _IssueOutingPageState extends State<IssueOutingPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // HEADER GRADIENT
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(vertical: 14),
@@ -150,7 +145,6 @@ class _IssueOutingPageState extends State<IssueOutingPage> {
                       textField("SELECT"),
                       const SizedBox(height: 22),
 
-                      // GRANT BUTTON
                       SizedBox(
                         width: 160,
                         height: 48,
@@ -207,7 +201,6 @@ class _IssueOutingPageState extends State<IssueOutingPage> {
     );
   }
 
-  // RADIO BUTTON WRAPPER
   Widget radio(String text) {
     return Row(
       children: [
@@ -227,21 +220,20 @@ class _IssueOutingPageState extends State<IssueOutingPage> {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.white.withOpacity(0.60), // 🎨 Dynamic color
+            color: Colors.white.withOpacity(0.60),
           ),
         ),
       ],
     );
   }
 
-  // CUSTOM TEXT FIELD STYLE
   Widget textField(String value) {
     return Container(
       height: 48,
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.10), // same fill style
+        color: Colors.white.withOpacity(0.10),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.white30),
       ),

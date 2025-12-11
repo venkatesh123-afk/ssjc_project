@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/ssjc_appbar.dart';
+
 import 'package:ssjc_p/model/model1.dart';
 
 class VerifyAttendancePage extends StatefulWidget {
@@ -48,9 +48,6 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     super.dispose();
   }
 
-  // ---------------------------------------------------------
-  // FETCH MOCK DATA
-  // ---------------------------------------------------------
   Future<void> _fetchAttendanceData() async {
     if (selectedBranch == null || selectedShift == null) {
       _showSnackBar('⚠ Please select Branch and Shift', Colors.orange);
@@ -132,22 +129,21 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     );
   }
 
-  // ---------------------------------------------------------
-  // UI STARTS HERE
-  // ---------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-
-      // ⭐ SSJC APP BAR ⭐
-      appBar: SSJCAppBar(
-        title: "Verify Attendance",
-        showSearch: false,
-        years: const [],
-        selectedYear: "",
-        body: Container(),
-        onGridMenu: () {},
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          "Verify Attendance",
+          style: TextStyle(color: Colors.white),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
 
       body: Container(
@@ -193,9 +189,8 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     );
   }
 
-  // ---------------------------------------------------------
   // FILTER BOX
-  // ---------------------------------------------------------
+
   Widget _buildFilterCard() {
     return Container(
       padding: EdgeInsets.all(20),
@@ -314,9 +309,6 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     );
   }
 
-  // ---------------------------------------------------------
-  // VERIFY BUTTON
-  // ---------------------------------------------------------
   Widget _buildVerifyButton() {
     return Container(
       width: double.infinity,
@@ -364,9 +356,6 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     );
   }
 
-  // ---------------------------------------------------------
-  // TABLE + SUMMARY + LIST
-  // ---------------------------------------------------------
   Widget _buildAttendanceTable() {
     return FadeTransition(
       opacity: _fadeAnimation,
@@ -500,9 +489,6 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     );
   }
 
-  // ---------------------------------------------------------
-  // EMPTY + LOADING STATES
-  // ---------------------------------------------------------
   Widget _buildEmptyState() {
     return Column(
       children: const [
@@ -527,8 +513,6 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
       child: CircularProgressIndicator(color: Colors.cyan),
     );
   }
-
-  // CALCULATIONS
 
   int _calculateTotal() => attendanceData.fold(0, (sum, r) => sum + r.total);
   int _calculatePresent() =>

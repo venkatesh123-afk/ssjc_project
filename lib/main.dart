@@ -25,7 +25,6 @@ void main() {
   runApp(const ssjcApp());
 }
 
-// ignore: camel_case_types
 class ssjcApp extends StatelessWidget {
   const ssjcApp({super.key});
 

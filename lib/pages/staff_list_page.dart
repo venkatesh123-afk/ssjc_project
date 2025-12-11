@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../widgets/search_field.dart';
-import '../widgets/ssjc_appbar.dart'; // <-- ADD THIS IMPORT
 
 class StaffListPage extends StatefulWidget {
   const StaffListPage({super.key});
@@ -10,14 +9,12 @@ class StaffListPage extends StatefulWidget {
 }
 
 class _StaffListPageState extends State<StaffListPage> {
-  // ---------------- THEME COLORS ----------------
   static const Color dark1 = Color(0xFF1a1a2e);
   static const Color dark2 = Color(0xFF16213e);
   static const Color dark3 = Color(0xFF0f3460);
   static const Color purpleDark = Color(0xFF533483);
   static const Color neon = Color(0xFF00FFF5);
 
-  // ---------------- STAFF DATA ----------------
   final List<Map<String, String>> _allStaff = [
     {'name': 'SRI SARASWATHI GROUPS', 'empId': '666667'},
     {'name': 'AV RAMANA REDDY', 'empId': '666668'},
@@ -44,18 +41,16 @@ class _StaffListPageState extends State<StaffListPage> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-
-      // ⭐ SSJC APP BAR ADDED ⭐
-      appBar: SSJCAppBar(
-        title: "Staff List",
-        showSearch: false,
-        onGridMenu: () {},
-        years: const [],
-        selectedYear: "",
-        body: Container(),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text("Staff List", style: TextStyle(color: Colors.white)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
 
-      // ---------------- BODY ----------------
       body: Stack(
         children: [
           Container(
@@ -68,11 +63,10 @@ class _StaffListPageState extends State<StaffListPage> {
             ),
           ),
 
-          // ---------------- MAIN CONTENT ----------------
           Column(
             children: [
-              const SizedBox(height: 95), // PERFECT SPACE BELOW APPBAR
-              // SEARCH BAR
+              const SizedBox(height: 95),
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Container(
@@ -93,7 +87,7 @@ class _StaffListPageState extends State<StaffListPage> {
 
               const SizedBox(height: 16),
 
-              // ---------------- STAFF CARDS ----------------
+              // STAFF CARDS
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -130,7 +124,6 @@ class _StaffListPageState extends State<StaffListPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // LEFT SIDE DETAILS
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -153,7 +146,6 @@ class _StaffListPageState extends State<StaffListPage> {
                             ],
                           ),
 
-                          // SERIAL NUMBER BADGE
                           Container(
                             padding: const EdgeInsets.symmetric(
                               vertical: 8,
@@ -180,7 +172,6 @@ class _StaffListPageState extends State<StaffListPage> {
             ],
           ),
 
-          // ---------------- BOTTOM ADD BUTTON ----------------
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(

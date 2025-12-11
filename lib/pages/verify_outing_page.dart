@@ -57,7 +57,6 @@ class VerifyOutingPage extends StatelessWidget {
 
                 const SizedBox(height: 30),
 
-                // MAIN CARD CONTAINER
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(18),
@@ -104,7 +103,6 @@ class VerifyOutingPage extends StatelessWidget {
 
                       const SizedBox(height: 20),
 
-                      // REPORT IN BUTTON
                       Container(
                         width: double.infinity,
                         height: 54,
@@ -129,7 +127,6 @@ class VerifyOutingPage extends StatelessWidget {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              // Handle button press
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text('Reported successfully...'),
@@ -175,7 +172,6 @@ class VerifyOutingPage extends StatelessWidget {
     );
   }
 
-  // PAGE TITLE
   Widget _buildAppTitle(BuildContext context) {
     return InkWell(
       onTap: () => Navigator.pop(context),
@@ -196,7 +192,6 @@ class VerifyOutingPage extends StatelessWidget {
     );
   }
 
-  // ROW BUILDER METHOD
   Widget buildRow(String title, String? value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),

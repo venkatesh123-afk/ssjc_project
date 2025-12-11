@@ -18,18 +18,15 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Stack(
         children: [
-          // -----------------------------------------------------
-          //   BEAUTIFUL GRADIENT + CURVED WAVE BACKGROUND
-          // -----------------------------------------------------
           Container(
             width: double.infinity,
             height: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color(0xFF0A4CF5), // Blue
-                  Color(0xFF8A2BE2), // Purple
-                  Color(0xFFE247D6), // Pink purple
+                  Color(0xFF0A4CF5),
+                  Color(0xFF8A2BE2),
+                  Color(0xFFE247D6),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -37,7 +34,6 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
 
-          // WAVE SHAPE
           Positioned(
             bottom: -80,
             left: 0,
@@ -60,16 +56,12 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
 
-          // -----------------------------------------------------
-          //   MAIN CONTENT
-          // -----------------------------------------------------
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(30),
                 child: Column(
                   children: [
-                    // SSJC LOGO
                     ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: Image.asset(
@@ -82,7 +74,6 @@ class _LoginPageState extends State<LoginPage> {
 
                     const SizedBox(height: 25),
 
-                    // TITLE
                     const Text(
                       "SSJC Login",
                       style: TextStyle(
@@ -94,9 +85,6 @@ class _LoginPageState extends State<LoginPage> {
 
                     const SizedBox(height: 40),
 
-                    // -----------------------------------------------------
-                    //   GLASS EFFECT LOGIN CARD
-                    // -----------------------------------------------------
                     Container(
                       padding: const EdgeInsets.all(25),
                       decoration: BoxDecoration(
@@ -215,9 +203,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-// -------------------------------------------------------------
-//   CURVED WAVE CLIPPER
-// -------------------------------------------------------------
 class _WaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

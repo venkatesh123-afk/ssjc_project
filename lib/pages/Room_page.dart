@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../widgets/search_field.dart';
-import '../widgets/ssjc_appbar.dart'; // <-- SSJC APPBAR IMPORT
 
 class RoomsPage extends StatefulWidget {
   const RoomsPage({super.key});
@@ -13,7 +12,6 @@ class _RoomsPageState extends State<RoomsPage> {
   String _query = '';
   String _viewBy = 'Floor Wise';
 
-  // NEON THEME COLORS
   static const Color dark1 = Color(0xFF1a1a2e);
   static const Color dark2 = Color(0xFF16213e);
   static const Color dark3 = Color(0xFF0f3460);
@@ -29,7 +27,7 @@ class _RoomsPageState extends State<RoomsPage> {
     {'room': '301', 'floor': 'Second Floor', 'hostel': 'SSG NEET & MAINS'},
   ];
 
-  // VIEW BY FILTER BOTTOM SHEET --------------------
+  // FILTER SHEET
   void _chooseViewBy() {
     showModalBottomSheet(
       context: context,
@@ -90,17 +88,39 @@ class _RoomsPageState extends State<RoomsPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
 
-      // ⭐ SSJC APPBAR ADDED ⭐
-      appBar: SSJCAppBar(
-        title: "Room Management",
-        showSearch: false,
-        onGridMenu: () {},
-        years: const [],
-        selectedYear: '',
-        body: Container(),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          "Rooms List",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        actions: [
+          TextButton.icon(
+            onPressed: _chooseViewBy,
+            icon: const Icon(Icons.filter_list, color: neon),
+            label: Text(
+              _viewBy,
+              style: const TextStyle(
+                color: neon,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
 
-      // BACKGROUND ---------------------------
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -114,29 +134,6 @@ class _RoomsPageState extends State<RoomsPage> {
           children: [
             const SizedBox(height: 95),
 
-            // ⭐ FILTER BUTTON RIGHT SIDE ⭐
-            Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: TextButton.icon(
-                  onPressed: _chooseViewBy,
-                  icon: const Icon(Icons.filter_list, color: neon),
-                  label: Text(
-                    _viewBy,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: neon,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 5),
-
-            // SEARCH FIELD ---------------------------
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
@@ -157,7 +154,7 @@ class _RoomsPageState extends State<RoomsPage> {
 
             const SizedBox(height: 15),
 
-            // ROOMS LIST ---------------------------
+            // ROOM LIST
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -194,7 +191,6 @@ class _RoomsPageState extends State<RoomsPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // LEFT DETAILS
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -253,7 +249,7 @@ class _RoomsPageState extends State<RoomsPage> {
         ),
       ),
 
-      // ADD ROOM BUTTON ---------------------------
+      // ADD ROOM BUTTON
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: neon,
         icon: const Icon(Icons.add, color: Colors.black),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ssjc_p/pages/issue_outing.dart';
-// import 'package:ssjc_p/pages/verify_outing_page.dart';
 
 class OutingListPage extends StatefulWidget {
   const OutingListPage({super.key});
@@ -12,7 +11,7 @@ class OutingListPage extends StatefulWidget {
 class _OutingListPageState extends State<OutingListPage> {
   bool showStudents = false;
   TextEditingController searchController = TextEditingController();
-  int selectedFilter = 0; // 0 = All, 1 = Today
+  int selectedFilter = 0;
 
   final List<Map<String, dynamic>> students = [
     {
@@ -62,7 +61,6 @@ class _OutingListPageState extends State<OutingListPage> {
                 _buildAppTitle(context),
                 const SizedBox(height: 18),
 
-                // OUTING CARDS SECTION
                 LayoutBuilder(
                   builder: (context, constraints) {
                     double itemWidth = (constraints.maxWidth - 12) / 2;
@@ -244,7 +242,7 @@ class _OutingListPageState extends State<OutingListPage> {
 
                 const SizedBox(height: 22),
 
-                // STUDENT LIST (ONLY WHEN FILTER CLICKED)
+                // STUDENT LIST
                 if (showStudents)
                   ListView.builder(
                     shrinkWrap: true,
@@ -253,20 +251,6 @@ class _OutingListPageState extends State<OutingListPage> {
                     itemBuilder: (context, index) {
                       final student = students[index];
                       return InkWell(
-                        // onTap: () {
-                        //   Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (_) => VerifyOutingPage(
-                        //         name: student["name"],
-                        //         adm: student["adm"],
-                        //         time: student["time"],
-                        //         status: student["status"],
-                        //         type: student["type"],
-                        //       ),
-                        //     ),
-                        //   );
-                        // },
                         child: Container(
                           padding: const EdgeInsets.all(16),
                           margin: const EdgeInsets.only(bottom: 16),
@@ -382,7 +366,6 @@ class _OutingListPageState extends State<OutingListPage> {
     );
   }
 
-  // CARD COMPONENT
   Widget outingCard(String title, String count, Color color, IconData icon) {
     return Container(
       width: 180,
@@ -439,7 +422,6 @@ class _OutingListPageState extends State<OutingListPage> {
   }
 }
 
-// POPUP
 void showIssueOutingDialog(BuildContext context) {
   showDialog(
     context: context,

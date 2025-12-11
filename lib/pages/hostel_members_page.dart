@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../widgets/search_field.dart';
-import '../widgets/ssjc_appbar.dart'; // <-- ADD THIS IMPORT
 
 class HostelMembersPage extends StatefulWidget {
   const HostelMembersPage({super.key});
@@ -51,15 +50,17 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-
-      // ⭐ SSJC APP BAR HERE ⭐
-      appBar: SSJCAppBar(
-        title: "Hostel Members",
-        showSearch: false,
-        years: const [],
-        selectedYear: '',
-        onGridMenu: () {},
-        body: Container(),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          "Hostel Members",
+          style: TextStyle(color: Colors.white),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
 
       // BACKGROUND ------------------------

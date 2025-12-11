@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/search_field.dart'; // IMPORTANT: Your custom SearchField
+import '../widgets/search_field.dart';
 
 class HostelAttendanceResultPage extends StatefulWidget {
   const HostelAttendanceResultPage({super.key});
@@ -13,13 +13,11 @@ class _HostelAttendanceResultPageState
     extends State<HostelAttendanceResultPage> {
   String _query = "";
 
-  // Filters
   String _attendanceFilter = "All";
   String _selectedFloor = "All";
   String? _selectedRoom;
   String? _selectedIncharge;
 
-  // Theme Colors
   static const Color neon = Color(0xFF00FFF5);
   static const Color darkNavy = Color(0xFF1a1a2e);
   static const Color darkBlue = Color(0xFF16213e);
@@ -51,7 +49,7 @@ class _HostelAttendanceResultPageState
     }
   }
 
-  // ------------------------------ MAIN UI ------------------------------
+  // MAIN UI
   @override
   Widget build(BuildContext context) {
     final filtered = _rows.where((row) {
@@ -115,12 +113,12 @@ class _HostelAttendanceResultPageState
           children: [
             const SizedBox(height: 12),
 
-            // ---------------- WHITE SEARCH BAR (YOUR REQUEST) ----------------
+            //  WHITE SEARCH BAR
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white, // PURE WHITE BG
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: Colors.white, width: 1),
                 ),
@@ -136,7 +134,7 @@ class _HostelAttendanceResultPageState
 
             const SizedBox(height: 16),
 
-            // ---------------- LIST DATA ----------------
+            //  LIST DATA
             Expanded(
               child: ListView.builder(
                 itemCount: filtered.length,
@@ -151,7 +149,6 @@ class _HostelAttendanceResultPageState
     );
   }
 
-  // ------------------ NEON CARD ------------------
   Widget _neonCard(List<String> row) {
     final sno = row[0];
     final room = row[1];
@@ -246,7 +243,6 @@ class _HostelAttendanceResultPageState
     );
   }
 
-  // Badge
   Widget _badge(IconData icon, String text, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

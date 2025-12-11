@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widgets/ssjc_appbar.dart'; // <-- IMPORT THE CUSTOM APPBAR
 
 class ExamCategoryListPage extends StatefulWidget {
   const ExamCategoryListPage({super.key});
@@ -9,6 +8,7 @@ class ExamCategoryListPage extends StatefulWidget {
 }
 
 class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
+  // ---------------- THEME COLORS ----------------
   static const Color dark1 = Color(0xFF1a1a2e);
   static const Color dark2 = Color(0xFF16213e);
   static const Color dark3 = Color(0xFF0f3460);
@@ -16,29 +16,6 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
   static const Color neon = Color(0xFF00FFF5);
 
   String _query = "";
-
-  // ---------------- REQUIRED VARIABLES FOR APPBAR ----------------
-  bool showSearch = false;
-
-  // ---------------- GRID MENU FUNCTION ----------------
-  void _openGridMenu() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.black.withOpacity(0.6),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-      ),
-      builder: (_) => SizedBox(
-        height: 200,
-        child: Center(
-          child: Text(
-            "Grid Menu",
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-        ),
-      ),
-    );
-  }
 
   // ---------------- CATEGORY DATA ----------------
   final List<Map<String, String>> _categories = [
@@ -58,138 +35,133 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-
-      // ------------------ CUSTOM APPBAR HERE ------------------
-      appBar: SSJCAppBar(
-        title: "Exam Category List",
-        showSearch: showSearch,
-        onGridMenu: _openGridMenu,
-        years: [],
-        selectedYear: '',
-        body: Container(),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 26),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          "Exam Categories",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
-
-      // ------------------ MAIN BODY ------------------
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [dark1, dark2, dark3, purpleDark],
+            colors: [dark1, dark2, dark3],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
         ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
 
-        child: Column(
-          children: [
-            const SizedBox(height: 95),
-
-            // ------------------ WHITE SEARCH BAR ------------------
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Color(0xFFE0E0E0)),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.search,
-                        color: Colors.black,
-                        size: 22,
-                      ),
-                    ),
-
-                    const SizedBox(width: 12),
-
-                    Expanded(
-                      child: TextField(
-                        onChanged: (v) => setState(() => _query = v),
-                        style: const TextStyle(color: Colors.black),
-                        decoration: const InputDecoration(
-                          hintText: "Search category / branch...",
-                          hintStyle: TextStyle(color: Colors.grey),
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 15),
-
-            // ------------------ CATEGORY LIST ------------------
-            Expanded(
-              child: ListView.builder(
+              // ------------------ WHITE SEARCH BAR ------------------
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: filtered.length,
-                itemBuilder: (context, index) {
-                  final item = filtered[index];
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(color: Color(0xFFE0E0E0)),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.search, color: Colors.black, size: 22),
 
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 14),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          dark3.withOpacity(0.45),
-                          purpleDark.withOpacity(0.45),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(
-                        color: neon.withOpacity(0.32),
-                        width: 1.3,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: neon.withOpacity(0.25),
-                          blurRadius: 15,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
+                      const SizedBox(width: 12),
 
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "${item['sno']}.  ${item['category']}",
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                      Expanded(
+                        child: TextField(
+                          onChanged: (v) => setState(() => _query = v),
+                          style: const TextStyle(color: Colors.black),
+                          decoration: const InputDecoration(
+                            hintText: "Search category / branch...",
+                            hintStyle: TextStyle(color: Colors.grey),
+                            border: InputBorder.none,
                           ),
                         ),
-
-                        const SizedBox(height: 6),
-
-                        Text(
-                          "Branch: ${item['branch']}",
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Color(0xFFB5C7E8),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ],
+
+              const SizedBox(height: 15),
+
+              // ------------------ CATEGORY LIST ------------------
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: filtered.length,
+                  itemBuilder: (context, index) {
+                    final item = filtered[index];
+
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 14),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            dark3.withOpacity(0.45),
+                            purpleDark.withOpacity(0.45),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(
+                          color: neon.withOpacity(0.32),
+                          width: 1.3,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: neon.withOpacity(0.25),
+                            blurRadius: 15,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${item['sno']}.  ${item['category']}",
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+
+                          const SizedBox(height: 6),
+
+                          Text(
+                            "Branch: ${item['branch']}",
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFFB5C7E8),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

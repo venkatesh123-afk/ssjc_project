@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/ssjc_appbar.dart'; // <-- SSJC APPBAR IMPORT
 
-// REUSABLE BACKGROUND WIDGET
 class SSJCBackground extends StatelessWidget {
   final Widget child;
 
@@ -37,7 +35,6 @@ class SubjectMarksUploadPage extends StatefulWidget {
 class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
   static const Color neon = Color(0xFF00FFF5);
 
-  // FORM FIELDS
   String? branch, group, course, batch, exam, subject;
 
   @override
@@ -45,15 +42,17 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
-
-      // ⭐ SSJC APP BAR ADDED ⭐
-      appBar: SSJCAppBar(
-        title: "Subject Level Marks Upload",
-        showSearch: false,
-        onGridMenu: () {},
-        selectedYear: '',
-        years: [],
-        body: Container(),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          "Subject Marks Upload",
+          style: TextStyle(color: Colors.white),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
 
       body: SSJCBackground(
@@ -160,7 +159,6 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
 
                   const SizedBox(height: 25),
 
-                  // GET STUDENTS BUTTON
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
@@ -193,7 +191,6 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
               ),
             ),
 
-            // FIXED BOTTOM BUTTON ROW
             Positioned(
               bottom: 0,
               left: 0,
@@ -244,7 +241,6 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
     );
   }
 
-  // ========================= FIELD BUILDER =========================
   Widget buildField({
     required String label,
     required IconData icon,

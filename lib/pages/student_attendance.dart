@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widgets/ssjc_appbar.dart'; // <-- ADD THIS IMPORT
 
 class StudentAttendancePage extends StatefulWidget {
   const StudentAttendancePage({super.key});
@@ -9,7 +8,6 @@ class StudentAttendancePage extends StatefulWidget {
 }
 
 class _StudentAttendancePageState extends State<StudentAttendancePage> {
-  // Selected values
   String? branch, group, course, batch, exam, subject;
 
   final List<String> branches = ["SSJC–ADARSA", "SSJC–SSG"];
@@ -39,15 +37,17 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
-
-      // ⭐ SSJC APP BAR ADDED HERE ⭐
-      appBar: SSJCAppBar(
-        title: "Student Attendance",
-        showSearch: false,
-        selectedYear: "",
-        years: const [],
-        onGridMenu: () {},
-        body: Container(),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          "Student Attendance",
+          style: TextStyle(color: Colors.white),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
 
       body: Container(
@@ -68,7 +68,6 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
           padding: const EdgeInsets.fromLTRB(16, 120, 16, 40),
           child: Column(
             children: [
-              // ------------------ CARD ------------------
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -97,7 +96,6 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
 
                     const SizedBox(height: 22),
 
-                    // ------------------ FILTER BOXES ------------------
                     _filterBox(
                       label: "Select Branch",
                       icon: Icons.school,
@@ -154,7 +152,6 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
 
                     const SizedBox(height: 25),
 
-                    // ------------------ GET STUDENTS BUTTON ------------------
                     Container(
                       width: double.infinity,
                       height: 52,
@@ -214,9 +211,6 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
     );
   }
 
-  // ********************************************************************
-  //                🔥 NEON SSJC DROPDOWN STYLE
-  // ********************************************************************
   Widget _filterBox({
     required String label,
     required IconData icon,

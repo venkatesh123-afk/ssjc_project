@@ -13,7 +13,6 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
 
-    // Redirect after 2 seconds
     Future.delayed(const Duration(seconds: 2), () {
       Get.offAllNamed('/login');
     });
@@ -26,10 +25,7 @@ class _SplashPageState extends State<SplashPage> {
         width: double.infinity,
         height: double.infinity,
 
-        child: Image.asset(
-          'assets/saraswati1.jpg',
-          fit: BoxFit.cover, // FULL PAGE wallpaper
-        ),
+        child: Image.asset('assets/saraswati1.jpg', fit: BoxFit.cover),
       ),
     );
   }

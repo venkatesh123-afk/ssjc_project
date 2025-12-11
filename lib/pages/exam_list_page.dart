@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/ssjc_appbar.dart'; // <-- IMPORT YOUR CUSTOM APPBAR
+import 'package:get/get.dart';
 
 class ExamsListPage extends StatefulWidget {
   const ExamsListPage({super.key});
@@ -61,14 +61,22 @@ class _ExamsListPageState extends State<ExamsListPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
 
-      // ⭐ USE SSJC APPBAR HERE ⭐
-      appBar: SSJCAppBar(
-        title: "Exams List",
-        showSearch: false,
-        years: [],
-        selectedYear: "",
-        body: Container(),
-        onGridMenu: () {},
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 26),
+          onPressed: () => Get.back(),
+        ),
+        title: const Text(
+          "Exams List",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
 
       body: Container(
@@ -108,7 +116,6 @@ class _ExamsListPageState extends State<ExamsListPage> {
                         size: 22,
                       ),
                     ),
-
                     const SizedBox(width: 12),
 
                     Expanded(
@@ -136,7 +143,6 @@ class _ExamsListPageState extends State<ExamsListPage> {
                 itemCount: filtered.length,
                 itemBuilder: (context, i) {
                   final exam = filtered[i];
-
                   return Container(
                     margin: const EdgeInsets.only(bottom: 14),
                     padding: const EdgeInsets.all(18),
@@ -162,7 +168,6 @@ class _ExamsListPageState extends State<ExamsListPage> {
                         ),
                       ],
                     ),
-
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -174,7 +179,6 @@ class _ExamsListPageState extends State<ExamsListPage> {
                             color: Colors.white,
                           ),
                         ),
-
                         const SizedBox(height: 8),
 
                         Text(
@@ -184,7 +188,6 @@ class _ExamsListPageState extends State<ExamsListPage> {
                             color: Color(0xFFB5C7E8),
                           ),
                         ),
-
                         const SizedBox(height: 4),
 
                         Text(

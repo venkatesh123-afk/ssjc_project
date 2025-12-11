@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../widgets/search_field.dart';
-import '../widgets/ssjc_appbar.dart'; // <-- IMPORT SSJC APPBAR
 
 class FloorsPage extends StatefulWidget {
   const FloorsPage({super.key});
@@ -46,17 +46,24 @@ class _FloorsPageState extends State<FloorsPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
 
-      // ⭐ SSJC APP BAR HERE ⭐
-      appBar: SSJCAppBar(
-        title: "Floors Management",
-        showSearch: false,
-        onGridMenu: () {},
-        body: Container(),
-        years: [],
-        selectedYear: '',
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 26),
+          onPressed: () => Get.back(),
+        ),
+        title: const Text(
+          "Floors List",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
 
-      // ---------------- BACKGROUND ----------------
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -68,10 +75,9 @@ class _FloorsPageState extends State<FloorsPage> {
 
         child: Column(
           children: [
-            // SPACE BELOW SSJC APP BAR
             const SizedBox(height: 95),
 
-            // ---------------- SEARCH BOX ----------------
+            // SEARCH BOX
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
@@ -92,7 +98,7 @@ class _FloorsPageState extends State<FloorsPage> {
 
             const SizedBox(height: 15),
 
-            // ---------------- FLOOR CARDS ----------------
+            // FLOOR CARDS
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -165,7 +171,7 @@ class _FloorsPageState extends State<FloorsPage> {
         ),
       ),
 
-      // ---------------- ADD FLOOR BUTTON ----------------
+      //  ADD FLOOR BUTTON
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: neon,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),

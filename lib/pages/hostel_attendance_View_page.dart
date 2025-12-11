@@ -38,9 +38,6 @@ class _HostelAttendanceFilterPageState
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
 
-        // -----------------------------------------------------------------------
-        //                              APP BAR
-        // -----------------------------------------------------------------------
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(60),
           child: Container(
@@ -75,9 +72,6 @@ class _HostelAttendanceFilterPageState
           ),
         ),
 
-        // -----------------------------------------------------------------------
-        //                          FULL PAGE GRADIENT FIXED
-        // -----------------------------------------------------------------------
         body: Container(
           width: double.infinity,
           height: double.infinity,
@@ -101,9 +95,7 @@ class _HostelAttendanceFilterPageState
 
               child: Column(
                 children: [
-                  // -----------------------------------------------------------------------
-                  //                               DROPDOWNS
-                  // -----------------------------------------------------------------------
+                  //DROPDOWNS
                   _neonDropdown(
                     label: "Select Branch",
                     icon: Icons.school,
@@ -188,9 +180,7 @@ class _HostelAttendanceFilterPageState
 
                   const SizedBox(height: 30),
 
-                  // -----------------------------------------------------------------------
-                  //                          GET STUDENTS BUTTON
-                  // -----------------------------------------------------------------------
+                  // GET STUDENTS BUTTON
                   SizedBox(
                     width: double.infinity,
                     height: 52,
@@ -217,9 +207,6 @@ class _HostelAttendanceFilterPageState
 
                   const SizedBox(height: 20),
 
-                  // -----------------------------------------------------------------------
-                  //                          ACTION BUTTONS
-                  // -----------------------------------------------------------------------
                   Row(
                     children: [
                       Expanded(
@@ -252,9 +239,6 @@ class _HostelAttendanceFilterPageState
     );
   }
 
-  // -----------------------------------------------------------------------
-  //                              NEON DROPDOWN
-  // -----------------------------------------------------------------------
   Widget _neonDropdown({
     required String label,
     required IconData icon,
@@ -298,9 +282,6 @@ class _HostelAttendanceFilterPageState
     );
   }
 
-  // -----------------------------------------------------------------------
-  //                              NEON BUTTON
-  // -----------------------------------------------------------------------
   Widget _neonButton({
     required String label,
     required IconData icon,
