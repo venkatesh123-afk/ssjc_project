@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ssjc_p/controllers/auth_controller.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,11 +14,31 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passCtrl = TextEditingController();
   bool obscure = true;
 
+  late final AuthController auth;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // ✅ SAFE controller initialization
+    auth = Get.isRegistered<AuthController>()
+        ? Get.find<AuthController>()
+        : Get.put(AuthController(), permanent: true);
+  }
+
+  @override
+  void dispose() {
+    userCtrl.dispose();
+    passCtrl.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
+          // ---------------- BACKGROUND ----------------
           Container(
             width: double.infinity,
             height: double.infinity,
@@ -34,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
 
+          // ---------------- WAVE DESIGN ----------------
           Positioned(
             bottom: -80,
             left: 0,
@@ -48,14 +70,13 @@ class _LoginPageState extends State<LoginPage> {
                       Colors.purple.withOpacity(0.7),
                       Colors.pinkAccent.withOpacity(0.6),
                     ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
                   ),
                 ),
               ),
             ),
           ),
 
+          // ---------------- LOGIN CONTENT ----------------
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
@@ -94,17 +115,10 @@ class _LoginPageState extends State<LoginPage> {
                           color: Colors.white.withOpacity(0.3),
                           width: 1.5,
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 15,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
                       ),
                       child: Column(
                         children: [
-                          // USERNAME FIELD
+                          // USERNAME
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
@@ -126,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
 
                           const SizedBox(height: 20),
 
-                          // PASSWORD FIELD
+                          // PASSWORD
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
@@ -159,26 +173,50 @@ class _LoginPageState extends State<LoginPage> {
                           const SizedBox(height: 25),
 
                           // LOGIN BUTTON
-                          SizedBox(
-                            width: double.infinity,
-                            height: 50,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
+                          Obx(
+                            () => SizedBox(
+                              width: double.infinity,
+                              height: 50,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
                                 ),
-                              ),
-                              onPressed: () {
-                                Get.offAllNamed('/dashboard');
-                              },
-                              child: const Text(
-                                "Login",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                onPressed: auth.isLoading.value
+                                    ? null
+                                    : () async {
+                                        FocusScope.of(context).unfocus();
+
+                                        final username = userCtrl.text.trim();
+                                        final password = passCtrl.text.trim();
+
+                                        if (username.isEmpty ||
+                                            password.isEmpty) {
+                                          Get.snackbar(
+                                            "Error",
+                                            "Please enter username & password",
+                                            backgroundColor: Colors.red,
+                                            colorText: Colors.white,
+                                          );
+                                          return;
+                                        }
+
+                                        await auth.login(username, password);
+                                      },
+                                child: auth.isLoading.value
+                                    ? const CircularProgressIndicator(
+                                        color: Colors.black,
+                                      )
+                                    : const Text(
+                                        "Login",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                               ),
                             ),
                           ),
@@ -187,11 +225,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
 
                     const SizedBox(height: 25),
-
-                    const Text(
-                      "@ SSJC",
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
+                    const Text("@ SSJC", style: TextStyle(color: Colors.white)),
                   ],
                 ),
               ),
@@ -203,30 +237,25 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
+// ---------------- WAVE CLIPPER ----------------
 class _WaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     Path path = Path();
     path.lineTo(0, size.height * 0.5);
 
-    var firstControl = Offset(size.width * 0.25, size.height * 0.80);
-    var firstEnd = Offset(size.width * 0.60, size.height * 0.60);
-
-    var secondControl = Offset(size.width * 0.85, size.height * 0.40);
-    var secondEnd = Offset(size.width, size.height * 0.70);
-
     path.quadraticBezierTo(
-      firstControl.dx,
-      firstControl.dy,
-      firstEnd.dx,
-      firstEnd.dy,
+      size.width * 0.25,
+      size.height * 0.80,
+      size.width * 0.60,
+      size.height * 0.60,
     );
 
     path.quadraticBezierTo(
-      secondControl.dx,
-      secondControl.dy,
-      secondEnd.dx,
-      secondEnd.dy,
+      size.width * 0.85,
+      size.height * 0.40,
+      size.width,
+      size.height * 0.70,
     );
 
     path.lineTo(size.width, 0);
@@ -235,5 +264,5 @@ class _WaveClipper extends CustomClipper<Path> {
   }
 
   @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => true;
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import '../controllers/branch_controller.dart';
+import '../controllers/group_controller.dart';
+import '../controllers/course_controller.dart';
+
+/// ---------------- BACKGROUND ----------------
 class SSJCBackground extends StatelessWidget {
   final Widget child;
-
   const SSJCBackground({super.key, required this.child});
 
   @override
@@ -25,6 +30,7 @@ class SSJCBackground extends StatelessWidget {
   }
 }
 
+/// ---------------- PAGE ----------------
 class SubjectMarksUploadPage extends StatefulWidget {
   const SubjectMarksUploadPage({super.key});
 
@@ -35,13 +41,81 @@ class SubjectMarksUploadPage extends StatefulWidget {
 class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
   static const Color neon = Color(0xFF00FFF5);
 
-  String? branch, group, course, batch, exam, subject;
+  // ---------------- CONTROLLERS ----------------
+  final BranchController branchCtrl = Get.put(BranchController());
+  final GroupController groupCtrl = Get.put(GroupController());
+  final CourseController courseCtrl = Get.put(CourseController());
+
+  // ---------------- SELECTED VALUES ----------------
+  String? branch;
+  String? group;
+  String? course;
+  String? batch;
+  String? exam;
+  String? subject;
+
+  int? selectedBranchId;
+  int? selectedGroupId;
+  int? selectedCourseId;
+
+  // ---------------- STATIC DATA ----------------
+  final List<String> batches = ["2023–25", "2024–26", "2025–27"];
+  final List<String> exams = [
+    "Unit Test–1",
+    "Unit Test–2",
+    "Quarterly",
+    "Half-Yearly",
+    "Pre-Final",
+    "Final Exam",
+  ];
+  final List<String> subjects = [
+    "Mathematics",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "English",
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    branchCtrl.loadBranches();
+
+    ever(branchCtrl.branches, (_) {
+      if (branchCtrl.branches.isNotEmpty && branch == null) {
+        final b = branchCtrl.branches.first;
+        branch = b.branchName;
+        selectedBranchId = b.id;
+
+        groupCtrl.clear();
+        courseCtrl.clear();
+        groupCtrl.loadGroups(b.id);
+
+        setState(() {});
+      }
+    });
+
+    ever(groupCtrl.groups, (_) {
+      if (groupCtrl.groups.isNotEmpty && group == null) {
+        final g = groupCtrl.groups.first;
+        group = g.name;
+        selectedGroupId = g.id;
+
+        courseCtrl.clear();
+        courseCtrl.loadCourses(g.id);
+
+        setState(() {});
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
+
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -51,7 +125,7 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Get.back(),
         ),
       ),
 
@@ -59,7 +133,7 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
         child: Stack(
           children: [
             SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(18, 120, 18, 160),
+              padding: const EdgeInsets.fromLTRB(18, 120, 18, 200),
               child: Column(
                 children: [
                   Container(
@@ -73,124 +147,160 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                           Color(0xFF0f3460),
                           Color(0xFF533483),
                         ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
                       ),
-                      border: Border.all(color: Color(0xFF0f3460), width: 1.3),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xFF0f3460).withOpacity(0.30),
-                          blurRadius: 20,
-                        ),
-                      ],
+                      border: Border.all(
+                        color: const Color(0xFF0f3460),
+                        width: 1.3,
+                      ),
                     ),
-
                     child: Column(
                       children: [
-                        buildField(
-                          label: "Select Branch",
-                          icon: Icons.school,
-                          iconColor: Colors.cyanAccent,
-                          value: branch,
-                          items: ["SSJC–ADARSA", "SSJC–SSG"],
-                          onChanged: (v) => setState(() => branch = v),
+                        /// -------- BRANCH --------
+                        Obx(
+                          () => _buildField(
+                            label: "Select Branch",
+                            icon: Icons.school,
+                            iconColor: Colors.cyanAccent,
+                            value: branch,
+                            items: branchCtrl.branches
+                                .map((b) => b.branchName)
+                                .toList(),
+                            onChanged: (v) {
+                              final b = branchCtrl.branches.firstWhere(
+                                (e) => e.branchName == v,
+                              );
+
+                              setState(() {
+                                branch = v;
+                                group = null;
+                                course = null;
+                              });
+
+                              groupCtrl.clear();
+                              courseCtrl.clear();
+                              groupCtrl.loadGroups(b.id);
+                            },
+                          ),
                         ),
 
-                        buildField(
-                          label: "Select Group",
-                          icon: Icons.group,
-                          iconColor: Colors.purpleAccent,
-                          value: group,
-                          items: ["MPC", "BiPC", "MEC", "CEC"],
-                          onChanged: (v) => setState(() => group = v),
+                        /// -------- GROUP --------
+                        Obx(
+                          () => _buildField(
+                            label: groupCtrl.groups.isEmpty
+                                ? "Select Branch First"
+                                : "Select Group",
+                            icon: Icons.group,
+                            iconColor: Colors.purpleAccent,
+                            value: group,
+                            items: groupCtrl.groups.map((g) => g.name).toList(),
+                            onChanged: groupCtrl.groups.isEmpty
+                                ? null
+                                : (v) {
+                                    final g = groupCtrl.groups.firstWhere(
+                                      (e) => e.name == v,
+                                    );
+
+                                    setState(() {
+                                      group = v;
+                                      course = null;
+                                    });
+
+                                    courseCtrl.clear();
+                                    courseCtrl.loadCourses(g.id);
+                                  },
+                          ),
                         ),
 
-                        buildField(
-                          label: "Select Course",
-                          icon: Icons.menu_book,
-                          iconColor: Colors.blueAccent,
-                          value: course,
-                          items: ["MAINS", "EAMCET", "IPE", "NEET", "ADVANCE"],
-                          onChanged: (v) => setState(() => course = v),
+                        /// -------- COURSE --------
+                        Obx(
+                          () => _buildField(
+                            label: courseCtrl.courses.isEmpty
+                                ? "Select Group First"
+                                : "Select Course",
+                            icon: Icons.menu_book,
+                            iconColor: Colors.blueAccent,
+                            value: course,
+                            items: courseCtrl.courses
+                                .map((c) => c.courseName)
+                                .toList(),
+                            onChanged: courseCtrl.courses.isEmpty
+                                ? null
+                                : (v) {
+                                    final c = courseCtrl.courses.firstWhere(
+                                      (e) => e.courseName == v,
+                                    );
+                                    setState(() {
+                                      course = v;
+                                      selectedCourseId = c.id;
+                                    });
+                                  },
+                          ),
                         ),
 
-                        buildField(
+                        _buildField(
                           label: "Select Batch",
                           icon: Icons.date_range,
                           iconColor: Colors.orangeAccent,
                           value: batch,
-                          items: ["2023–25", "2024–26", "2025–27"],
+                          items: batches,
                           onChanged: (v) => setState(() => batch = v),
                         ),
 
-                        buildField(
+                        _buildField(
                           label: "Select Exam",
                           icon: Icons.assignment,
                           iconColor: Colors.lightGreenAccent,
                           value: exam,
-                          items: [
-                            "Unit Test–1",
-                            "Unit Test–2",
-                            "Quarterly",
-                            "Half-Yearly",
-                            "Pre-Final",
-                            "Final Exam",
-                          ],
+                          items: exams,
                           onChanged: (v) => setState(() => exam = v),
                         ),
 
-                        buildField(
+                        _buildField(
                           label: "Select Subject",
                           icon: Icons.book,
                           iconColor: Colors.pinkAccent,
                           value: subject,
-                          items: [
-                            "Mathematics",
-                            "Physics",
-                            "Chemistry",
-                            "Biology",
-                            "English",
-                          ],
+                          items: subjects,
                           onChanged: (v) => setState(() => subject = v),
+                        ),
+
+                        const SizedBox(height: 25),
+
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: () {},
+                            icon: const Icon(Icons.groups, color: Colors.black),
+                            label: const Text(
+                              "Get Students",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: neon,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 30),
+                        const Text(
+                          "2025 © SSJC",
+                          style: TextStyle(color: Colors.white70, fontSize: 12),
                         ),
                       ],
                     ),
-                  ),
-
-                  const SizedBox(height: 25),
-
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.groups, color: Colors.black),
-                      label: const Text(
-                        "Get Students",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: neon,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  const Text(
-                    "2025 © SSJC",
-                    style: TextStyle(color: Colors.white70, fontSize: 12),
                   ),
                 ],
               ),
             ),
 
+            /// ---------------- BOTTOM BUTTONS ----------------
             Positioned(
               bottom: 0,
               left: 0,
@@ -241,13 +351,14 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
     );
   }
 
-  Widget buildField({
+  /// ---------------- DROPDOWN FIELD ----------------
+  Widget _buildField({
     required String label,
     required IconData icon,
     required Color iconColor,
     required String? value,
     required List<String> items,
-    required Function(String?) onChanged,
+    required Function(String?)? onChanged,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 18),
@@ -261,7 +372,6 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
         children: [
           Icon(icon, color: iconColor, size: 22),
           const SizedBox(width: 12),
-
           Expanded(
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(

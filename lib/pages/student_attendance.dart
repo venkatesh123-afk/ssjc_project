@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../controllers/branch_controller.dart';
+import '../controllers/group_controller.dart';
+import '../controllers/course_controller.dart';
 
 class StudentAttendancePage extends StatefulWidget {
   const StudentAttendancePage({super.key});
@@ -8,11 +13,24 @@ class StudentAttendancePage extends StatefulWidget {
 }
 
 class _StudentAttendancePageState extends State<StudentAttendancePage> {
-  String? branch, group, course, batch, exam, subject;
+  // ---------------- CONTROLLERS ----------------
+  final BranchController branchCtrl = Get.put(BranchController());
+  final GroupController groupCtrl = Get.put(GroupController());
+  final CourseController courseCtrl = Get.put(CourseController());
 
-  final List<String> branches = ["SSJC–ADARSA", "SSJC–SSG"];
-  final List<String> groups = ["MPC", "BiPC", "MEC", "CEC"];
-  final List<String> courses = ["MAINS", "EAMCET", "IPE", "NEET", "ADVANCE"];
+  // ---------------- SELECTED VALUES ----------------
+  String? branch;
+  String? group;
+  String? course;
+  String? batch;
+  String? exam;
+  String? subject;
+
+  int? selectedBranchId;
+  int? selectedGroupId;
+  int? selectedCourseId;
+
+  // ---------------- STATIC DATA ----------------
   final List<String> batches = ["2023–25", "2024–26", "2025–27"];
   final List<String> exams = [
     "Unit Test–1",
@@ -33,10 +51,48 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
   static const Color neon = Color(0xFF00FFF5);
 
   @override
+  void initState() {
+    super.initState();
+
+    // 🔥 Load branches
+    branchCtrl.loadBranches();
+
+    // 🔥 Auto-select first branch
+    ever(branchCtrl.branches, (_) {
+      if (branchCtrl.branches.isNotEmpty && branch == null) {
+        final b = branchCtrl.branches.first;
+        branch = b.branchName;
+        selectedBranchId = b.id;
+
+        groupCtrl.clear();
+        courseCtrl.clear();
+        groupCtrl.loadGroups(b.id);
+
+        setState(() {});
+      }
+    });
+
+    // 🔥 Auto-select first group
+    ever(groupCtrl.groups, (_) {
+      if (groupCtrl.groups.isNotEmpty && group == null) {
+        final g = groupCtrl.groups.first;
+        group = g.name;
+        selectedGroupId = g.id;
+
+        courseCtrl.clear();
+        courseCtrl.loadCourses(g.id);
+
+        setState(() {});
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
+
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -66,158 +122,185 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
 
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(16, 120, 16, 40),
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(26),
-                  border: Border.all(color: Colors.white24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0xFF0f3460).withOpacity(0.30),
-                      blurRadius: 20,
-                      spreadRadius: 1,
-                    ),
-                  ],
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(26),
+              border: Border.all(color: Colors.white24),
+            ),
+
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Select filters to view student attendance records",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
 
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Select filters to view student attendance records",
+                const SizedBox(height: 22),
+
+                // ---------------- BRANCH ----------------
+                Obx(
+                  () => _filterBox(
+                    label: "Select Branch",
+                    icon: Icons.school,
+                    iconColor: Colors.cyanAccent,
+                    value: branch,
+                    items: branchCtrl.branches
+                        .map((b) => b.branchName)
+                        .toList(),
+                    onChanged: (v) {
+                      final b = branchCtrl.branches.firstWhere(
+                        (e) => e.branchName == v,
+                      );
+
+                      setState(() {
+                        branch = v;
+                        group = null;
+                        course = null;
+                      });
+
+                      groupCtrl.clear();
+                      courseCtrl.clear();
+                      groupCtrl.loadGroups(b.id);
+                    },
+                  ),
+                ),
+
+                // ---------------- GROUP ----------------
+                Obx(
+                  () => _filterBox(
+                    label: groupCtrl.groups.isEmpty
+                        ? "Select Branch First"
+                        : "Select Group",
+                    icon: Icons.groups,
+                    iconColor: Colors.pinkAccent,
+                    value: group,
+                    items: groupCtrl.groups.map((g) => g.name).toList(),
+                    onChanged: groupCtrl.groups.isEmpty
+                        ? null
+                        : (v) {
+                            final g = groupCtrl.groups.firstWhere(
+                              (e) => e.name == v,
+                            );
+
+                            setState(() {
+                              group = v;
+                              course = null;
+                            });
+
+                            courseCtrl.clear();
+                            courseCtrl.loadCourses(g.id);
+                          },
+                  ),
+                ),
+
+                // ---------------- COURSE (API) ----------------
+                Obx(
+                  () => _filterBox(
+                    label: courseCtrl.courses.isEmpty
+                        ? "Select Group First"
+                        : "Select Course",
+                    icon: Icons.menu_book,
+                    iconColor: Colors.blueAccent,
+                    value: course,
+                    items: courseCtrl.courses.map((c) => c.courseName).toList(),
+                    onChanged: courseCtrl.courses.isEmpty
+                        ? null
+                        : (v) {
+                            final c = courseCtrl.courses.firstWhere(
+                              (e) => e.courseName == v,
+                            );
+
+                            setState(() {
+                              course = v;
+                              selectedCourseId = c.id;
+                            });
+                          },
+                  ),
+                ),
+
+                _filterBox(
+                  label: "Select Batch",
+                  icon: Icons.calendar_today,
+                  iconColor: Colors.orangeAccent,
+                  value: batch,
+                  items: batches,
+                  onChanged: (v) => setState(() => batch = v),
+                ),
+
+                _filterBox(
+                  label: "Select Exam",
+                  icon: Icons.assignment,
+                  iconColor: Colors.lightGreenAccent,
+                  value: exam,
+                  items: exams,
+                  onChanged: (v) => setState(() => exam = v),
+                ),
+
+                _filterBox(
+                  label: "Select Subject",
+                  icon: Icons.bookmark,
+                  iconColor: Colors.pinkAccent,
+                  value: subject,
+                  items: subjects,
+                  onChanged: (v) => setState(() => subject = v),
+                ),
+
+                const SizedBox(height: 25),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: neon,
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    onPressed: () {
+                      Get.snackbar("Success", "Fetching students...");
+                    },
+                    child: const Text(
+                      "Get Students",
                       style: TextStyle(
-                        color: Colors.white,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-
-                    const SizedBox(height: 22),
-
-                    _filterBox(
-                      label: "Select Branch",
-                      icon: Icons.school,
-                      iconColor: Colors.cyanAccent,
-                      value: branch,
-                      items: branches,
-                      onChanged: (v) => setState(() => branch = v),
-                    ),
-
-                    _filterBox(
-                      label: "Select Group",
-                      icon: Icons.groups,
-                      iconColor: Colors.pinkAccent,
-                      value: group,
-                      items: groups,
-                      onChanged: (v) => setState(() => group = v),
-                    ),
-
-                    _filterBox(
-                      label: "Select Course",
-                      icon: Icons.menu_book,
-                      iconColor: Colors.blueAccent,
-                      value: course,
-                      items: courses,
-                      onChanged: (v) => setState(() => course = v),
-                    ),
-
-                    _filterBox(
-                      label: "Select Batch",
-                      icon: Icons.calendar_today,
-                      iconColor: Colors.orangeAccent,
-                      value: batch,
-                      items: batches,
-                      onChanged: (v) => setState(() => batch = v),
-                    ),
-
-                    _filterBox(
-                      label: "Select Exam",
-                      icon: Icons.assignment,
-                      iconColor: Colors.lightGreenAccent,
-                      value: exam,
-                      items: exams,
-                      onChanged: (v) => setState(() => exam = v),
-                    ),
-
-                    _filterBox(
-                      label: "Select Subject",
-                      icon: Icons.bookmark,
-                      iconColor: Colors.pinkAccent,
-                      value: subject,
-                      items: subjects,
-                      onChanged: (v) => setState(() => subject = v),
-                    ),
-
-                    const SizedBox(height: 25),
-
-                    Container(
-                      width: double.infinity,
-                      height: 52,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xFF00E5FF),
-                            Color(0xFF2979FF),
-                            Color(0xFF7C4DFF),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(14),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.blueAccent.withOpacity(0.4),
-                            blurRadius: 12,
-                          ),
-                        ],
-                      ),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(14),
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Fetching Students..."),
-                            ),
-                          );
-                        },
-                        child: const Center(
-                          child: Text(
-                            "Get Students",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 22),
-
-                    const Center(
-                      child: Text(
-                        "2025 © SSJC.",
-                        style: TextStyle(color: Colors.white60, fontSize: 12),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+
+                const SizedBox(height: 22),
+
+                const Center(
+                  child: Text(
+                    "2025 © SSJC.",
+                    style: TextStyle(color: Colors.white60, fontSize: 12),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
+  // ---------------- FILTER BOX ----------------
   Widget _filterBox({
     required String label,
     required IconData icon,
     required Color iconColor,
     required String? value,
     required List<String> items,
-    required Function(String?) onChanged,
+    required Function(String?)? onChanged,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 18),
@@ -230,54 +313,33 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
             Color(0xFF0f3460),
             Color(0xFF533483),
           ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(22),
         border: Border.all(color: Colors.white24),
-        boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 15)],
       ),
-
       child: Row(
         children: [
           Icon(icon, color: iconColor, size: 22),
           const SizedBox(width: 16),
-
           Expanded(
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
                 value: value,
+                hint: Text(
+                  label,
+                  style: const TextStyle(color: Colors.white70),
+                ),
                 isExpanded: true,
                 dropdownColor: const Color(0xFF1a1a2e),
-
                 icon: const Icon(
                   Icons.keyboard_arrow_down,
                   color: neon,
                   size: 26,
                 ),
-
-                hint: Text(
-                  label,
-                  style: const TextStyle(color: Colors.white70, fontSize: 15),
-                ),
-
                 style: const TextStyle(color: Colors.white, fontSize: 16),
-
                 items: items
-                    .map(
-                      (item) => DropdownMenuItem(
-                        value: item,
-                        child: Text(
-                          item,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    )
+                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                     .toList(),
-
                 onChanged: onChanged,
               ),
             ),

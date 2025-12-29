@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import '../controllers/branch_controller.dart';
+import '../model/branch_model.dart';
 
 class HostelAttendanceFilterPage extends StatefulWidget {
   const HostelAttendanceFilterPage({super.key});
@@ -16,13 +18,38 @@ class _HostelAttendanceFilterPageState
   String? _hostel;
   String? _floor;
   String? _room;
-
   String _month = 'Nov';
+
+  // ✅ BRANCH CONTROLLER
+  final BranchController branchCtrl = Get.put(BranchController());
+
+  // ✅ BRANCH DROPDOWN ITEMS
+  List<DropdownMenuItem<String>> branchItems = [];
 
   @override
   void initState() {
     super.initState();
+
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+    branchCtrl.loadBranches();
+
+    // 🔥 FIXED: MODEL-BASED ACCESS
+    ever(branchCtrl.branches, (_) {
+      branchItems = branchCtrl.branches
+          .map<DropdownMenuItem<String>>(
+            (BranchModel b) => DropdownMenuItem<String>(
+              value: b.branchName,
+              child: Text(b.branchName),
+            ),
+          )
+          .toList();
+
+      if (branchItems.isNotEmpty && _branch == null) {
+        _branch = branchItems.first.value;
+      }
+      setState(() {});
+    });
   }
 
   @override
@@ -30,87 +57,49 @@ class _HostelAttendanceFilterPageState
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        systemNavigationBarColor: Colors.transparent,
-        systemNavigationBarIconBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.light,
       ),
-
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        backgroundColor: Colors.transparent,
-
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(60),
-          child: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color(0xFF1a1a2e),
-                  Color(0xFF16213e),
-                  Color(0xFF0f3460),
-                  Color(0xFF533483),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            child: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              title: const Text(
-                "View Hostel Attendance",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ),
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF1a1a2e),
+              Color(0xFF16213e),
+              Color(0xFF0f3460),
+              Color(0xFF533483),
+            ],
           ),
         ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          extendBodyBehindAppBar: true,
 
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF1a1a2e),
-                Color(0xFF16213e),
-                Color(0xFF0f3460),
-                Color(0xFF533483),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: const Text(
+              "View Hostel Attendance",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.pop(context),
             ),
           ),
 
-          child: SafeArea(
+          body: SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
-
               child: Column(
                 children: [
-                  //DROPDOWNS
                   _neonDropdown(
                     label: "Select Branch",
                     icon: Icons.school,
-                    iconColor: Color(0xFF00FFF5),
+                    iconColor: const Color(0xFF00FFF5),
                     value: _branch,
-                    items: const [
-                      DropdownMenuItem(
-                        value: 'EAMCET',
-                        child: Text('SSJC-EAMCET CAMPUS'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'NEET',
-                        child: Text('SSJC-NEET & MAINS'),
-                      ),
-                    ],
+                    items: branchItems,
                     onChanged: (v) => setState(() => _branch = v),
                   ),
                   const SizedBox(height: 14),
@@ -118,7 +107,7 @@ class _HostelAttendanceFilterPageState
                   _neonDropdown(
                     label: "Select Hostel",
                     icon: Icons.apartment,
-                    iconColor: Color(0xFFD06BFF),
+                    iconColor: const Color(0xFFD06BFF),
                     value: _hostel,
                     items: const [
                       DropdownMenuItem(value: 'ADARSA', child: Text('ADARSA')),
@@ -131,7 +120,7 @@ class _HostelAttendanceFilterPageState
                   _neonDropdown(
                     label: "Select Floor",
                     icon: Icons.layers,
-                    iconColor: Color(0xFF4DA3FF),
+                    iconColor: const Color(0xFF4DA3FF),
                     value: _floor,
                     items: const [
                       DropdownMenuItem(value: '1', child: Text('First Floor')),
@@ -144,7 +133,7 @@ class _HostelAttendanceFilterPageState
                   _neonDropdown(
                     label: "Select Room",
                     icon: Icons.meeting_room,
-                    iconColor: Color(0xFFFF72C6),
+                    iconColor: const Color(0xFFFF72C6),
                     value: _room,
                     items: const [
                       DropdownMenuItem(value: 'C-201', child: Text('C-201')),
@@ -153,13 +142,12 @@ class _HostelAttendanceFilterPageState
                     ],
                     onChanged: (v) => setState(() => _room = v),
                   ),
-
                   const SizedBox(height: 14),
 
                   _neonDropdown(
                     label: "Select Month",
                     icon: Icons.calendar_month,
-                    iconColor: Color(0xFFFFE066),
+                    iconColor: const Color(0xFFFFE066),
                     value: _month,
                     items: const [
                       DropdownMenuItem(value: 'Jan', child: Text('January')),
@@ -178,9 +166,8 @@ class _HostelAttendanceFilterPageState
                     onChanged: (v) => setState(() => _month = v!),
                   ),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 22),
 
-                  // GET STUDENTS BUTTON
                   SizedBox(
                     width: double.infinity,
                     height: 52,
@@ -239,6 +226,7 @@ class _HostelAttendanceFilterPageState
     );
   }
 
+  // ---------------- DROPDOWN ----------------
   Widget _neonDropdown({
     required String label,
     required IconData icon,
@@ -254,25 +242,21 @@ class _HostelAttendanceFilterPageState
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: Colors.white24),
       ),
-
       child: Row(
         children: [
           Icon(icon, color: iconColor, size: 22),
           const SizedBox(width: 12),
-
           Expanded(
             child: DropdownButtonFormField<String>(
               dropdownColor: const Color(0xFF16213e),
               style: const TextStyle(color: Colors.white),
               iconEnabledColor: Colors.cyanAccent,
               value: value,
-
               decoration: InputDecoration(
                 labelText: label,
                 labelStyle: const TextStyle(color: Colors.white70),
                 border: InputBorder.none,
               ),
-
               items: items,
               onChanged: onChanged,
             ),
@@ -282,6 +266,7 @@ class _HostelAttendanceFilterPageState
     );
   }
 
+  // ---------------- BUTTON ----------------
   Widget _neonButton({
     required String label,
     required IconData icon,

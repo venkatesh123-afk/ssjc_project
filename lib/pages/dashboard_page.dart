@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -63,7 +64,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 backgroundImage: AssetImage("assets/ssjc.jpg"),
               ),
 
-              const SizedBox(width: 12),
+              const SizedBox(width: 1),
 
               Builder(
                 builder: (context) => IconButton(
@@ -71,16 +72,16 @@ class _DashboardPageState extends State<DashboardPage> {
                   onPressed: () => Scaffold.of(context).openDrawer(),
                 ),
               ),
-
+              const SizedBox(width: 1),
               IconButton(
                 icon: const Icon(Icons.grid_view_rounded, color: Colors.white),
                 onPressed: toggleGridMenu,
               ),
 
-              const SizedBox(width: 10),
+              const SizedBox(width: 1),
 
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8),
@@ -98,15 +99,46 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                 ),
               ),
-
-              const Spacer(),
-
-              const CircleAvatar(
-                radius: 20,
-                child: Icon(Icons.person, color: Colors.black),
-              ),
             ],
           ),
+          // ✅ RIGHT SIDE ICONS (VISIBLE NOW)
+          actions: [
+            const SizedBox(width: 1),
+            IconButton(
+              icon: const Icon(Icons.logout, color: Colors.white),
+              onPressed: () {
+                Get.defaultDialog(
+                  title: "Logout",
+                  middleText: "Are you sure you want to logout?",
+                  textConfirm: "Yes",
+                  textCancel: "No",
+                  confirmTextColor: Colors.white,
+                  buttonColor: Colors.red,
+                  onConfirm: () async {
+                    final box = GetStorage();
+
+                    // ✅ CLEAR TOKEN & USER DATA
+                    await box.erase();
+
+                    Get.back(); // close dialog
+
+                    // ✅ REMOVE ALL PAGES FROM STACK
+                    Get.offAllNamed('/login');
+                  },
+                );
+              },
+            ),
+
+            const SizedBox(width: 1),
+            Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: CircleAvatar(
+                radius: 20,
+                backgroundColor: Colors.white,
+                child: Icon(Icons.person, color: Colors.black),
+              ),
+            ),
+          ],
         ),
 
         body: _buildDashboardBody(),
@@ -517,6 +549,29 @@ class _DashboardPageState extends State<DashboardPage> {
                   "Student Marks Upload",
                   () => Get.toNamed('/marksUpload'),
                 ),
+              ],
+            ),
+            // ================= FEES (NEW) =================
+            _drawerExpandable(
+              icon: Icons.currency_rupee,
+              iconColor: Colors.amberAccent,
+              title: "Fees",
+              children: [
+                _drawerSubItem("Fee Heads", () => Get.toNamed('/feeHeads')),
+                // _drawerSubItem(
+                //   "Student Fee Assignment",
+                //   () => Get.toNamed('/studentFeeAssign'),
+                // ),
+                // _drawerSubItem(
+                //   "Fee Collection",
+                //   () => Get.toNamed('/feeCollection'),
+                // ),
+                // _drawerSubItem("Fee Receipt", () => Get.toNamed('/feeReceipt')),
+                // _drawerSubItem(
+                //   "Pending Fees",
+                //   () => Get.toNamed('/pendingFees'),
+                // ),
+                // _drawerSubItem("Fee Reports", () => Get.toNamed('/feeReports')),
               ],
             ),
 
