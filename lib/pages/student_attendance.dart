@@ -13,12 +13,12 @@ class StudentAttendancePage extends StatefulWidget {
 }
 
 class _StudentAttendancePageState extends State<StudentAttendancePage> {
-  // ---------------- CONTROLLERS ----------------
+  // ================= CONTROLLERS =================
   final BranchController branchCtrl = Get.put(BranchController());
   final GroupController groupCtrl = Get.put(GroupController());
   final CourseController courseCtrl = Get.put(CourseController());
 
-  // ---------------- SELECTED VALUES ----------------
+  // ================= SELECTED VALUES =================
   String? branch;
   String? group;
   String? course;
@@ -26,11 +26,9 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
   String? exam;
   String? subject;
 
-  int? selectedBranchId;
-  int? selectedGroupId;
   int? selectedCourseId;
 
-  // ---------------- STATIC DATA ----------------
+  // ================= STATIC DATA =================
   final List<String> batches = ["2023–25", "2024–26", "2025–27"];
   final List<String> exams = [
     "Unit Test–1",
@@ -54,34 +52,22 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
   void initState() {
     super.initState();
 
-    // 🔥 Load branches
     branchCtrl.loadBranches();
 
-    // 🔥 Auto-select first branch
     ever(branchCtrl.branches, (_) {
       if (branchCtrl.branches.isNotEmpty && branch == null) {
         final b = branchCtrl.branches.first;
         branch = b.branchName;
-        selectedBranchId = b.id;
-
-        groupCtrl.clear();
-        courseCtrl.clear();
         groupCtrl.loadGroups(b.id);
-
         setState(() {});
       }
     });
 
-    // 🔥 Auto-select first group
     ever(groupCtrl.groups, (_) {
       if (groupCtrl.groups.isNotEmpty && group == null) {
         final g = groupCtrl.groups.first;
         group = g.name;
-        selectedGroupId = g.id;
-
-        courseCtrl.clear();
         courseCtrl.loadCourses(g.id);
-
         setState(() {});
       }
     });
@@ -89,142 +75,142 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: Colors.transparent,
 
+      // ================= APP BAR =================
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text(
+        title: Text(
           "Student Attendance",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: isDark ? Colors.white : Colors.black),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back,
+              color: isDark ? Colors.white : Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
 
+      // ================= BODY =================
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFF1a1a2e),
-              Color(0xFF16213e),
-              Color(0xFF0f3460),
-              Color(0xFF533483),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? const LinearGradient(
+                  colors: [
+                    Color(0xFF0b132b),
+                    Color(0xFF1c2541),
+                    Color(0xFF3a0ca3),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                )
+              : const LinearGradient(
+                  colors: [
+                    Color(0xFFF5F6FA),
+                    Color(0xFFE8ECF4),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
         ),
-
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(16, 120, 16, 40),
           child: Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
-              borderRadius: BorderRadius.circular(26),
-              border: Border.all(color: Colors.white24),
+              color: isDark ? Colors.transparent : Colors.white,
+              borderRadius: BorderRadius.circular(30),
+              border: isDark
+                  ? Border.all(color: Colors.white.withOpacity(0.25))
+                  : null,
             ),
-
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   "Select filters to view student attendance records",
                   style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.black87,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
+                const SizedBox(height: 28),
 
-                const SizedBox(height: 22),
+                // ================= FILTERS =================
+                Obx(() => _filterBox(
+                      context: context,
+                      label: "Select Branch",
+                      icon: Icons.school,
+                      iconColor: Colors.cyanAccent,
+                      value: branch,
+                      items:
+                          branchCtrl.branches.map((b) => b.branchName).toList(),
+                      onChanged: (v) {
+                        final b = branchCtrl.branches
+                            .firstWhere((e) => e.branchName == v);
+                        setState(() {
+                          branch = v;
+                          group = null;
+                          course = null;
+                        });
+                        groupCtrl.clear();
+                        courseCtrl.clear();
+                        groupCtrl.loadGroups(b.id);
+                      },
+                    )),
 
-                // ---------------- BRANCH ----------------
-                Obx(
-                  () => _filterBox(
-                    label: "Select Branch",
-                    icon: Icons.school,
-                    iconColor: Colors.cyanAccent,
-                    value: branch,
-                    items: branchCtrl.branches
-                        .map((b) => b.branchName)
-                        .toList(),
-                    onChanged: (v) {
-                      final b = branchCtrl.branches.firstWhere(
-                        (e) => e.branchName == v,
-                      );
+                Obx(() => _filterBox(
+                      context: context,
+                      label: groupCtrl.groups.isEmpty
+                          ? "Select Branch First"
+                          : "Select Group",
+                      icon: Icons.groups,
+                      iconColor: Colors.pinkAccent,
+                      value: group,
+                      items: groupCtrl.groups.map((g) => g.name).toList(),
+                      onChanged: groupCtrl.groups.isEmpty
+                          ? null
+                          : (v) {
+                              final g = groupCtrl.groups
+                                  .firstWhere((e) => e.name == v);
+                              setState(() {
+                                group = v;
+                                course = null;
+                              });
+                              courseCtrl.clear();
+                              courseCtrl.loadCourses(g.id);
+                            },
+                    )),
 
-                      setState(() {
-                        branch = v;
-                        group = null;
-                        course = null;
-                      });
-
-                      groupCtrl.clear();
-                      courseCtrl.clear();
-                      groupCtrl.loadGroups(b.id);
-                    },
-                  ),
-                ),
-
-                // ---------------- GROUP ----------------
-                Obx(
-                  () => _filterBox(
-                    label: groupCtrl.groups.isEmpty
-                        ? "Select Branch First"
-                        : "Select Group",
-                    icon: Icons.groups,
-                    iconColor: Colors.pinkAccent,
-                    value: group,
-                    items: groupCtrl.groups.map((g) => g.name).toList(),
-                    onChanged: groupCtrl.groups.isEmpty
-                        ? null
-                        : (v) {
-                            final g = groupCtrl.groups.firstWhere(
-                              (e) => e.name == v,
-                            );
-
-                            setState(() {
-                              group = v;
-                              course = null;
-                            });
-
-                            courseCtrl.clear();
-                            courseCtrl.loadCourses(g.id);
-                          },
-                  ),
-                ),
-
-                // ---------------- COURSE (API) ----------------
-                Obx(
-                  () => _filterBox(
-                    label: courseCtrl.courses.isEmpty
-                        ? "Select Group First"
-                        : "Select Course",
-                    icon: Icons.menu_book,
-                    iconColor: Colors.blueAccent,
-                    value: course,
-                    items: courseCtrl.courses.map((c) => c.courseName).toList(),
-                    onChanged: courseCtrl.courses.isEmpty
-                        ? null
-                        : (v) {
-                            final c = courseCtrl.courses.firstWhere(
-                              (e) => e.courseName == v,
-                            );
-
-                            setState(() {
-                              course = v;
-                              selectedCourseId = c.id;
-                            });
-                          },
-                  ),
-                ),
+                Obx(() => _filterBox(
+                      context: context,
+                      label: courseCtrl.courses.isEmpty
+                          ? "Select Group First"
+                          : "Select Course",
+                      icon: Icons.menu_book,
+                      iconColor: Colors.blueAccent,
+                      value: course,
+                      items:
+                          courseCtrl.courses.map((c) => c.courseName).toList(),
+                      onChanged: courseCtrl.courses.isEmpty
+                          ? null
+                          : (v) {
+                              final c = courseCtrl.courses
+                                  .firstWhere((e) => e.courseName == v);
+                              setState(() {
+                                course = v;
+                                selectedCourseId = c.id;
+                              });
+                            },
+                    )),
 
                 _filterBox(
+                  context: context,
                   label: "Select Batch",
                   icon: Icons.calendar_today,
                   iconColor: Colors.orangeAccent,
@@ -234,6 +220,7 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
                 ),
 
                 _filterBox(
+                  context: context,
                   label: "Select Exam",
                   icon: Icons.assignment,
                   iconColor: Colors.lightGreenAccent,
@@ -243,6 +230,7 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
                 ),
 
                 _filterBox(
+                  context: context,
                   label: "Select Subject",
                   icon: Icons.bookmark,
                   iconColor: Colors.pinkAccent,
@@ -269,20 +257,21 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
                     },
                     child: const Text(
                       "Get Students",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
 
                 const SizedBox(height: 22),
 
-                const Center(
+                Center(
                   child: Text(
                     "2025 © SSJC.",
-                    style: TextStyle(color: Colors.white60, fontSize: 12),
+                    style: TextStyle(
+                      color: isDark ? Colors.white60 : Colors.black54,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ],
@@ -293,8 +282,9 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
     );
   }
 
-  // ---------------- FILTER BOX ----------------
+  // ================= FILTER BOX =================
   Widget _filterBox({
+    required BuildContext context,
     required String label,
     required IconData icon,
     required Color iconColor,
@@ -302,41 +292,54 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
     required List<String> items,
     required Function(String?)? onChanged,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 18),
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFF1a1a2e),
-            Color(0xFF16213e),
-            Color(0xFF0f3460),
-            Color(0xFF533483),
-          ],
+        gradient: isDark
+            ? const LinearGradient(
+                colors: [
+                  Color(0xFF0b132b),
+                  Color(0xFF1c3faa),
+                  Color(0xFF6a2dbf),
+                ],
+              )
+            : null,
+        color: isDark ? null : Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(32),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withOpacity(0.35)
+              : Theme.of(context).dividerColor,
         ),
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: Colors.white24),
+        boxShadow: isDark
+            ? [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.5),
+                  blurRadius: 16,
+                  offset: const Offset(0, 8),
+                )
+              ]
+            : [],
       ),
       child: Row(
         children: [
-          Icon(icon, color: iconColor, size: 22),
+          Icon(icon, color: iconColor),
           const SizedBox(width: 16),
           Expanded(
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
                 value: value,
-                hint: Text(
-                  label,
-                  style: const TextStyle(color: Colors.white70),
-                ),
+                hint: Text(label,
+                    style: TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black54)),
                 isExpanded: true,
-                dropdownColor: const Color(0xFF1a1a2e),
-                icon: const Icon(
-                  Icons.keyboard_arrow_down,
-                  color: neon,
-                  size: 26,
-                ),
-                style: const TextStyle(color: Colors.white, fontSize: 16),
+                dropdownColor: isDark ? const Color(0xFF0b132b) : Colors.white,
+                icon: Icon(Icons.keyboard_arrow_down,
+                    color: isDark ? neon : Colors.black54),
+                style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 items: items
                     .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                     .toList(),

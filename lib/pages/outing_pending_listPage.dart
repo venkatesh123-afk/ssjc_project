@@ -53,22 +53,33 @@ class _OutingPendingListPageState extends State<OutingPendingListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF1a1a2e),
-              Color(0xFF16213e),
-              Color(0xFF0f3460),
-              Color(0xFF533483),
-            ],
-            stops: [0.0, 0.3, 0.6, 1.0],
-          ),
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFF1a1a2e),
+                    Color(0xFF16213e),
+                    Color(0xFF0f3460),
+                    Color(0xFF533483),
+                  ],
+                  stops: [0.0, 0.3, 0.6, 1.0],
+                )
+              : LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Theme.of(context).scaffoldBackgroundColor,
+                    Theme.of(context).colorScheme.surface,
+                  ],
+                ),
         ),
         child: SafeArea(
           child: SingleChildScrollView(
@@ -77,9 +88,9 @@ class _OutingPendingListPageState extends State<OutingPendingListPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildAppTitle(context),
+                _buildAppTitle(context, isDark),
                 const SizedBox(height: 20),
-                _buildMainCard(context),
+                _buildMainCard(context, isDark),
               ],
             ),
           ),
@@ -88,19 +99,20 @@ class _OutingPendingListPageState extends State<OutingPendingListPage> {
     );
   }
 
-  Widget _buildAppTitle(BuildContext context) {
+  // ================= TITLE =================
+  Widget _buildAppTitle(BuildContext context, bool isDark) {
     return InkWell(
       onTap: () => Navigator.pop(context),
       child: Row(
-        children: const [
-          Icon(Icons.arrow_back, color: Colors.white),
-          SizedBox(width: 8),
+        children: [
+          Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black),
+          const SizedBox(width: 8),
           Text(
             "Outing Pending",
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: isDark ? Colors.white : Colors.black,
             ),
           ),
         ],
@@ -108,15 +120,22 @@ class _OutingPendingListPageState extends State<OutingPendingListPage> {
     );
   }
 
-  Widget _buildMainCard(BuildContext context) {
+  // ================= MAIN CARD =================
+  Widget _buildMainCard(BuildContext context, bool isDark) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: isDark
+            ? Colors.white.withOpacity(0.05)
+            : Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withOpacity(0.1)
+              : Theme.of(context).dividerColor,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withOpacity(0.25),
             blurRadius: 20,
             spreadRadius: 4,
           ),
@@ -128,24 +147,33 @@ class _OutingPendingListPageState extends State<OutingPendingListPage> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
+              // ================= SEARCH =================
               TextField(
                 onChanged: searchStudent,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(
+                  color: isDark ? Colors.white : Colors.black,
+                ),
                 decoration: InputDecoration(
                   hintText: "Search Student",
-                  hintStyle: const TextStyle(color: Colors.white70),
+                  hintStyle: TextStyle(
+                    color: isDark ? Colors.white70 : Colors.black54,
+                  ),
                   filled: true,
-                  fillColor: Colors.white.withOpacity(0.1),
-                  prefixIcon: const Icon(Icons.search, color: Colors.white),
+                  fillColor: isDark
+                      ? Colors.white.withOpacity(0.1)
+                      : Theme.of(context).colorScheme.surface,
+                  prefixIcon: Icon(Icons.search,
+                      color: isDark ? Colors.white : Colors.black54),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
                     borderSide: BorderSide.none,
                   ),
                 ),
               ),
+
               const SizedBox(height: 18),
 
-              // Student List
+              // ================= STUDENT LIST =================
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -172,14 +200,19 @@ class _OutingPendingListPageState extends State<OutingPendingListPage> {
                       margin: const EdgeInsets.only(bottom: 18),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.08),
+                        color: isDark
+                            ? Colors.white.withOpacity(0.08)
+                            : Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(18),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.2),
+                          color: isDark
+                              ? Colors.white.withOpacity(0.2)
+                              : Theme.of(context).dividerColor,
                         ),
                       ),
                       child: Row(
                         children: [
+                          // IMAGE
                           Container(
                             width: 70,
                             height: 70,
@@ -192,33 +225,38 @@ class _OutingPendingListPageState extends State<OutingPendingListPage> {
                             ),
                           ),
                           const SizedBox(width: 16),
+
+                          // DETAILS
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   s.id,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 17,
-                                    color: Colors.white,
+                                    color: isDark ? Colors.white : Colors.black,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   s.name,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 15,
-                                    color: Colors.white,
+                                    color:
+                                        isDark ? Colors.white : Colors.black87,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
                                   "Permission By : ${s.permissionBy}",
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 13,
-                                    color: Colors.white70,
+                                    color: isDark
+                                        ? Colors.white70
+                                        : Colors.black54,
                                   ),
                                 ),
                               ],

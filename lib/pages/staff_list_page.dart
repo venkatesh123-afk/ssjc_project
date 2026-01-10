@@ -9,6 +9,7 @@ class StaffListPage extends StatefulWidget {
 }
 
 class _StaffListPageState extends State<StaffListPage> {
+  // ================= COLORS =================
   static const Color dark1 = Color(0xFF1a1a2e);
   static const Color dark2 = Color(0xFF16213e);
   static const Color dark3 = Color(0xFF0f3460);
@@ -27,13 +28,15 @@ class _StaffListPageState extends State<StaffListPage> {
   String _query = "";
 
   void _addStaff() {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text("Add Staff (Demo Action)")));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Add Staff (Demo Action)")),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     final filtered = _allStaff.where((s) {
       return s['name']!.toLowerCase().contains(_query.toLowerCase()) ||
           s['empId']!.contains(_query);
@@ -41,25 +44,46 @@ class _StaffListPageState extends State<StaffListPage> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
+
+      // ================= APP BAR =================
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text("Staff List", style: TextStyle(color: Colors.white)),
+        title: Text(
+          "Staff List",
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDark ? Colors.white : Colors.black,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
 
+      // ================= BODY =================
       body: Stack(
         children: [
           Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [dark1, dark2, dark3, purpleDark],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+            decoration: BoxDecoration(
+              gradient: isDark
+                  ? const LinearGradient(
+                      colors: [dark1, dark2, dark3, purpleDark],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Theme.of(context).scaffoldBackgroundColor,
+                        Theme.of(context).colorScheme.surface,
+                      ],
+                    ),
             ),
           ),
 
@@ -67,19 +91,28 @@ class _StaffListPageState extends State<StaffListPage> {
             children: [
               const SizedBox(height: 95),
 
+              // ================= SEARCH =================
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: Colors.white24),
+                    color: isDark
+                        ? Colors.white.withOpacity(0.12)
+                        : Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: isDark
+                          ? Colors.white24
+                          : Theme.of(context).dividerColor,
+                    ),
                   ),
                   child: SearchField(
                     hint: "Search by name / employee ID",
-                    hintStyle: const TextStyle(color: Color(0xFFB5C7E8)),
-                    textColor: Colors.white,
-                    iconColor: neon,
+                    hintStyle: TextStyle(
+                      color: isDark ? const Color(0xFFB5C7E8) : Colors.black54,
+                    ),
+                    textColor: isDark ? Colors.white : Colors.black,
+                    iconColor: isDark ? neon : Colors.black54,
                     onChanged: (v) => setState(() => _query = v),
                   ),
                 ),
@@ -87,7 +120,7 @@ class _StaffListPageState extends State<StaffListPage> {
 
               const SizedBox(height: 16),
 
-              // STAFF CARDS
+              // ================= STAFF LIST =================
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -99,28 +132,44 @@ class _StaffListPageState extends State<StaffListPage> {
                       margin: const EdgeInsets.only(bottom: 14),
                       padding: const EdgeInsets.all(18),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            dark3.withOpacity(0.55),
-                            purpleDark.withOpacity(0.55),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
+                        gradient: isDark
+                            ? LinearGradient(
+                                colors: [
+                                  dark3.withOpacity(0.55),
+                                  purpleDark.withOpacity(0.55),
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              )
+                            : LinearGradient(
+                                colors: [
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(0.08),
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .secondary
+                                      .withOpacity(0.08),
+                                ],
+                              ),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: neon.withOpacity(0.35),
+                          color: isDark
+                              ? neon.withOpacity(0.35)
+                              : Theme.of(context).dividerColor,
                           width: 1.3,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: neon.withOpacity(0.22),
+                            color: isDark
+                                ? neon.withOpacity(0.22)
+                                : Colors.black12,
                             blurRadius: 15,
                             offset: const Offset(0, 4),
                           ),
                         ],
                       ),
-
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -129,23 +178,26 @@ class _StaffListPageState extends State<StaffListPage> {
                             children: [
                               Text(
                                 s['name']!,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: isDark ? Colors.white : Colors.black,
                                 ),
                               ),
                               const SizedBox(height: 5),
                               Text(
                                 "Emp ID: ${s['empId']}",
-                                style: const TextStyle(
-                                  color: Color(0xFFB5C7E8),
+                                style: TextStyle(
+                                  color: isDark
+                                      ? const Color(0xFFB5C7E8)
+                                      : Colors.black54,
                                   fontSize: 14,
                                 ),
                               ),
                             ],
                           ),
 
+                          // SERIAL BADGE
                           Container(
                             padding: const EdgeInsets.symmetric(
                               vertical: 8,
@@ -172,22 +224,27 @@ class _StaffListPageState extends State<StaffListPage> {
             ],
           ),
 
+          // ================= ADD STAFF BUTTON =================
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: ElevatedButton.icon(
                 onPressed: _addStaff,
-                icon: const Icon(Icons.add, color: Colors.black),
-                label: const Text(
+                icon: Icon(
+                  Icons.add,
+                  color: isDark ? Colors.black : Colors.white,
+                ),
+                label: Text(
                   "Add Staff",
                   style: TextStyle(
-                    color: Colors.black,
+                    color: isDark ? Colors.black : Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: neon,
+                  backgroundColor:
+                      isDark ? neon : Theme.of(context).primaryColor,
                   padding: const EdgeInsets.symmetric(
                     vertical: 14,
                     horizontal: 22,

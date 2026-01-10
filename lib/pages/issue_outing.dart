@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class IssueOutingPage extends StatefulWidget {
-  const IssueOutingPage({super.key, required studentName, required outingType});
+  final String studentName;
+  final String outingType;
+
+  const IssueOutingPage({
+    super.key,
+    required this.studentName,
+    required this.outingType,
+  });
 
   @override
   State<IssueOutingPage> createState() => _IssueOutingPageState();
@@ -9,171 +16,195 @@ class IssueOutingPage extends StatefulWidget {
 
 class _IssueOutingPageState extends State<IssueOutingPage> {
   String passType = "";
-  final TextStyle headingStyle = const TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.bold,
-    fontSize: 16,
-  );
 
-  final TextStyle normalStyle = const TextStyle(
-    color: Colors.white70,
-    fontSize: 15,
-  );
+  static const Color dark1 = Color(0xFF1a1a2e);
+  static const Color dark2 = Color(0xFF16213e);
+  static const Color dark3 = Color(0xFF0f3460);
+  static const Color purpleDark = Color(0xFF533483);
+
   @override
   Widget build(BuildContext context) {
-    final headingStyle = const TextStyle(
-      color: Colors.white,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final headingStyle = TextStyle(
+      color: isDark ? Colors.white : Colors.black,
       fontWeight: FontWeight.bold,
       fontSize: 16,
     );
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
+
+      // ---------------- APP BAR ----------------
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        title: Text(
+          "Issue Outing",
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDark ? Colors.white : Colors.black,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+
+      // ---------------- BODY ----------------
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF1a1a2e),
-              Color(0xFF16213e),
-              Color(0xFF0f3460),
-              Color(0xFF533483),
-            ],
-            stops: [0.0, 0.3, 0.6, 1.0],
-          ),
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [dark1, dark2, dark3, purpleDark],
+                )
+              : LinearGradient(
+                  colors: [
+                    Theme.of(context).scaffoldBackgroundColor,
+                    Theme.of(context).colorScheme.surface,
+                  ],
+                ),
         ),
-
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildAppTitle(context),
-
-                const SizedBox(height: 20),
-
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.10),
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: Colors.white30, width: 1.2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.35),
-                        blurRadius: 18,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Color(0xFF38EF7D), Color(0xFF3366E8)],
-                          ),
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10),
-                          ),
-                        ),
-                        child: const Text(
-                          "Issue New Outing",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      Text("Date *", style: headingStyle),
-
-                      const SizedBox(height: 6),
-                      textField("20/11/2025"),
-                      const SizedBox(height: 12),
-
-                      Text("Pass Type *", style: headingStyle),
-
-                      Row(children: [radio("Home Pass"), radio("Outing Pass")]),
-                      Row(children: [radio("Self Outing"), radio("Self Home")]),
-                      const SizedBox(height: 12),
-
-                      Text("Select Student *", style: headingStyle),
-
-                      const SizedBox(height: 6),
-                      textField("Sunil"),
-                      const SizedBox(height: 12),
-
-                      Text("Letter Photo *", style: headingStyle),
-
-                      const SizedBox(height: 6),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 46,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.lightBlueAccent,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text("Take Photo *", style: headingStyle),
-                        ),
-                      ),
-                      const SizedBox(height: 14),
-
-                      Text("Out time *", style: headingStyle),
-
-                      const SizedBox(height: 6),
-                      textField("07:12 PM"),
-                      const SizedBox(height: 14),
-
-                      Text("Purpose *", style: headingStyle),
-
-                      const SizedBox(height: 6),
-                      textField("SELECT"),
-                      const SizedBox(height: 22),
-
-                      SizedBox(
-                        width: 160,
-                        height: 48,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.indigoAccent,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: const Text(
-                            "Grant Outing",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Outing Granted Successfully!"),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                    ],
-                  ),
+            child: Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: isDark
+                    ? Colors.white.withOpacity(0.10)
+                    : Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  color: isDark ? Colors.white30 : Colors.grey.shade300,
                 ),
-              ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // HEADER
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF38EF7D), Color(0xFF3366E8)],
+                      ),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      "Issue New Outing",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  Text("Date *", style: headingStyle),
+                  const SizedBox(height: 6),
+                  _displayField("20/11/2025", isDark),
+
+                  const SizedBox(height: 14),
+
+                  Text("Pass Type *", style: headingStyle),
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 10,
+                    children: [
+                      _radio("Home Pass", isDark),
+                      _radio("Outing Pass", isDark),
+                      _radio("Self Outing", isDark),
+                      _radio("Self Home", isDark),
+                    ],
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  Text("Select Student *", style: headingStyle),
+                  const SizedBox(height: 6),
+                  _displayField(
+                    widget.studentName.isEmpty
+                        ? "Select Student"
+                        : widget.studentName,
+                    isDark,
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  Text("Letter Photo *", style: headingStyle),
+                  const SizedBox(height: 6),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.lightBlueAccent,
+                        foregroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () {},
+                      child: const Text("Take Photo"),
+                    ),
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  Text("Out Time *", style: headingStyle),
+                  const SizedBox(height: 6),
+                  _displayField("07:12 PM", isDark),
+
+                  const SizedBox(height: 14),
+
+                  Text("Purpose *", style: headingStyle),
+                  const SizedBox(height: 6),
+                  _displayField("SELECT", isDark),
+
+                  const SizedBox(height: 24),
+
+                  Center(
+                    child: SizedBox(
+                      width: 180,
+                      height: 48,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.indigoAccent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Outing Granted Successfully!"),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        },
+                        child: const Text("Grant Outing",
+                            style: TextStyle(color: Colors.white)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -181,65 +212,47 @@ class _IssueOutingPageState extends State<IssueOutingPage> {
     );
   }
 
-  Widget _buildAppTitle(BuildContext context) {
-    return InkWell(
-      onTap: () => Navigator.pop(context),
-      child: Row(
-        children: const [
-          Icon(Icons.arrow_back, color: Colors.white),
-          SizedBox(width: 8),
-          Text(
-            "Issue Outing",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget radio(String text) {
+  // ---------------- RADIO ----------------
+  Widget _radio(String text, bool isDark) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Radio(
+        Radio<String>(
           value: text,
           groupValue: passType,
-          activeColor: Colors.white,
-          fillColor: WidgetStatePropertyAll(Colors.white),
-          onChanged: (value) {
-            setState(() {
-              passType = value.toString();
-            });
-          },
+          activeColor: isDark ? Colors.white : Colors.blue,
+          onChanged: (v) => setState(() => passType = v!),
         ),
         Text(
           text,
           style: TextStyle(
-            fontSize: 16,
+            color: isDark ? Colors.white70 : Colors.black87,
             fontWeight: FontWeight.w600,
-            color: Colors.white.withOpacity(0.60),
           ),
         ),
       ],
     );
   }
 
-  Widget textField(String value) {
+  // ---------------- FIELD ----------------
+  Widget _displayField(String value, bool isDark) {
     return Container(
       height: 48,
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.10),
+        color: isDark ? Colors.white10 : Colors.grey.shade200,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.white30),
+        border: Border.all(
+          color: isDark ? Colors.white30 : Colors.grey.shade400,
+        ),
       ),
       child: Text(
         value,
-        style: const TextStyle(color: Colors.white, fontSize: 15),
+        style: TextStyle(
+          color: isDark ? Colors.white : Colors.black,
+          fontSize: 15,
+        ),
       ),
     );
   }

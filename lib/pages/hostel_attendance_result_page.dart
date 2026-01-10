@@ -13,11 +13,7 @@ class _HostelAttendanceResultPageState
     extends State<HostelAttendanceResultPage> {
   String _query = "";
 
-  String _attendanceFilter = "All";
-  String _selectedFloor = "All";
-  String? _selectedRoom;
-  String? _selectedIncharge;
-
+  // COLORS
   static const Color neon = Color(0xFF00FFF5);
   static const Color darkNavy = Color(0xFF1a1a2e);
   static const Color darkBlue = Color(0xFF16213e);
@@ -31,100 +27,76 @@ class _HostelAttendanceResultPageState
     ['4', 'C-204', '2ND FLOOR C & D BLOCKS', 'GOSU ABHISHEK SAGAR', '9', '0'],
   ];
 
-  // FLOOR PARSING
-  String _floorFromRoom(String room) {
-    final match = RegExp(r'\d+').firstMatch(room);
-    if (match == null) return 'Unknown';
-
-    final num = match.group(0)!;
-    switch (num[0]) {
-      case '1':
-        return '1st Floor';
-      case '2':
-        return '2nd Floor';
-      case '3':
-        return '3rd Floor';
-      default:
-        return '${num[0]}th Floor';
-    }
-  }
-
-  // MAIN UI
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     final filtered = _rows.where((row) {
-      final sno = row[0];
-      final room = row[1];
-      final floor = row[2];
-      final incharge = row[3];
-      final total = int.parse(row[4]);
-      final present = int.parse(row[5]);
-      final absent = total - present;
-
-      if (_attendanceFilter == "Present" && present == 0) return false;
-      if (_attendanceFilter == "Absent" && absent == 0) return false;
-
-      if (_selectedFloor != "All" && _floorFromRoom(room) != _selectedFloor) {
-        return false;
-      }
-
-      if (_selectedRoom != null && room != _selectedRoom) return false;
-      if (_selectedIncharge != null && incharge != _selectedIncharge) {
-        return false;
-      }
-
-      if (_query.isNotEmpty) {
-        if (!(room.toLowerCase().contains(_query.toLowerCase()) ||
-            floor.toLowerCase().contains(_query.toLowerCase()) ||
-            incharge.toLowerCase().contains(_query.toLowerCase()) ||
-            sno.contains(_query)))
-          return false;
-      }
-
-      return true;
+      return row[1].toLowerCase().contains(_query.toLowerCase()) ||
+          row[2].toLowerCase().contains(_query.toLowerCase()) ||
+          row[3].toLowerCase().contains(_query.toLowerCase()) ||
+          row[0].contains(_query);
     }).toList();
 
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [darkNavy, darkBlue, midBlue, purpleDark],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+    return Scaffold(
+      backgroundColor: Color(0xFF16213e),
+
+      // ✅ PERFECT APP BAR
+      appBar: AppBar(
+        backgroundColor: isDark
+            ? Colors.black.withOpacity(0.35)
+            : Colors.white.withOpacity(0.95),
+        elevation: 0,
+        title: Text(
+          "Hostel Attendance",
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDark ? Colors.white : Colors.black,
+          ),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
-      child: Scaffold(
-        extendBodyBehindAppBar: false,
-        backgroundColor: Colors.transparent,
 
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: const Text(
-            "Hostel Attendance",
-            style: TextStyle(color: Colors.white),
-          ),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.pop(context),
-          ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? const LinearGradient(
+                  colors: [darkNavy, darkBlue, midBlue, purpleDark],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : null,
+          color: isDark ? null : Theme.of(context).scaffoldBackgroundColor,
         ),
-
-        body: Column(
+        child: Column(
           children: [
-            const SizedBox(height: 12),
+            // ✅ FIXED GAP BELOW APP BAR
+            const SizedBox(height: kToolbarHeight + 10),
 
-            //  WHITE SEARCH BAR
+            // 🔍 SEARCH BAR
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? Colors.white : Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: Colors.white, width: 1),
+                  border: Border.all(
+                    color: isDark
+                        ? Colors.white.withOpacity(0.24)
+                        : Theme.of(context).dividerColor,
+                  ),
                 ),
                 child: SearchField(
                   hint: 'Search floor / hostel',
-                  hintStyle: const TextStyle(color: Colors.black54),
+                  hintStyle: TextStyle(
+                    color: isDark ? Colors.black54 : Colors.black45,
+                  ),
                   textColor: Colors.black,
                   iconColor: Colors.black87,
                   onChanged: (v) => setState(() => _query = v),
@@ -134,13 +106,12 @@ class _HostelAttendanceResultPageState
 
             const SizedBox(height: 16),
 
-            //  LIST DATA
+            // 📋 LIST
             Expanded(
               child: ListView.builder(
                 itemCount: filtered.length,
-                itemBuilder: (context, index) {
-                  return _neonCard(filtered[index]);
-                },
+                itemBuilder: (context, index) =>
+                    _attendanceCard(filtered[index], isDark),
               ),
             ),
           ],
@@ -149,35 +120,40 @@ class _HostelAttendanceResultPageState
     );
   }
 
-  Widget _neonCard(List<String> row) {
-    final sno = row[0];
-    final room = row[1];
-    final floor = row[2];
-    final incharge = row[3];
-    final total = row[4];
-    final present = row[5];
-    final absent = int.parse(total) - int.parse(present);
+  // ================= CARD =================
+  Widget _attendanceCard(List<String> row, bool isDark) {
+    final total = int.parse(row[4]);
+    final present = int.parse(row[5]);
+    final absent = total - present;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [midBlue.withOpacity(0.55), purpleDark.withOpacity(0.55)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: isDark ? null : Theme.of(context).cardColor,
+        gradient: isDark
+            ? LinearGradient(
+                colors: [
+                  midBlue.withOpacity(0.55),
+                  purpleDark.withOpacity(0.55),
+                ],
+              )
+            : null,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: neon.withOpacity(0.35), width: 1.4),
+        border: Border.all(
+          color: isDark ? neon.withOpacity(0.35) : Colors.grey.shade300,
+          width: 1.2,
+        ),
         boxShadow: [
           BoxShadow(
-            color: neon.withOpacity(0.25),
-            blurRadius: 15,
-            spreadRadius: 2,
+            color: isDark
+                ? neon.withOpacity(0.25)
+                : Colors.black.withOpacity(0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -186,24 +162,21 @@ class _HostelAttendanceResultPageState
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "S.No: $sno",
-                style: const TextStyle(
-                  color: Colors.white,
+                "S.No: ${row[0]}",
+                style: TextStyle(
+                  color: isDark ? Colors.white : Colors.black,
                   fontWeight: FontWeight.bold,
-                  fontSize: 15,
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: neon,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
-                  room,
+                  row[1],
                   style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
@@ -213,17 +186,16 @@ class _HostelAttendanceResultPageState
             ],
           ),
 
-          const SizedBox(height: 12),
-
-          Text("Floor: $floor", style: const TextStyle(color: Colors.white70)),
+          const SizedBox(height: 10),
+          Text("Floor: ${row[2]}",
+              style:
+                  TextStyle(color: isDark ? Colors.white70 : Colors.black87)),
           const SizedBox(height: 6),
+          Text("Incharge: ${row[3]}",
+              style:
+                  TextStyle(color: isDark ? Colors.white70 : Colors.black87)),
 
-          Text(
-            "Incharge: $incharge",
-            style: const TextStyle(color: Colors.white70),
-          ),
-
-          const SizedBox(height: 15),
+          const SizedBox(height: 14),
 
           Wrap(
             spacing: 12,
@@ -231,10 +203,7 @@ class _HostelAttendanceResultPageState
             children: [
               _badge(Icons.people, "Total: $total", neon),
               _badge(
-                Icons.check_circle,
-                "Present: $present",
-                Colors.greenAccent,
-              ),
+                  Icons.check_circle, "Present: $present", Colors.greenAccent),
               _badge(Icons.cancel, "Absent: $absent", Colors.redAccent),
             ],
           ),
@@ -243,6 +212,7 @@ class _HostelAttendanceResultPageState
     );
   }
 
+  // ================= BADGE =================
   Widget _badge(IconData icon, String text, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -259,7 +229,6 @@ class _HostelAttendanceResultPageState
             text,
             style: TextStyle(
               color: color,
-              fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),

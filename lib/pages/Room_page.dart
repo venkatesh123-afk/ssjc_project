@@ -12,6 +12,7 @@ class _RoomsPageState extends State<RoomsPage> {
   String _query = '';
   String _viewBy = 'Floor Wise';
 
+  // ================= DARK COLORS =================
   static const Color dark1 = Color(0xFF1a1a2e);
   static const Color dark2 = Color(0xFF16213e);
   static const Color dark3 = Color(0xFF0f3460);
@@ -27,8 +28,10 @@ class _RoomsPageState extends State<RoomsPage> {
     {'room': '301', 'floor': 'Second Floor', 'hostel': 'SSG NEET & MAINS'},
   ];
 
-  // FILTER SHEET
+  // ================= FILTER SHEET =================
   void _chooseViewBy() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -40,13 +43,20 @@ class _RoomsPageState extends State<RoomsPage> {
 
         return Container(
           padding: const EdgeInsets.all(12),
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [dark2, dark3],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          decoration: BoxDecoration(
+            gradient: isDark
+                ? const LinearGradient(
+                    colors: [dark2, dark3],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  )
+                : LinearGradient(
+                    colors: [
+                      Theme.of(context).cardColor,
+                      Theme.of(context).colorScheme.surface,
+                    ],
+                  ),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -55,8 +65,9 @@ class _RoomsPageState extends State<RoomsPage> {
                   (o) => RadioListTile<String>(
                     title: Text(
                       o,
-                      style: const TextStyle(
-                        color: Color(0xFFB5C7E8),
+                      style: TextStyle(
+                        color:
+                            isDark ? const Color(0xFFB5C7E8) : Colors.black87,
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
                       ),
@@ -79,6 +90,8 @@ class _RoomsPageState extends State<RoomsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     final filtered = _rooms.where((r) {
       return r['room']!.contains(_query) ||
           r['floor']!.toLowerCase().contains(_query.toLowerCase()) ||
@@ -88,30 +101,34 @@ class _RoomsPageState extends State<RoomsPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
 
+      // ================= APP BAR =================
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDark ? Colors.white : Colors.black,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           "Rooms List",
           style: TextStyle(
-            color: Colors.white,
+            color: isDark ? Colors.white : Colors.black,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
-
         actions: [
           TextButton.icon(
             onPressed: _chooseViewBy,
-            icon: const Icon(Icons.filter_list, color: neon),
+            icon:
+                Icon(Icons.filter_list, color: isDark ? neon : Colors.black54),
             label: Text(
               _viewBy,
-              style: const TextStyle(
-                color: neon,
+              style: TextStyle(
+                color: isDark ? neon : Colors.black54,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
@@ -121,32 +138,50 @@ class _RoomsPageState extends State<RoomsPage> {
         ],
       ),
 
+      // ================= BODY =================
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [dark1, dark2, dark3, purpleDark],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? const LinearGradient(
+                  colors: [dark1, dark2, dark3, purpleDark],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Theme.of(context).scaffoldBackgroundColor,
+                    Theme.of(context).colorScheme.surface,
+                  ],
+                ),
         ),
-
         child: Column(
           children: [
             const SizedBox(height: 95),
 
+            // ================= SEARCH =================
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.white24),
+                  color: isDark
+                      ? Colors.white.withOpacity(0.12)
+                      : Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: isDark
+                        ? Colors.white24
+                        : Theme.of(context).dividerColor,
+                  ),
                 ),
                 child: SearchField(
                   hint: 'Search room / floor / hostel',
-                  hintStyle: const TextStyle(color: Color(0xFFB5C7E8)),
-                  textColor: Colors.white,
-                  iconColor: neon,
+                  hintStyle: TextStyle(
+                    color: isDark ? const Color(0xFFB5C7E8) : Colors.black54,
+                  ),
+                  textColor: isDark ? Colors.white : Colors.black,
+                  iconColor: isDark ? neon : Colors.black54,
                   onChanged: (v) => setState(() => _query = v),
                 ),
               ),
@@ -154,7 +189,7 @@ class _RoomsPageState extends State<RoomsPage> {
 
             const SizedBox(height: 15),
 
-            // ROOM LIST
+            // ================= ROOM LIST =================
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -166,28 +201,41 @@ class _RoomsPageState extends State<RoomsPage> {
                     margin: const EdgeInsets.only(bottom: 14),
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          dark3.withOpacity(0.45),
-                          purpleDark.withOpacity(0.45),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
+                      gradient: isDark
+                          ? LinearGradient(
+                              colors: [
+                                dark3.withOpacity(0.45),
+                                purpleDark.withOpacity(0.45),
+                              ],
+                            )
+                          : LinearGradient(
+                              colors: [
+                                Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.08),
+                                Theme.of(context)
+                                    .colorScheme
+                                    .secondary
+                                    .withOpacity(0.08),
+                              ],
+                            ),
                       borderRadius: BorderRadius.circular(18),
                       border: Border.all(
-                        color: neon.withOpacity(0.35),
+                        color: isDark
+                            ? neon.withOpacity(0.35)
+                            : Theme.of(context).dividerColor,
                         width: 1.3,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: neon.withOpacity(0.22),
+                          color:
+                              isDark ? neon.withOpacity(0.22) : Colors.black12,
                           blurRadius: 15,
                           offset: const Offset(0, 4),
                         ),
                       ],
                     ),
-
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -196,25 +244,29 @@ class _RoomsPageState extends State<RoomsPage> {
                           children: [
                             Text(
                               "Room: ${r['room']}",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: isDark ? Colors.white : Colors.black,
                               ),
                             ),
                             const SizedBox(height: 4),
                             Text(
                               "Floor: ${r['floor']}",
-                              style: const TextStyle(
-                                color: Color(0xFFB5C7E8),
+                              style: TextStyle(
+                                color: isDark
+                                    ? const Color(0xFFB5C7E8)
+                                    : Colors.black54,
                                 fontSize: 14,
                               ),
                             ),
                             const SizedBox(height: 2),
                             Text(
                               "Hostel: ${r['hostel']}",
-                              style: const TextStyle(
-                                color: Color(0xFFB5C7E8),
+                              style: TextStyle(
+                                color: isDark
+                                    ? const Color(0xFFB5C7E8)
+                                    : Colors.black54,
                                 fontSize: 14,
                               ),
                             ),
@@ -224,9 +276,7 @@ class _RoomsPageState extends State<RoomsPage> {
                         // ROOM BADGE
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 18,
-                            vertical: 8,
-                          ),
+                              horizontal: 18, vertical: 8),
                           decoration: BoxDecoration(
                             color: neon,
                             borderRadius: BorderRadius.circular(12),
@@ -249,15 +299,20 @@ class _RoomsPageState extends State<RoomsPage> {
         ),
       ),
 
-      // ADD ROOM BUTTON
+      // ================= FAB =================
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: neon,
-        icon: const Icon(Icons.add, color: Colors.black),
-        label: const Text(
+        backgroundColor: isDark ? neon : Theme.of(context).colorScheme.primary,
+        icon: Icon(Icons.add, color: isDark ? Colors.black : Colors.white),
+        label: Text(
           "Add Room",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: isDark ? Colors.black : Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
         elevation: 12,
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(

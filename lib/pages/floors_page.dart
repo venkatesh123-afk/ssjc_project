@@ -14,6 +14,7 @@ class FloorsPage extends StatefulWidget {
 class _FloorsPageState extends State<FloorsPage> {
   String _query = '';
 
+  // ---------------- DARK COLORS ----------------
   static const Color dark1 = Color(0xFF1a1a2e);
   static const Color dark2 = Color(0xFF16213e);
   static const Color dark3 = Color(0xFF0f3460);
@@ -40,6 +41,8 @@ class _FloorsPageState extends State<FloorsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     final filtered = _floors.where((f) {
       return f['floor']!.toLowerCase().contains(_query.toLowerCase()) ||
           f['hostel']!.toLowerCase().contains(_query.toLowerCase());
@@ -48,51 +51,72 @@ class _FloorsPageState extends State<FloorsPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
 
+      // ================= APP BAR =================
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 26),
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDark ? Colors.white : Colors.black,
+            size: 26,
+          ),
           onPressed: () => Get.back(),
         ),
-        title: const Text(
+        title: Text(
           "Floors List",
           style: TextStyle(
-            color: Colors.white,
+            color: isDark ? Colors.white : Colors.black,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
 
+      // ================= BODY =================
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [dark1, dark2, dark3, purpleDark],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? const LinearGradient(
+                  colors: [dark1, dark2, dark3, purpleDark],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Theme.of(context).scaffoldBackgroundColor,
+                    Theme.of(context).colorScheme.surface,
+                  ],
+                ),
         ),
-
         child: Column(
           children: [
             const SizedBox(height: 95),
 
-            // 🔍 SEARCH
+            // ================= SEARCH =================
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.12),
+                  color: isDark
+                      ? Colors.white.withOpacity(0.12)
+                      : Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: Colors.white24),
+                  border: Border.all(
+                    color: isDark
+                        ? Colors.white24
+                        : Theme.of(context).dividerColor,
+                  ),
                 ),
                 child: SearchField(
                   hint: 'Search floor / hostel',
-                  hintStyle: const TextStyle(color: Color(0xFFB5C7E8)),
-                  textColor: Colors.white,
-                  iconColor: neon,
+                  hintStyle: TextStyle(
+                    color: isDark ? const Color(0xFFB5C7E8) : Colors.black54,
+                  ),
+                  textColor: isDark ? Colors.white : Colors.black,
+                  iconColor: isDark ? neon : Colors.black54,
                   onChanged: (v) => setState(() => _query = v),
                 ),
               ),
@@ -100,34 +124,44 @@ class _FloorsPageState extends State<FloorsPage> {
 
             const SizedBox(height: 12),
 
-            // 🏫 BRANCH DROPDOWN (FIXED)
+            // ================= BRANCH DROPDOWN =================
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Obx(() {
                 if (branchCtrl.isLoading.value) {
-                  return const CircularProgressIndicator(color: neon);
+                  return const CircularProgressIndicator();
                 }
 
                 if (branchCtrl.branches.isEmpty) {
-                  return const Text(
+                  return Text(
                     "No branches available",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
                   );
                 }
 
                 return DropdownButtonFormField<int>(
                   value: selectedBranchId,
+                  dropdownColor: isDark ? dark1 : Theme.of(context).cardColor,
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: isDark
+                        ? Colors.white.withOpacity(0.12)
+                        : Theme.of(context).cardColor,
                     hintText: "Select Branch",
+                    hintStyle: TextStyle(
+                      color: isDark ? Colors.white60 : Colors.black54,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  items: branchCtrl.branches.map<DropdownMenuItem<int>>((
-                    BranchModel b,
-                  ) {
+                  items: branchCtrl.branches
+                      .map<DropdownMenuItem<int>>((BranchModel b) {
                     return DropdownMenuItem<int>(
                       value: b.id,
                       child: Text(b.branchName),
@@ -136,11 +170,8 @@ class _FloorsPageState extends State<FloorsPage> {
                   onChanged: (value) {
                     setState(() {
                       selectedBranchId = value;
-
-                      final selected = branchCtrl.branches.firstWhere(
-                        (b) => b.id == value,
-                      );
-
+                      final selected =
+                          branchCtrl.branches.firstWhere((b) => b.id == value);
                       selectedBranchName = selected.branchName;
                     });
                   },
@@ -150,7 +181,7 @@ class _FloorsPageState extends State<FloorsPage> {
 
             const SizedBox(height: 15),
 
-            // 🏢 FLOORS LIST
+            // ================= FLOORS LIST =================
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -162,53 +193,70 @@ class _FloorsPageState extends State<FloorsPage> {
                     margin: const EdgeInsets.only(bottom: 12),
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          dark3.withOpacity(0.45),
-                          purpleDark.withOpacity(0.45),
-                        ],
-                      ),
+                      gradient: isDark
+                          ? LinearGradient(
+                              colors: [
+                                dark3.withOpacity(0.45),
+                                purpleDark.withOpacity(0.45),
+                              ],
+                            )
+                          : LinearGradient(
+                              colors: [
+                                Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.08),
+                                Theme.of(context)
+                                    .colorScheme
+                                    .secondary
+                                    .withOpacity(0.08),
+                              ],
+                            ),
                       borderRadius: BorderRadius.circular(18),
                       border: Border.all(
-                        color: neon.withOpacity(0.32),
+                        color: isDark
+                            ? neon.withOpacity(0.32)
+                            : Theme.of(context).dividerColor,
                         width: 1.3,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: neon.withOpacity(0.18),
+                          color:
+                              isDark ? neon.withOpacity(0.18) : Colors.black12,
                           blurRadius: 15,
                           offset: const Offset(0, 4),
                         ),
                       ],
                     ),
-
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           item['floor']!,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 19,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: isDark ? Colors.white : Colors.black,
                           ),
                         ),
                         const SizedBox(height: 4),
-
                         Text(
                           "Hostel: ${item['hostel']}",
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
-                            color: Color(0xFFB5C7E8),
+                            color: isDark
+                                ? const Color(0xFFB5C7E8)
+                                : Colors.black54,
                           ),
                         ),
                         const SizedBox(height: 2),
-
                         Text(
                           "Branch: ${selectedBranchName.isEmpty ? 'All Branches' : selectedBranchName}",
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
-                            color: Color(0xFFB5C7E8),
+                            color: isDark
+                                ? const Color(0xFFB5C7E8)
+                                : Colors.black54,
                           ),
                         ),
                       ],
@@ -221,11 +269,16 @@ class _FloorsPageState extends State<FloorsPage> {
         ),
       ),
 
-      // ➕ ADD FLOOR
+      // ================= FAB =================
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: neon,
-        icon: const Icon(Icons.add, color: Colors.black),
-        label: const Text("Add Floor", style: TextStyle(color: Colors.black)),
+        backgroundColor: isDark ? neon : Theme.of(context).colorScheme.primary,
+        icon: Icon(Icons.add, color: isDark ? Colors.black : Colors.white),
+        label: Text(
+          "Add Floor",
+          style: TextStyle(
+            color: isDark ? Colors.black : Colors.white,
+          ),
+        ),
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Add Floor (Dummy Action)")),

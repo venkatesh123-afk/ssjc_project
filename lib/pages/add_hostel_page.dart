@@ -19,6 +19,7 @@ class _AddHostelPageState extends State<AddHostelPage> {
   String? _branch;
   String? _status;
 
+  // ---------------- COLORS ----------------
   static const Color dark1 = Color(0xFF1a1a2e);
   static const Color dark2 = Color(0xFF16213e);
   static const Color dark3 = Color(0xFF0f3460);
@@ -37,72 +38,85 @@ class _AddHostelPageState extends State<AddHostelPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
+
+      // ================= APP BAR =================
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 26),
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDark ? Colors.white : Colors.black,
+            size: 26,
+          ),
           onPressed: () => Get.back(),
         ),
-        title: const Text(
+        title: Text(
           "Add Hostel",
           style: TextStyle(
-            color: Colors.white,
+            color: isDark ? Colors.white : Colors.black,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
+
+      // ================= BODY =================
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [dark1, dark2, dark3, purpleDark],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? const LinearGradient(
+                  colors: [dark1, dark2, dark3, purpleDark],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                )
+              : LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Theme.of(context).scaffoldBackgroundColor,
+                    Theme.of(context).colorScheme.surface,
+                  ],
+                ),
         ),
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(18, 20, 18, 18),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20),
 
+                // ================= FORM CARD =================
                 Container(
                   padding: const EdgeInsets.all(22),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFF1a1a2e),
-                        Color(0xFF16213e),
-                        Color(0xFF0f3460),
-                        Color(0xFF533483),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
+                    color: isDark
+                        ? Colors.white.withOpacity(0.05)
+                        : Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(26),
-                    border: Border.all(color: neon, width: 1.2),
+                    border: Border.all(
+                      color: isDark ? neon : Theme.of(context).dividerColor,
+                      width: 1.2,
+                    ),
                     boxShadow: [
                       BoxShadow(
-                        color: neon.withOpacity(0.35),
+                        color: isDark ? neon.withOpacity(0.35) : Colors.black12,
                         blurRadius: 20,
-                        spreadRadius: 1,
                       ),
                     ],
                   ),
-
                   child: Form(
                     key: _formKey,
                     child: Column(
                       children: [
                         _inputField(
+                          context,
                           label: "Building Name *",
                           controller: _buildingCtrl,
                           icon: Icons.home_work,
@@ -110,6 +124,7 @@ class _AddHostelPageState extends State<AddHostelPage> {
                         const SizedBox(height: 20),
 
                         _dropdownField(
+                          context,
                           label: "Category",
                           value: _category,
                           icon: Icons.male,
@@ -120,6 +135,7 @@ class _AddHostelPageState extends State<AddHostelPage> {
                         const SizedBox(height: 20),
 
                         _inputField(
+                          context,
                           label: "Address *",
                           controller: _addressCtrl,
                           icon: Icons.location_on,
@@ -127,6 +143,7 @@ class _AddHostelPageState extends State<AddHostelPage> {
                         const SizedBox(height: 20),
 
                         _dropdownField(
+                          context,
                           label: "Incharge *",
                           value: _incharge,
                           icon: Icons.person,
@@ -136,6 +153,7 @@ class _AddHostelPageState extends State<AddHostelPage> {
                         const SizedBox(height: 20),
 
                         _dropdownField(
+                          context,
                           label: "Branch *",
                           value: _branch,
                           icon: Icons.account_tree,
@@ -146,6 +164,7 @@ class _AddHostelPageState extends State<AddHostelPage> {
                         const SizedBox(height: 20),
 
                         _dropdownField(
+                          context,
                           label: "Status",
                           value: _status,
                           icon: Icons.toggle_on,
@@ -154,38 +173,33 @@ class _AddHostelPageState extends State<AddHostelPage> {
                         ),
                         const SizedBox(height: 30),
 
-                        // ADD HOSTEL BUTTON
+                        // ================= SUBMIT BUTTON =================
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton.icon(
-                            icon: const Icon(
-                              Icons.check_circle,
-                              color: Colors.black,
-                            ),
+                            icon: const Icon(Icons.check_circle),
                             label: const Text(
                               "Add Hostel",
                               style: TextStyle(
-                                color: Colors.black,
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: neon,
+                              foregroundColor: Colors.black,
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(18),
                               ),
-                              elevation: 20,
-                              shadowColor: neon,
+                              elevation: 15,
                             ),
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text(
-                                      'Hostel added (dummy action)',
-                                    ),
+                                    content:
+                                        Text('Hostel added (dummy action)'),
                                   ),
                                 );
                               }
@@ -204,26 +218,25 @@ class _AddHostelPageState extends State<AddHostelPage> {
     );
   }
 
-  Widget _inputField({
+  // ================= INPUT FIELD =================
+  Widget _inputField(
+    BuildContext context, {
     required String label,
     required TextEditingController controller,
     required IconData icon,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFF1a1a2e),
-            Color(0xFF16213e),
-            Color(0xFF0f3460),
-            Color(0xFF533483),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: isDark
+            ? Colors.white.withOpacity(0.06)
+            : Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white24),
+        border: Border.all(
+          color: isDark ? Colors.white24 : Theme.of(context).dividerColor,
+        ),
       ),
       child: Row(
         children: [
@@ -232,11 +245,14 @@ class _AddHostelPageState extends State<AddHostelPage> {
           Expanded(
             child: TextFormField(
               controller: controller,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+              style: TextStyle(
+                color: isDark ? Colors.white : Colors.black,
+                fontSize: 16,
+              ),
               decoration: InputDecoration(
                 labelText: label,
-                labelStyle: const TextStyle(
-                  color: Color(0xFFB5C7E8),
+                labelStyle: TextStyle(
+                  color: isDark ? const Color(0xFFB5C7E8) : Colors.black54,
                   fontSize: 14,
                 ),
                 border: InputBorder.none,
@@ -249,8 +265,9 @@ class _AddHostelPageState extends State<AddHostelPage> {
     );
   }
 
-  // DROPDOWN FIELD
-  Widget _dropdownField({
+  // ================= DROPDOWN FIELD =================
+  Widget _dropdownField(
+    BuildContext context, {
     required String label,
     required String? value,
     required List<String> items,
@@ -258,31 +275,31 @@ class _AddHostelPageState extends State<AddHostelPage> {
     required IconData icon,
     Map<String, IconData>? innerIcons,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFF1a1a2e),
-            Color(0xFF16213e),
-            Color(0xFF0f3460),
-            Color(0xFF533483),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: isDark
+            ? Colors.white.withOpacity(0.06)
+            : Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white24),
+        border: Border.all(
+          color: isDark ? Colors.white24 : Theme.of(context).dividerColor,
+        ),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButtonFormField<String>(
           value: value,
-          dropdownColor: const Color(0xFF16213e),
+          dropdownColor: isDark ? dark3 : Theme.of(context).cardColor,
           decoration: const InputDecoration(border: InputBorder.none),
           icon: const Icon(Icons.arrow_drop_down, color: neon),
           hint: Text(
             label,
-            style: const TextStyle(color: Color(0xFFB5C7E8), fontSize: 14),
+            style: TextStyle(
+              color: isDark ? const Color(0xFFB5C7E8) : Colors.black54,
+              fontSize: 14,
+            ),
           ),
           items: items.map((e) {
             return DropdownMenuItem(
@@ -291,7 +308,12 @@ class _AddHostelPageState extends State<AddHostelPage> {
                 children: [
                   Icon(innerIcons?[e] ?? icon, color: neon, size: 18),
                   const SizedBox(width: 8),
-                  Text(e, style: const TextStyle(color: Colors.white)),
+                  Text(
+                    e,
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
+                  ),
                 ],
               ),
             );

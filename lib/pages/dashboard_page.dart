@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:ssjc_p/controllers/theme_controller.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -31,118 +32,155 @@ class _DashboardPageState extends State<DashboardPage> {
     {"name": "AVP", "present": 65, "absent": 35},
     {"name": "Tallur", "present": 75, "absent": 25},
   ];
+  final themeCtrl = Get.find<ThemeController>();
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            Color(0xFF1a1a2e),
-            Color(0xFF16213e),
-            Color(0xFF0f3460),
-            Color(0xFF533483),
-          ],
+          colors: isDark
+              ? const [
+                  Color(0xFF1a1a2e),
+                  Color(0xFF16213e),
+                  Color(0xFF0f3460),
+                  Color(0xFF533483),
+                ]
+              : const [
+                  Color(0xFFF5F6FA),
+                  Color(0xFFE8ECF4),
+                ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
       ),
-
       child: Scaffold(
         backgroundColor: Colors.transparent,
         drawer: _buildDrawer(),
-
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-
-          title: Row(
-            children: [
-              const CircleAvatar(
-                radius: 18,
-                backgroundImage: AssetImage("assets/ssjc.jpg"),
-              ),
-
-              const SizedBox(width: 1),
-
-              Builder(
-                builder: (context) => IconButton(
-                  icon: const Icon(Icons.menu, color: Colors.white),
-                  onPressed: () => Scaffold.of(context).openDrawer(),
-                ),
-              ),
-              const SizedBox(width: 1),
-              IconButton(
-                icon: const Icon(Icons.grid_view_rounded, color: Colors.white),
-                onPressed: toggleGridMenu,
-              ),
-
-              const SizedBox(width: 1),
-
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: selectedYear,
-                    icon: const Icon(Icons.arrow_drop_down),
-                    items: years
-                        .map((y) => DropdownMenuItem(value: y, child: Text(y)))
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() => selectedYear = value!);
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-          // ✅ RIGHT SIDE ICONS (VISIBLE NOW)
-          actions: [
-            const SizedBox(width: 1),
-            IconButton(
-              icon: const Icon(Icons.logout, color: Colors.white),
-              onPressed: () {
-                Get.defaultDialog(
-                  title: "Logout",
-                  middleText: "Are you sure you want to logout?",
-                  textConfirm: "Yes",
-                  textCancel: "No",
-                  confirmTextColor: Colors.white,
-                  buttonColor: Colors.red,
-                  onConfirm: () async {
-                    final box = GetStorage();
-
-                    // ✅ CLEAR TOKEN & USER DATA
-                    await box.erase();
-
-                    Get.back(); // close dialog
-
-                    // ✅ REMOVE ALL PAGES FROM STACK
-                    Get.offAllNamed('/login');
-                  },
-                );
-              },
-            ),
-
-            const SizedBox(width: 1),
-            Padding(
-              padding: const EdgeInsets.only(right: 12),
-              child: CircleAvatar(
-                radius: 20,
-                backgroundColor: Colors.white,
-                child: Icon(Icons.person, color: Colors.black),
-              ),
-            ),
-          ],
-        ),
-
+        appBar: _buildAppBar(context),
         body: _buildDashboardBody(),
       ),
+    );
+  }
+
+  // ================= APP BAR =================
+
+  AppBar _buildAppBar(BuildContext context) {
+    final iconColor = Theme.of(context).iconTheme.color;
+
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      toolbarHeight: 64, // ✅ better height
+      automaticallyImplyLeading: false,
+      titleSpacing: 12, // ✅ spacing from left
+
+      title: Row(
+        children: [
+          // LOGO
+          const CircleAvatar(
+            radius: 18,
+            backgroundImage: AssetImage("assets/ssjc.jpg"),
+          ),
+
+          const SizedBox(width: 10),
+
+          // MENU
+          Builder(
+            builder: (context) => IconButton(
+              icon: Icon(Icons.menu, color: iconColor),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            ),
+          ),
+
+          const SizedBox(width: 6),
+
+          // GRID
+          IconButton(
+            icon: Icon(Icons.grid_view_rounded, color: iconColor),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            onPressed: toggleGridMenu,
+          ),
+
+          const SizedBox(width: 8),
+
+          // YEAR DROPDOWN (RESPONSIVE)
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 5,
+              ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: selectedYear,
+                  isExpanded: true,
+                  icon: const Icon(Icons.arrow_drop_down),
+                  dropdownColor: Theme.of(context).cardColor,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  items: years
+                      .map(
+                        (y) => DropdownMenuItem(
+                          value: y,
+                          child: Text(y, overflow: TextOverflow.ellipsis),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (v) => setState(() => selectedYear = v!),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+
+      actions: [
+        // 🌙 THEME TOGGLE
+        Obx(
+          () => IconButton(
+            tooltip: themeCtrl.isDark.value ? "Light Mode" : "Dark Mode",
+            icon: Icon(
+              themeCtrl.isDark.value
+                  ? Icons.light_mode_outlined
+                  : Icons.dark_mode_outlined,
+              color: iconColor,
+            ),
+            onPressed: themeCtrl.toggleTheme,
+          ),
+        ),
+
+        // 👤 PROFILE
+        PopupMenuButton<String>(
+          offset: const Offset(0, 50),
+          onSelected: (v) async {
+            if (v == 'logout') {
+              final box = GetStorage();
+              await box.erase();
+              Get.offAllNamed('/login');
+            }
+          },
+          itemBuilder: (_) => const [
+            PopupMenuItem(value: 'profile', child: Text("Profile")),
+            PopupMenuItem(value: 'logout', child: Text("Logout")),
+          ],
+          child: Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: CircleAvatar(
+              radius: 18,
+              backgroundColor: Theme.of(context).cardColor,
+              child: Icon(Icons.person, color: iconColor),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -152,59 +190,81 @@ class _DashboardPageState extends State<DashboardPage> {
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            smallCard("Total Students", "6902", [
-              Color(0xFF4ade80),
-              Color(0xFF22c55e),
-            ], Icons.people_outline),
+            smallCard(
+                "Total Students",
+                "6902",
+                [
+                  Color(0xFF4ade80),
+                  Color(0xFF22c55e),
+                ],
+                Icons.people_outline),
 
             const SizedBox(height: 12),
 
-            smallCard("Day", "2047", [
-              Color(0xFF818cf8),
-              Color(0xFF6366f1),
-            ], Icons.directions_bus_outlined),
+            smallCard(
+                "Day",
+                "2047",
+                [
+                  Color(0xFF818cf8),
+                  Color(0xFF6366f1),
+                ],
+                Icons.directions_bus_outlined),
 
             const SizedBox(height: 12),
 
-            smallCard("Hostel", "4854", [
-              Color(0xFFfbbf24),
-              Color(0xFFf59e0b),
-            ], Icons.apartment_outlined),
+            smallCard(
+                "Hostel",
+                "4854",
+                [
+                  Color(0xFFfbbf24),
+                  Color(0xFFf59e0b),
+                ],
+                Icons.apartment_outlined),
 
             const SizedBox(height: 12),
 
-            smallCard("Today's Outing", "14", [
-              Color(0xFF51dbe2),
-              Color(0xFF1cdbE5),
-            ], Icons.person_outline),
+            smallCard(
+                "Today's Outing",
+                "14",
+                [
+                  Color(0xFF51dbe2),
+                  Color(0xFF1cdbE5),
+                ],
+                Icons.person_outline),
 
             const SizedBox(height: 12),
 
-            smallCard("Today Present", "4130", [
-              Color(0xFF4ade80),
-              Color(0xFF22c55e),
-            ], Icons.people_outline),
+            smallCard(
+                "Today Present",
+                "4130",
+                [
+                  Color(0xFF4ade80),
+                  Color(0xFF22c55e),
+                ],
+                Icons.people_outline),
 
             const SizedBox(height: 12),
 
-            smallCard("Today Absent", "772", [
-              Color(0xFFf87171),
-              Color(0xFFef4444),
-            ], Icons.person_off_outlined),
+            smallCard(
+                "Today Absent",
+                "772",
+                [
+                  Color(0xFFf87171),
+                  Color(0xFFef4444),
+                ],
+                Icons.person_off_outlined),
 
             const SizedBox(height: 25),
 
-            const Text(
+            Text(
               "Student Attendance",
-              style: TextStyle(
-                fontSize: 22,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 20),
@@ -234,7 +294,6 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                 ],
               ),
-
               child: Column(
                 children: [
                   for (var c in colleges)
@@ -272,18 +331,14 @@ class _DashboardPageState extends State<DashboardPage> {
           BoxShadow(color: Colors.black26, blurRadius: 6, offset: Offset(0, 3)),
         ],
       ),
-
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
-
               children: [
                 Text(
                   title,
@@ -293,9 +348,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-
                 const SizedBox(height: 4),
-
                 Text(
                   value,
                   style: const TextStyle(
@@ -306,7 +359,6 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
               ],
             ),
-
             Icon(icon, color: Colors.white, size: 40),
           ],
         ),
@@ -341,18 +393,15 @@ class _DashboardPageState extends State<DashboardPage> {
       barrierColor: Colors.black38,
       barrierLabel: '',
       transitionDuration: const Duration(milliseconds: 350),
-
       pageBuilder: (_, __, ___) {
         return Align(
           alignment: Alignment.topCenter,
           child: Material(
             color: Colors.transparent,
-
             child: Container(
               margin: const EdgeInsets.only(top: kToolbarHeight + 10),
               height: MediaQuery.of(context).size.height * 0.85,
               width: MediaQuery.of(context).size.width,
-
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
                 color: Colors.transparent,
@@ -360,21 +409,19 @@ class _DashboardPageState extends State<DashboardPage> {
                   bottom: Radius.circular(25),
                 ),
               ),
-
               child: Column(
                 children: [
                   Align(
                     alignment: Alignment.topRight,
                     child: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.close,
                         size: 28,
-                        color: Colors.white,
+                        color: Theme.of(context).iconTheme.color,
                       ),
                       onPressed: _closeGridMenu,
                     ),
                   ),
-
                   Expanded(
                     child: GridView.count(
                       crossAxisCount: 2,
@@ -415,7 +462,6 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
         );
       },
-
       transitionBuilder: (_, anim, __, child) {
         return SlideTransition(
           position: Tween(
@@ -440,7 +486,6 @@ class _DashboardPageState extends State<DashboardPage> {
   }) {
     return InkWell(
       onTap: onTap,
-
       child: Container(
         decoration: BoxDecoration(
           color: color,
@@ -453,7 +498,6 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           ],
         ),
-
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -481,28 +525,27 @@ class _DashboardPageState extends State<DashboardPage> {
         topRight: Radius.circular(40),
         bottomRight: Radius.circular(40),
       ),
-
       child: Drawer(
-        backgroundColor: const Color(0xFF1a1a2e),
-
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF0f3460), Color(0xFF533483)],
-                ),
+              decoration: BoxDecoration(
+                gradient: Theme.of(context).brightness == Brightness.dark
+                    ? const LinearGradient(
+                        colors: [Color(0xFF0f3460), Color(0xFF533483)],
+                      )
+                    : const LinearGradient(
+                        colors: [Color(0xFFE8ECF4), Color(0xFFF5F6FA)],
+                      ),
               ),
-
-              child: const Center(
+              child: Center(
                 child: Text(
                   "Menu",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ),
             ),
@@ -620,7 +663,10 @@ class _DashboardPageState extends State<DashboardPage> {
   }) {
     return ListTile(
       leading: Icon(icon, color: iconColor),
-      title: Text(title, style: const TextStyle(color: Colors.white)),
+      title: Text(
+        title,
+        style: Theme.of(context).textTheme.bodyLarge,
+      ),
       onTap: onTap,
     );
   }
@@ -632,17 +678,19 @@ class _DashboardPageState extends State<DashboardPage> {
     required List<Widget> children,
   }) {
     return ExpansionTile(
-      collapsedIconColor: Colors.white,
-      iconColor: Colors.white,
-      leading: Icon(icon, color: iconColor),
-      title: Text(title, style: const TextStyle(color: Colors.white)),
-      children: children,
-    );
+        collapsedIconColor: Theme.of(context).iconTheme.color,
+        iconColor: Theme.of(context).iconTheme.color,
+        leading: Icon(icon, color: iconColor),
+        title: Text(
+          title,
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        children: children);
   }
 
   Widget _drawerSubItem(String title, VoidCallback onTap) {
     return ListTile(
-      title: Text(title, style: const TextStyle(color: Colors.white70)),
+      title: Text(title, style: Theme.of(context).textTheme.bodyMedium),
       onTap: onTap,
     );
   }
@@ -666,10 +714,8 @@ class AttendanceItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
-
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-
         children: [
           Text(
             title,
@@ -679,16 +725,13 @@ class AttendanceItem extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-
           const SizedBox(height: 10),
-
           Container(
             height: 22,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(50),
               color: Colors.grey.shade300,
             ),
-
             child: Row(
               children: [
                 Expanded(
@@ -708,7 +751,6 @@ class AttendanceItem extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 Expanded(
                   flex: absent,
                   child: Container(

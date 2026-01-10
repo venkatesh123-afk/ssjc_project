@@ -22,10 +22,9 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
-  // ✅ BRANCH CONTROLLER (API)
+  // ================= CONTROLLER =================
   final BranchController branchCtrl = Get.put(BranchController());
 
-  // UI uses List<String>
   List<String> branches = [];
 
   final List<String> shifts = const [
@@ -34,24 +33,24 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     'Evening Shift',
   ];
 
+  // ================= DARK COLORS =================
+  final Color darkBg1 = const Color(0xFF1a1a2e);
+  final Color darkBg2 = const Color(0xFF16213e);
+  final Color darkBg3 = const Color(0xFF0f3460);
+  final Color darkBg4 = const Color(0xFF533483);
+
   @override
   void initState() {
     super.initState();
 
     _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 700),
-    );
+        vsync: this, duration: const Duration(milliseconds: 700));
 
-    _fadeAnimation = CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeIn,
-    );
+    _fadeAnimation =
+        CurvedAnimation(parent: _animationController, curve: Curves.easeIn);
 
-    // 🔹 LOAD BRANCHES FROM API
     branchCtrl.loadBranches();
 
-    // 🔹 FIXED: MODEL-BASED ACCESS
     ever(branchCtrl.branches, (_) {
       branches = branchCtrl.branches
           .map<String>((BranchModel b) => b.branchName)
@@ -70,41 +69,26 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     super.dispose();
   }
 
-  // ---------------- FETCH ATTENDANCE ----------------
+  // ================= FETCH =================
   Future<void> _fetchAttendanceData() async {
     if (selectedBranch == null || selectedShift == null) {
-      _showSnackBar('⚠ Please select Branch & Shift', Colors.orange);
+      _showSnackBar('Please select Branch & Shift', Colors.orange);
       return;
     }
 
     setState(() => isLoading = true);
     await Future.delayed(const Duration(seconds: 2));
 
-    // 🔹 MOCK DATA (replace with API later)
-    final mockData = [
+    attendanceData = [
       AttendanceRecord(
-        batch: 'ADA-SR-IIITIC',
-        total: 59,
-        present: 51,
-        absent: 8,
-        outing: 0,
-      ),
+          batch: 'ADA-SR-IIITIC', total: 59, present: 51, absent: 8, outing: 0),
       AttendanceRecord(
-        batch: 'ADA-SR-MIC1',
-        total: 67,
-        present: 59,
-        absent: 7,
-        outing: 1,
-      ),
+          batch: 'ADA-SR-MIC1', total: 67, present: 59, absent: 7, outing: 1),
     ];
 
-    setState(() {
-      attendanceData = mockData;
-      isLoading = false;
-    });
-
+    setState(() => isLoading = false);
     _animationController.forward(from: 0);
-    _showSnackBar('✅ Attendance Loaded', Colors.green);
+    _showSnackBar('Attendance Loaded', Colors.green);
   }
 
   void _showSnackBar(String msg, Color color) {
@@ -120,51 +104,54 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
   // ================= UI =================
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF1a1a2e),
-            Color(0xFF16213e),
-            Color(0xFF0f3460),
-            Color(0xFF533483),
-          ],
-        ),
+      decoration: BoxDecoration(
+        gradient: isDark
+            ? LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [darkBg1, darkBg2, darkBg3, darkBg4],
+              )
+            : LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Theme.of(context).scaffoldBackgroundColor,
+                  Theme.of(context).colorScheme.surface,
+                ],
+              ),
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         extendBodyBehindAppBar: true,
-
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          title: const Text(
+          title: Text(
             "Verify Attendance",
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: isDark ? Colors.white : Colors.black),
           ),
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            icon: Icon(Icons.arrow_back,
+                color: isDark ? Colors.white : Colors.black),
             onPressed: () => Get.back(),
           ),
         ),
-
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildFilterCard(),
+                _buildFilterCard(isDark),
                 const SizedBox(height: 20),
-
-                _buildVerifyButton(),
+                _buildVerifyButton(isDark),
                 const SizedBox(height: 25),
-
                 if (isLoading) _buildLoadingState(),
-                if (!isLoading && attendanceData.isEmpty) _buildEmptyState(),
-                if (attendanceData.isNotEmpty) _buildAttendanceTable(),
+                if (!isLoading && attendanceData.isEmpty)
+                  _buildEmptyState(isDark),
+                if (attendanceData.isNotEmpty) _buildAttendanceTable(isDark),
               ],
             ),
           ),
@@ -173,22 +160,27 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     );
   }
 
-  // ---------------- FILTER CARD ----------------
-  Widget _buildFilterCard() {
+  // ================= FILTER CARD =================
+  Widget _buildFilterCard(bool isDark) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.08),
+        color: isDark
+            ? Colors.white.withOpacity(0.08)
+            : Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white24),
+        border: Border.all(
+          color: isDark ? Colors.white24 : Theme.of(context).dividerColor,
+        ),
       ),
       child: Row(
         children: [
           Expanded(
             child: _buildDropdown(
+              isDark: isDark,
               label: 'Branch',
               icon: Icons.account_tree,
-              iconColor: const Color(0xFF00D4FF),
+              iconColor: Colors.cyanAccent,
               value: selectedBranch,
               items: branches,
               onChanged: (v) => setState(() => selectedBranch = v),
@@ -197,9 +189,10 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
           const SizedBox(width: 12),
           Expanded(
             child: _buildDropdown(
+              isDark: isDark,
               label: 'Shift',
               icon: Icons.access_time,
-              iconColor: const Color(0xFF48BB78),
+              iconColor: Colors.greenAccent,
               value: selectedShift,
               items: shifts,
               onChanged: (v) => setState(() => selectedShift = v),
@@ -210,8 +203,9 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     );
   }
 
-  // ---------------- DROPDOWN ----------------
+  // ================= DROPDOWN =================
   Widget _buildDropdown({
+    required bool isDark,
     required String label,
     required IconData icon,
     required Color iconColor,
@@ -228,31 +222,41 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
             const SizedBox(width: 6),
             Text(
               label,
-              style: const TextStyle(color: Colors.white70, fontSize: 12),
+              style: TextStyle(
+                color: isDark ? Colors.white70 : Colors.black54,
+                fontSize: 12,
+              ),
             ),
           ],
         ),
         const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
+            color: isDark
+                ? Colors.white.withOpacity(0.1)
+                : Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.white24),
+            border: Border.all(
+              color: isDark ? Colors.white24 : Theme.of(context).dividerColor,
+            ),
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               value: value,
               isExpanded: true,
-              hint: const Text(
+              hint: Text(
                 "Select",
-                style: TextStyle(color: Colors.white60),
+                style: TextStyle(
+                  color: isDark ? Colors.white60 : Colors.black54,
+                ),
               ),
-              dropdownColor: const Color(0xFF1a1a2e),
-              icon: const Icon(
-                Icons.keyboard_arrow_down,
-                color: Colors.white60,
+              dropdownColor: isDark ? darkBg1 : Theme.of(context).cardColor,
+              icon: Icon(Icons.keyboard_arrow_down,
+                  color: isDark ? Colors.white60 : Colors.black54),
+              style: TextStyle(
+                color: isDark ? Colors.white : Colors.black,
+                fontSize: 13,
               ),
-              style: const TextStyle(color: Colors.white, fontSize: 13),
               items: items
                   .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                   .toList(),
@@ -264,15 +268,16 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     );
   }
 
-  // ---------------- BUTTON ----------------
-  Widget _buildVerifyButton() {
+  // ================= BUTTON =================
+  Widget _buildVerifyButton(bool isDark) {
     return SizedBox(
       height: 50,
       child: ElevatedButton(
         onPressed: isLoading ? null : _fetchAttendanceData,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.cyanAccent,
-          foregroundColor: Colors.black,
+          backgroundColor:
+              isDark ? Colors.cyanAccent : Theme.of(context).primaryColor,
+          foregroundColor: isDark ? Colors.black : Colors.white,
         ),
         child: const Text(
           "Verify Attendance",
@@ -282,8 +287,8 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     );
   }
 
-  // ---------------- DATA ----------------
-  Widget _buildAttendanceTable() {
+  // ================= DATA =================
+  Widget _buildAttendanceTable(bool isDark) {
     return FadeTransition(
       opacity: _fadeAnimation,
       child: Column(
@@ -293,7 +298,10 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
                 padding: const EdgeInsets.symmetric(vertical: 6),
                 child: Text(
                   e.batch,
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black,
+                    fontSize: 14,
+                  ),
                 ),
               ),
             )
@@ -302,16 +310,20 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(top: 60),
       child: Column(
-        children: const [
-          Icon(Icons.inbox, color: Colors.white54, size: 60),
-          SizedBox(height: 12),
+        children: [
+          Icon(Icons.inbox,
+              color: isDark ? Colors.white54 : Colors.black38, size: 60),
+          const SizedBox(height: 12),
           Text(
             "No Data Available",
-            style: TextStyle(color: Colors.white70, fontSize: 16),
+            style: TextStyle(
+              color: isDark ? Colors.white70 : Colors.black54,
+              fontSize: 16,
+            ),
           ),
         ],
       ),
@@ -321,7 +333,7 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
   Widget _buildLoadingState() {
     return const Padding(
       padding: EdgeInsets.all(20),
-      child: Center(child: CircularProgressIndicator(color: Colors.cyan)),
+      child: Center(child: CircularProgressIndicator()),
     );
   }
 }

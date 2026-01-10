@@ -9,6 +9,7 @@ class HostelMembersPage extends StatefulWidget {
 }
 
 class _HostelMembersPageState extends State<HostelMembersPage> {
+  // ================= DARK COLORS =================
   static const Color dark1 = Color(0xFF1a1a2e);
   static const Color dark2 = Color(0xFF16213e);
   static const Color dark3 = Color(0xFF0f3460);
@@ -18,7 +19,6 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
   String _viewBy = 'Hostel Wise';
   String _selectedHostel = 'SSJC-ADARSA CAMPUS';
   String _selectedBranch = 'ADARSA';
-
   String _query = '';
 
   final List<String> _viewOptions = [
@@ -29,6 +29,7 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
   ];
 
   final List<String> _hostels = ['SSJC-ADARSA CAMPUS', 'SSJC-NEET CAMPUS'];
+
   final List<String> _branches = ['ADARSA', 'NEET', 'MAINS'];
 
   final List<Map<String, String>> _members = [
@@ -39,6 +40,8 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     final filtered = _members.where((m) {
       return m['name']!.toLowerCase().contains(_query.toLowerCase()) ||
           m['admNo']!.contains(_query) ||
@@ -47,62 +50,93 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
+
+      // ================= APP BAR =================
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text(
+        title: Text(
           "Hostel Members",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDark ? Colors.white : Colors.black,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
 
+      // ================= BODY =================
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [dark1, dark2, dark3, purpleDark],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? const LinearGradient(
+                  colors: [dark1, dark2, dark3, purpleDark],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Theme.of(context).scaffoldBackgroundColor,
+                    Theme.of(context).colorScheme.surface,
+                  ],
+                ),
         ),
-
         child: Column(
           children: [
             const SizedBox(height: 95),
 
-            // FILTER SECTION
+            // ================= FILTER CARD =================
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.18),
+                  color: isDark
+                      ? Colors.black.withOpacity(0.18)
+                      : Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: Colors.white24),
+                  border: Border.all(
+                    color: isDark
+                        ? Colors.white24
+                        : Theme.of(context).dividerColor,
+                  ),
                 ),
                 child: Column(
                   children: [
-                    _dropdown("View By", _viewBy, _viewOptions, (v) {
-                      setState(() => _viewBy = v!);
-                    }),
-
+                    _dropdown(
+                      context,
+                      "View By",
+                      _viewBy,
+                      _viewOptions,
+                      (v) => setState(() => _viewBy = v!),
+                    ),
                     const SizedBox(height: 10),
-
-                    _dropdown("Hostel", _selectedHostel, _hostels, (v) {
-                      setState(() => _selectedHostel = v!);
-                    }),
-
+                    _dropdown(
+                      context,
+                      "Hostel",
+                      _selectedHostel,
+                      _hostels,
+                      (v) => setState(() => _selectedHostel = v!),
+                    ),
                     const SizedBox(height: 10),
-
-                    _dropdown("Branch", _selectedBranch, _branches, (v) {
-                      setState(() => _selectedBranch = v!);
-                    }),
-
+                    _dropdown(
+                      context,
+                      "Branch",
+                      _selectedBranch,
+                      _branches,
+                      (v) => setState(() => _selectedBranch = v!),
+                    ),
                     const SizedBox(height: 14),
 
+                    // ================= ACTION BUTTONS =================
                     Row(
                       children: [
                         Expanded(
@@ -117,7 +151,9 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
                             icon: const Icon(Icons.search),
                             label: const Text('Get Students'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF6C63FF),
+                              backgroundColor: isDark
+                                  ? const Color(0xFF6C63FF)
+                                  : Theme.of(context).primaryColor,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               shape: RoundedRectangleBorder(
@@ -132,16 +168,17 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
                             onPressed: () {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text(
-                                    'Assign Students (Demo Action)',
-                                  ),
+                                  content:
+                                      Text('Assign Students (Demo Action)'),
                                 ),
                               );
                             },
                             icon: const Icon(Icons.add),
                             label: const Text('Assign Students'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF1ABC9C),
+                              backgroundColor: isDark
+                                  ? const Color(0xFF1ABC9C)
+                                  : Colors.green,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               shape: RoundedRectangleBorder(
@@ -159,6 +196,7 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
 
             const SizedBox(height: 18),
 
+            // ================= TITLE =================
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Align(
@@ -166,7 +204,7 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
                 child: Text(
                   'Hostel Members List',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.9),
+                    color: isDark ? Colors.white70 : Colors.black87,
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                   ),
@@ -176,30 +214,36 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
 
             const SizedBox(height: 12),
 
+            // ================= LIST + SEARCH =================
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   children: [
-                    // SEARCH BAR
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white12,
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: Colors.white24),
+                        color: isDark
+                            ? Colors.white12
+                            : Theme.of(context).cardColor,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: isDark
+                              ? Colors.white24
+                              : Theme.of(context).dividerColor,
+                        ),
                       ),
                       child: SearchField(
                         hint: 'Search by Name, Adm No, Room',
-                        hintStyle: const TextStyle(color: Color(0xFFB5C7E8)),
-                        textColor: Colors.white,
-                        iconColor: neon,
+                        hintStyle: TextStyle(
+                          color:
+                              isDark ? const Color(0xFFB5C7E8) : Colors.black54,
+                        ),
+                        textColor: isDark ? Colors.white : Colors.black,
+                        iconColor: isDark ? neon : Colors.black54,
                         onChanged: (v) => setState(() => _query = v),
                       ),
                     ),
-
                     const SizedBox(height: 10),
-
-                    // MEMBERS LIST
                     Expanded(
                       child: ListView.builder(
                         itemCount: filtered.length,
@@ -210,22 +254,37 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
                             margin: const EdgeInsets.only(bottom: 14),
                             padding: const EdgeInsets.all(18),
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  dark3.withOpacity(0.45),
-                                  purpleDark.withOpacity(0.45),
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
+                              gradient: isDark
+                                  ? LinearGradient(
+                                      colors: [
+                                        dark3.withOpacity(0.45),
+                                        purpleDark.withOpacity(0.45),
+                                      ],
+                                    )
+                                  : LinearGradient(
+                                      colors: [
+                                        Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withOpacity(0.08),
+                                        Theme.of(context)
+                                            .colorScheme
+                                            .secondary
+                                            .withOpacity(0.08),
+                                      ],
+                                    ),
                               borderRadius: BorderRadius.circular(18),
                               border: Border.all(
-                                color: neon.withOpacity(0.35),
+                                color: isDark
+                                    ? neon.withOpacity(0.35)
+                                    : Theme.of(context).dividerColor,
                                 width: 1.3,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: neon.withOpacity(0.22),
+                                  color: isDark
+                                      ? neon.withOpacity(0.22)
+                                      : Colors.black12,
                                   blurRadius: 15,
                                   offset: const Offset(0, 4),
                                 ),
@@ -239,17 +298,21 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
                                   children: [
                                     Text(
                                       m['name']!,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 17,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                                        color: isDark
+                                            ? Colors.white
+                                            : Colors.black,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
                                       "Adm No: ${m['admNo']}",
-                                      style: const TextStyle(
-                                        color: Color(0xFFB5C7E8),
+                                      style: TextStyle(
+                                        color: isDark
+                                            ? const Color(0xFFB5C7E8)
+                                            : Colors.black54,
                                         fontSize: 14,
                                       ),
                                     ),
@@ -290,29 +353,43 @@ class _HostelMembersPageState extends State<HostelMembersPage> {
     );
   }
 
-  //  DROPDOWN
+  // ================= DROPDOWN =================
   Widget _dropdown(
+    BuildContext context,
     String label,
     String value,
     List<String> items,
     Function(String?) onChanged,
   ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.06),
+        color: isDark
+            ? Colors.white.withOpacity(0.06)
+            : Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.white24),
+        border: Border.all(
+          color: isDark ? Colors.white24 : Theme.of(context).dividerColor,
+        ),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: value,
-          dropdownColor: dark3,
+          dropdownColor: isDark ? dark3 : Theme.of(context).cardColor,
           isExpanded: true,
           icon: const Icon(Icons.arrow_drop_down, color: neon),
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black,
+          ),
           items: items
-              .map((o) => DropdownMenuItem(value: o, child: Text(o)))
+              .map(
+                (o) => DropdownMenuItem(
+                  value: o,
+                  child: Text(o),
+                ),
+              )
               .toList(),
           onChanged: onChanged,
         ),

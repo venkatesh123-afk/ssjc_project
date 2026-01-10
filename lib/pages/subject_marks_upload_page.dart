@@ -12,18 +12,29 @@ class SSJCBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color(0xFF1a1a2e),
-            Color(0xFF16213e),
-            Color(0xFF0f3460),
-            Color(0xFF533483),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
+      decoration: BoxDecoration(
+        gradient: isDark
+            ? const LinearGradient(
+                colors: [
+                  Color(0xFF1a1a2e),
+                  Color(0xFF16213e),
+                  Color(0xFF0f3460),
+                  Color(0xFF533483),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              )
+            : LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Theme.of(context).scaffoldBackgroundColor,
+                  Theme.of(context).colorScheme.surface,
+                ],
+              ),
       ),
       child: child,
     );
@@ -112,19 +123,27 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
 
+      // ---------------- APP BAR ----------------
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text(
+        title: Text(
           "Subject Marks Upload",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black,
+          ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDark ? Colors.white : Colors.black,
+          ),
           onPressed: () => Get.back(),
         ),
       ),
@@ -140,16 +159,13 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(26),
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFF1a1a2e),
-                          Color(0xFF16213e),
-                          Color(0xFF0f3460),
-                          Color(0xFF533483),
-                        ],
-                      ),
+                      color: isDark
+                          ? Colors.white.withOpacity(0.05)
+                          : Theme.of(context).cardColor,
                       border: Border.all(
-                        color: const Color(0xFF0f3460),
+                        color: isDark
+                            ? Colors.white24
+                            : Theme.of(context).dividerColor,
                         width: 1.3,
                       ),
                     ),
@@ -158,6 +174,7 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                         /// -------- BRANCH --------
                         Obx(
                           () => _buildField(
+                            context: context,
                             label: "Select Branch",
                             icon: Icons.school,
                             iconColor: Colors.cyanAccent,
@@ -166,9 +183,8 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                                 .map((b) => b.branchName)
                                 .toList(),
                             onChanged: (v) {
-                              final b = branchCtrl.branches.firstWhere(
-                                (e) => e.branchName == v,
-                              );
+                              final b = branchCtrl.branches
+                                  .firstWhere((e) => e.branchName == v);
 
                               setState(() {
                                 branch = v;
@@ -186,6 +202,7 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                         /// -------- GROUP --------
                         Obx(
                           () => _buildField(
+                            context: context,
                             label: groupCtrl.groups.isEmpty
                                 ? "Select Branch First"
                                 : "Select Group",
@@ -196,9 +213,8 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                             onChanged: groupCtrl.groups.isEmpty
                                 ? null
                                 : (v) {
-                                    final g = groupCtrl.groups.firstWhere(
-                                      (e) => e.name == v,
-                                    );
+                                    final g = groupCtrl.groups
+                                        .firstWhere((e) => e.name == v);
 
                                     setState(() {
                                       group = v;
@@ -214,6 +230,7 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                         /// -------- COURSE --------
                         Obx(
                           () => _buildField(
+                            context: context,
                             label: courseCtrl.courses.isEmpty
                                 ? "Select Group First"
                                 : "Select Course",
@@ -226,9 +243,8 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                             onChanged: courseCtrl.courses.isEmpty
                                 ? null
                                 : (v) {
-                                    final c = courseCtrl.courses.firstWhere(
-                                      (e) => e.courseName == v,
-                                    );
+                                    final c = courseCtrl.courses
+                                        .firstWhere((e) => e.courseName == v);
                                     setState(() {
                                       course = v;
                                       selectedCourseId = c.id;
@@ -238,6 +254,7 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                         ),
 
                         _buildField(
+                          context: context,
                           label: "Select Batch",
                           icon: Icons.date_range,
                           iconColor: Colors.orangeAccent,
@@ -247,6 +264,7 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                         ),
 
                         _buildField(
+                          context: context,
                           label: "Select Exam",
                           icon: Icons.assignment,
                           iconColor: Colors.lightGreenAccent,
@@ -256,6 +274,7 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                         ),
 
                         _buildField(
+                          context: context,
                           label: "Select Subject",
                           icon: Icons.book,
                           iconColor: Colors.pinkAccent,
@@ -289,9 +308,12 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                         ),
 
                         const SizedBox(height: 30),
-                        const Text(
+                        Text(
                           "2025 © SSJC",
-                          style: TextStyle(color: Colors.white70, fontSize: 12),
+                          style: TextStyle(
+                            color: isDark ? Colors.white70 : Colors.black54,
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),
@@ -327,10 +349,8 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: () {},
-                        icon: const Icon(
-                          Icons.cloud_upload,
-                          color: Colors.white,
-                        ),
+                        icon:
+                            const Icon(Icons.cloud_upload, color: Colors.white),
                         label: const Text("Marks Bulk Upload"),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
@@ -353,6 +373,7 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
 
   /// ---------------- DROPDOWN FIELD ----------------
   Widget _buildField({
+    required BuildContext context,
     required String label,
     required IconData icon,
     required Color iconColor,
@@ -360,13 +381,19 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
     required List<String> items,
     required Function(String?)? onChanged,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 18),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.08),
+        color: isDark
+            ? Colors.white.withOpacity(0.08)
+            : Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white24),
+        border: Border.all(
+          color: isDark ? Colors.white24 : Theme.of(context).dividerColor,
+        ),
       ),
       child: Row(
         children: [
@@ -377,12 +404,12 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
               child: DropdownButton<String>(
                 isExpanded: true,
                 value: value,
-                dropdownColor: const Color(0xFF0f1d3a),
+                dropdownColor: isDark ? const Color(0xFF0f1d3a) : Colors.white,
                 icon: const Icon(Icons.arrow_drop_down, color: neon),
                 hint: Text(
                   label,
-                  style: const TextStyle(
-                    color: Color(0xFFB5C7E8),
+                  style: TextStyle(
+                    color: isDark ? const Color(0xFFB5C7E8) : Colors.black54,
                     fontSize: 16,
                   ),
                 ),
@@ -392,8 +419,8 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                         value: e,
                         child: Text(
                           e,
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: isDark ? Colors.white : Colors.black,
                             fontSize: 16,
                           ),
                         ),

@@ -8,6 +8,7 @@ class StaffAttendancePage extends StatefulWidget {
 }
 
 class _StaffAttendancePageState extends State<StaffAttendancePage> {
+  // ================= COLORS =================
   static const Color dark1 = Color(0xFF1a1a2e);
   static const Color dark2 = Color(0xFF16213e);
   static const Color dark3 = Color(0xFF0f3460);
@@ -42,6 +43,8 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     final filtered = attendance.where((s) {
       return s["name"]!.toLowerCase().contains(query.toLowerCase()) ||
           s["id"]!.contains(query);
@@ -49,58 +52,71 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
+
+      // ================= APP BAR =================
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text(
+        title: Text(
           "Staff Attendance",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDark ? Colors.white : Colors.black,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
 
+      // ================= BODY =================
       body: Stack(
         children: [
+          // BACKGROUND
           Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [dark1, dark2, dark3, purpleDark],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+            decoration: BoxDecoration(
+              gradient: isDark
+                  ? const LinearGradient(
+                      colors: [dark1, dark2, dark3, purpleDark],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Theme.of(context).scaffoldBackgroundColor,
+                        Theme.of(context).colorScheme.surface,
+                      ],
+                    ),
             ),
           ),
 
           Column(
             children: [
               const SizedBox(height: 95),
-              // SEARCH BAR
+
+              // ================= SEARCH =================
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDark ? Colors.white : Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: Color(0xFFE0E0E0)),
+                    border: Border.all(
+                      color: isDark
+                          ? const Color(0xFFE0E0E0)
+                          : Theme.of(context).dividerColor,
+                    ),
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.search,
-                          color: Colors.black,
-                          size: 22,
-                        ),
-                      ),
+                      const Icon(Icons.search, color: Colors.black),
                       const SizedBox(width: 10),
                       Expanded(
                         child: TextField(
@@ -111,10 +127,7 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
                           ),
                           decoration: const InputDecoration(
                             hintText: "Search by name / user ID",
-                            hintStyle: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 15,
-                            ),
+                            hintStyle: TextStyle(color: Colors.grey),
                             border: InputBorder.none,
                           ),
                         ),
@@ -126,12 +139,13 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
 
               const SizedBox(height: 18),
 
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+              // ================= TITLE =================
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   "Staff Month Wise - November 2025",
                   style: TextStyle(
-                    color: neon,
+                    color: isDark ? neon : Theme.of(context).primaryColor,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -140,6 +154,7 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
 
               const SizedBox(height: 16),
 
+              // ================= LIST =================
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -151,49 +166,64 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
                       margin: const EdgeInsets.only(bottom: 16),
                       padding: const EdgeInsets.all(18),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            dark3.withOpacity(0.55),
-                            purpleDark.withOpacity(0.55),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
+                        gradient: isDark
+                            ? LinearGradient(
+                                colors: [
+                                  dark3.withOpacity(0.55),
+                                  purpleDark.withOpacity(0.55),
+                                ],
+                              )
+                            : LinearGradient(
+                                colors: [
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(0.08),
+                                  Theme.of(context)
+                                      .colorScheme
+                                      .secondary
+                                      .withOpacity(0.08),
+                                ],
+                              ),
                         borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: neon.withOpacity(0.35)),
+                        border: Border.all(
+                          color: isDark
+                              ? neon.withOpacity(0.35)
+                              : Theme.of(context).dividerColor,
+                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: neon.withOpacity(0.2),
+                            color:
+                                isDark ? neon.withOpacity(0.2) : Colors.black12,
                             blurRadius: 12,
                             offset: const Offset(0, 4),
                           ),
                         ],
                       ),
-
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             staff["name"],
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: isDark ? Colors.white : Colors.black,
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-
                           const SizedBox(height: 4),
-
                           Text(
                             "User ID: ${staff["id"]}",
-                            style: const TextStyle(
-                              color: Color(0xFFB5C7E8),
+                            style: TextStyle(
+                              color: isDark
+                                  ? const Color(0xFFB5C7E8)
+                                  : Colors.black54,
                               fontSize: 14,
                             ),
                           ),
-
                           const SizedBox(height: 16),
 
+                          // DAYS
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
@@ -206,19 +236,20 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
                                       horizontal: 14,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Colors.red.withOpacity(0.2),
+                                      color: Colors.red.withOpacity(0.15),
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(
                                         color: Colors.redAccent,
-                                        width: 1,
                                       ),
                                     ),
                                     child: Column(
                                       children: [
                                         Text(
                                           "${i + 1}",
-                                          style: const TextStyle(
-                                            color: Colors.white,
+                                          style: TextStyle(
+                                            color: isDark
+                                                ? Colors.white
+                                                : Colors.black,
                                             fontSize: 13,
                                           ),
                                         ),
@@ -228,7 +259,6 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
                                           style: const TextStyle(
                                             color: Colors.red,
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 15,
                                           ),
                                         ),
                                       ],
@@ -248,6 +278,7 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
             ],
           ),
 
+          // ================= BOTTOM BUTTONS =================
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -273,9 +304,7 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
                       ),
                     ),
                   ),
-
                   const SizedBox(width: 12),
-
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {},

@@ -29,36 +29,54 @@ class _FeeHeadPageState extends State<FeeHeadPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
 
+      // ================= APP BAR =================
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDark ? Colors.white : Colors.black,
+          ),
           onPressed: () => Get.back(),
         ),
-        title: const Text(
+        title: Text(
           "Fee Heads",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
 
+      // ================= BODY =================
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFF1a1a2e),
-              Color(0xFF16213e),
-              Color(0xFF0f3460),
-              Color(0xFF533483),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? const LinearGradient(
+                  colors: [
+                    Color(0xFF1a1a2e),
+                    Color(0xFF16213e),
+                    Color(0xFF0f3460),
+                    Color(0xFF533483),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Theme.of(context).scaffoldBackgroundColor,
+                    Theme.of(context).colorScheme.surface,
+                  ],
+                ),
         ),
-
         child: SafeArea(
           child: Column(
             children: [
@@ -70,10 +88,20 @@ class _FeeHeadPageState extends State<FeeHeadPage> {
                 child: Obx(
                   () => DropdownButtonFormField<String>(
                     value: selectedBranch,
+                    dropdownColor:
+                        isDark ? const Color(0xFF1a1a2e) : Colors.white,
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: isDark
+                          ? Colors.white.withOpacity(0.12)
+                          : Theme.of(context).cardColor,
                       hintText: "Select Branch",
+                      hintStyle: TextStyle(
+                        color: isDark ? Colors.white60 : Colors.black54,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
@@ -109,15 +137,17 @@ class _FeeHeadPageState extends State<FeeHeadPage> {
                 child: Obx(() {
                   if (feeCtrl.isLoading.value) {
                     return const Center(
-                      child: CircularProgressIndicator(color: Colors.cyan),
+                      child: CircularProgressIndicator(),
                     );
                   }
 
                   if (feeCtrl.feeHeads.isEmpty) {
-                    return const Center(
+                    return Center(
                       child: Text(
                         "No Fee Heads Found",
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                          color: isDark ? Colors.white : Colors.black54,
+                        ),
                       ),
                     );
                   }
@@ -133,11 +163,31 @@ class _FeeHeadPageState extends State<FeeHeadPage> {
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF0f3460), Color(0xFF533483)],
+                          gradient: isDark
+                              ? const LinearGradient(
+                                  colors: [
+                                    Color(0xFF0f3460),
+                                    Color(0xFF533483),
+                                  ],
+                                )
+                              : LinearGradient(
+                                  colors: [
+                                    Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withOpacity(0.08),
+                                    Theme.of(context)
+                                        .colorScheme
+                                        .secondary
+                                        .withOpacity(0.08),
+                                  ],
+                                ),
+                          border: Border.all(
+                            color: isDark
+                                ? Colors.white24
+                                : Theme.of(context).dividerColor,
                           ),
                         ),
-
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -146,8 +196,8 @@ class _FeeHeadPageState extends State<FeeHeadPage> {
                               children: [
                                 Text(
                                   fee.feeHead,
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color: isDark ? Colors.white : Colors.black,
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -155,14 +205,15 @@ class _FeeHeadPageState extends State<FeeHeadPage> {
                                 const SizedBox(height: 4),
                                 Text(
                                   fee.feeGroup,
-                                  style: const TextStyle(
-                                    color: Colors.white70,
+                                  style: TextStyle(
+                                    color: isDark
+                                        ? Colors.white70
+                                        : Colors.black54,
                                     fontSize: 13,
                                   ),
                                 ),
                               ],
                             ),
-
                             ElevatedButton(
                               onPressed: () {
                                 Get.snackbar(
@@ -171,8 +222,11 @@ class _FeeHeadPageState extends State<FeeHeadPage> {
                                 );
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.cyanAccent,
-                                foregroundColor: Colors.black,
+                                backgroundColor: isDark
+                                    ? Colors.cyanAccent
+                                    : Theme.of(context).primaryColor,
+                                foregroundColor:
+                                    isDark ? Colors.black : Colors.white,
                               ),
                               child: const Text("Collect"),
                             ),

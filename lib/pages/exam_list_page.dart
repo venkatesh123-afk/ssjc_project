@@ -9,6 +9,7 @@ class ExamsListPage extends StatefulWidget {
 }
 
 class _ExamsListPageState extends State<ExamsListPage> {
+  // ================= DARK COLORS =================
   static const Color dark1 = Color(0xFF1a1a2e);
   static const Color dark2 = Color(0xFF16213e);
   static const Color dark3 = Color(0xFF0f3460);
@@ -52,6 +53,8 @@ class _ExamsListPageState extends State<ExamsListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     final filtered = _exams.where((exam) {
       return exam["examName"]!.toLowerCase().contains(_query.toLowerCase()) ||
           exam["category"]!.toLowerCase().contains(_query.toLowerCase()) ||
@@ -61,70 +64,85 @@ class _ExamsListPageState extends State<ExamsListPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
 
+      // ================= APP BAR =================
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 26),
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDark ? Colors.white : Colors.black,
+            size: 26,
+          ),
           onPressed: () => Get.back(),
         ),
-        title: const Text(
+        title: Text(
           "Exams List",
           style: TextStyle(
-            color: Colors.white,
+            color: isDark ? Colors.white : Colors.black,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
 
+      // ================= BODY =================
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [dark1, dark2, dark3, purpleDark],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? const LinearGradient(
+                  colors: [dark1, dark2, dark3, purpleDark],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Theme.of(context).scaffoldBackgroundColor,
+                    Theme.of(context).colorScheme.surface,
+                  ],
+                ),
         ),
-
         child: Column(
           children: [
             const SizedBox(height: 95),
 
-            //  SEARCH BAR
+            // ================= SEARCH BAR =================
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark
+                      ? Colors.white.withOpacity(0.12)
+                      : Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Color(0xFFE0E0E0)),
+                  border: Border.all(
+                    color: isDark
+                        ? Colors.white24
+                        : Theme.of(context).dividerColor,
+                  ),
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 14),
                 child: Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.search,
-                        color: Colors.black,
-                        size: 22,
-                      ),
+                    Icon(
+                      Icons.search,
+                      color: isDark ? neon : Colors.black54,
+                      size: 22,
                     ),
                     const SizedBox(width: 12),
-
                     Expanded(
                       child: TextField(
                         onChanged: (v) => setState(() => _query = v),
-                        style: const TextStyle(color: Colors.black),
-                        decoration: const InputDecoration(
+                        style: TextStyle(
+                          color: isDark ? Colors.white : Colors.black,
+                        ),
+                        decoration: InputDecoration(
                           hintText: "Search exam / category / mode...",
-                          hintStyle: TextStyle(color: Colors.grey),
+                          hintStyle: TextStyle(
+                            color: isDark ? Colors.white60 : Colors.black54,
+                          ),
                           border: InputBorder.none,
                         ),
                       ),
@@ -136,33 +154,50 @@ class _ExamsListPageState extends State<ExamsListPage> {
 
             const SizedBox(height: 15),
 
-            //  EXAMS LIST
+            // ================= EXAMS LIST =================
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: filtered.length,
                 itemBuilder: (context, i) {
                   final exam = filtered[i];
+
                   return Container(
                     margin: const EdgeInsets.only(bottom: 14),
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          dark3.withOpacity(0.45),
-                          purpleDark.withOpacity(0.45),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
+                      gradient: isDark
+                          ? LinearGradient(
+                              colors: [
+                                dark3.withOpacity(0.45),
+                                purpleDark.withOpacity(0.45),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            )
+                          : LinearGradient(
+                              colors: [
+                                Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.08),
+                                Theme.of(context)
+                                    .colorScheme
+                                    .secondary
+                                    .withOpacity(0.08),
+                              ],
+                            ),
                       borderRadius: BorderRadius.circular(18),
                       border: Border.all(
-                        color: neon.withOpacity(0.32),
+                        color: isDark
+                            ? neon.withOpacity(0.32)
+                            : Theme.of(context).dividerColor,
                         width: 1.3,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: neon.withOpacity(0.25),
+                          color:
+                              isDark ? neon.withOpacity(0.25) : Colors.black12,
                           blurRadius: 15,
                           offset: const Offset(0, 4),
                         ),
@@ -173,28 +208,30 @@ class _ExamsListPageState extends State<ExamsListPage> {
                       children: [
                         Text(
                           "${exam['sno']}.  ${exam['examName']}",
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: isDark ? Colors.white : Colors.black,
                           ),
                         ),
                         const SizedBox(height: 8),
-
                         Text(
                           "Category: ${exam['category']}",
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
-                            color: Color(0xFFB5C7E8),
+                            color: isDark
+                                ? const Color(0xFFB5C7E8)
+                                : Colors.black54,
                           ),
                         ),
                         const SizedBox(height: 4),
-
                         Text(
                           "Mode: ${exam['mode']}",
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
-                            color: Color(0xFFB5C7E8),
+                            color: isDark
+                                ? const Color(0xFFB5C7E8)
+                                : Colors.black54,
                           ),
                         ),
                       ],
