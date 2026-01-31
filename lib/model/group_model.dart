@@ -12,4 +12,6 @@ class GroupModel {
       status: json['status'],
     );
   }
+
+  String? get groupName => null;
 }

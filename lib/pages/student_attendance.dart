@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ssjc_p/controllers/monthly_attendance_controller.dart';
+import 'package:ssjc_p/controllers/shift_controller.dart';
+import 'package:ssjc_p/get_stundents_pages/student_month_attendance_page.dart';
 
 import '../controllers/branch_controller.dart';
 import '../controllers/group_controller.dart';
 import '../controllers/course_controller.dart';
+import '../controllers/batch_controller.dart';
 
 class StudentAttendancePage extends StatefulWidget {
   const StudentAttendancePage({super.key});
@@ -17,34 +21,34 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
   final BranchController branchCtrl = Get.put(BranchController());
   final GroupController groupCtrl = Get.put(GroupController());
   final CourseController courseCtrl = Get.put(CourseController());
+  final BatchController batchCtrl = Get.put(BatchController());
+  final ShiftController shiftCtrl = Get.put(ShiftController());
+  final MonthlyAttendanceController attendanceCtrl =
+      Get.put(MonthlyAttendanceController());
 
   // ================= SELECTED VALUES =================
   String? branch;
   String? group;
   String? course;
   String? batch;
-  String? exam;
-  String? subject;
+  String? shift;
+  String? month;
+  String? selectedMonthName;
 
-  int? selectedCourseId;
-
-  // ================= STATIC DATA =================
-  final List<String> batches = ["2023–25", "2024–26", "2025–27"];
-  final List<String> exams = [
-    "Unit Test–1",
-    "Unit Test–2",
-    "Quarterly",
-    "Half-Yearly",
-    "Pre-Final",
-    "Final Exam",
-  ];
-  final List<String> subjects = [
-    "Mathematics",
-    "Physics",
-    "Chemistry",
-    "Biology",
-    "English",
-  ];
+  final Map<String, String> monthMap = {
+    "January": "01",
+    "February": "02",
+    "March": "03",
+    "April": "04",
+    "May": "05",
+    "June": "06",
+    "July": "07",
+    "August": "08",
+    "September": "09",
+    "October": "10",
+    "November": "11",
+    "December": "12",
+  };
 
   static const Color neon = Color(0xFF00FFF5);
 
@@ -78,15 +82,15 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
-
-      // ================= APP BAR =================
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: isDark ? const Color(0xFF0b132b) : Colors.white,
         elevation: 0,
         title: Text(
           "Student Attendance",
-          style: TextStyle(color: isDark ? Colors.white : Colors.black),
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back,
@@ -117,19 +121,28 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
                   end: Alignment.bottomCenter,
                 ),
         ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 120, 16, 40),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
           child: Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: isDark ? Colors.transparent : Colors.white,
-              borderRadius: BorderRadius.circular(30),
+              color: isDark ? const Color(0xFF0f172a) : Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                if (!isDark)
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+              ],
               border: isDark
-                  ? Border.all(color: Colors.white.withOpacity(0.25))
+                  ? Border.all(color: Colors.white.withOpacity(0.15))
                   : null,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+
+            // ✅ SINGLE SCROLL
+            child: ListView(
               children: [
                 Text(
                   "Select filters to view student attendance records",
@@ -139,9 +152,6 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 28),
-
-                // ================= FILTERS =================
                 Obx(() => _filterBox(
                       context: context,
                       label: "Select Branch",
@@ -155,20 +165,16 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
                             .firstWhere((e) => e.branchName == v);
                         setState(() {
                           branch = v;
-                          group = null;
-                          course = null;
+                          group = course = batch = shift = month = null;
+                          selectedMonthName = null;
                         });
-                        groupCtrl.clear();
-                        courseCtrl.clear();
                         groupCtrl.loadGroups(b.id);
+                        shiftCtrl.loadShifts(b.id);
                       },
                     )),
-
                 Obx(() => _filterBox(
                       context: context,
-                      label: groupCtrl.groups.isEmpty
-                          ? "Select Branch First"
-                          : "Select Group",
+                      label: "Select Group",
                       icon: Icons.groups,
                       iconColor: Colors.pinkAccent,
                       value: group,
@@ -180,18 +186,14 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
                                   .firstWhere((e) => e.name == v);
                               setState(() {
                                 group = v;
-                                course = null;
+                                course = batch = null;
                               });
-                              courseCtrl.clear();
                               courseCtrl.loadCourses(g.id);
                             },
                     )),
-
                 Obx(() => _filterBox(
                       context: context,
-                      label: courseCtrl.courses.isEmpty
-                          ? "Select Group First"
-                          : "Select Course",
+                      label: "Select Course",
                       icon: Icons.menu_book,
                       iconColor: Colors.blueAccent,
                       value: course,
@@ -204,45 +206,47 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
                                   .firstWhere((e) => e.courseName == v);
                               setState(() {
                                 course = v;
-                                selectedCourseId = c.id;
+                                batch = null;
                               });
+                              batchCtrl.loadBatches(c.id);
                             },
                     )),
-
+                Obx(() => _filterBox(
+                      context: context,
+                      label: "Select Batch",
+                      icon: Icons.group_work,
+                      iconColor: Colors.orangeAccent,
+                      value: batch,
+                      items: batchCtrl.batches.map((b) => b.batchName).toList(),
+                      onChanged: batchCtrl.batches.isEmpty
+                          ? null
+                          : (v) => setState(() => batch = v),
+                    )),
+                Obx(() => _filterBox(
+                      context: context,
+                      label: "Select Shift",
+                      icon: Icons.schedule,
+                      iconColor: Colors.lightGreenAccent,
+                      value: shift,
+                      items: shiftCtrl.shifts.map((s) => s.shiftName).toList(),
+                      onChanged: shiftCtrl.shifts.isEmpty
+                          ? null
+                          : (v) => setState(() => shift = v),
+                    )),
                 _filterBox(
                   context: context,
-                  label: "Select Batch",
-                  icon: Icons.calendar_today,
-                  iconColor: Colors.orangeAccent,
-                  value: batch,
-                  items: batches,
-                  onChanged: (v) => setState(() => batch = v),
-                ),
-
-                _filterBox(
-                  context: context,
-                  label: "Select Exam",
-                  icon: Icons.assignment,
-                  iconColor: Colors.lightGreenAccent,
-                  value: exam,
-                  items: exams,
-                  onChanged: (v) => setState(() => exam = v),
-                ),
-
-                _filterBox(
-                  context: context,
-                  label: "Select Subject",
-                  icon: Icons.bookmark,
+                  label: "Select Month",
+                  icon: Icons.date_range,
                   iconColor: Colors.pinkAccent,
-                  value: subject,
-                  items: subjects,
-                  onChanged: (v) => setState(() => subject = v),
+                  value: selectedMonthName,
+                  items: monthMap.keys.toList(),
+                  onChanged: (v) => setState(() {
+                    selectedMonthName = v;
+                    month = monthMap[v!];
+                  }),
                 ),
-
-                const SizedBox(height: 25),
-
+                const SizedBox(height: 10),
                 SizedBox(
-                  width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -252,8 +256,38 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    onPressed: () {
-                      Get.snackbar("Success", "Fetching students...");
+                    onPressed: () async {
+                      if ([branch, group, course, batch, shift, month]
+                          .contains(null)) {
+                        Get.snackbar("Error", "Please select all filters");
+                        return;
+                      }
+
+                      await attendanceCtrl.loadAttendance(
+                        branchId: branchCtrl.branches
+                            .firstWhere((e) => e.branchName == branch!)
+                            .id,
+                        groupId: groupCtrl.groups
+                            .firstWhere((e) => e.name == group!)
+                            .id,
+                        courseId: courseCtrl.courses
+                            .firstWhere((e) => e.courseName == course!)
+                            .id,
+                        batchId: batchCtrl.batches
+                            .firstWhere((e) => e.batchName == batch!)
+                            .id,
+                        shiftId: shiftCtrl.shifts
+                            .firstWhere((e) => e.shiftName == shift!)
+                            .id,
+                        month: month!,
+                      );
+
+                      Get.to(() => StudentMonthAttendancePage(
+                            studentName: "Students",
+                            monthName: selectedMonthName!,
+                            year: DateTime.now().year,
+                            admNo: '',
+                          ));
                     },
                     child: const Text(
                       "Get Students",
@@ -262,16 +296,13 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
                     ),
                   ),
                 ),
-
-                const SizedBox(height: 22),
-
+                const SizedBox(height: 20),
                 Center(
                   child: Text(
                     "2025 © SSJC.",
                     style: TextStyle(
-                      color: isDark ? Colors.white60 : Colors.black54,
-                      fontSize: 12,
-                    ),
+                        color: isDark ? Colors.white60 : Colors.black54,
+                        fontSize: 12),
                   ),
                 ),
               ],
@@ -282,7 +313,6 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
     );
   }
 
-  // ================= FILTER BOX =================
   Widget _filterBox({
     required BuildContext context,
     required String label,
@@ -314,15 +344,6 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
               ? Colors.white.withOpacity(0.35)
               : Theme.of(context).dividerColor,
         ),
-        boxShadow: isDark
-            ? [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                  blurRadius: 16,
-                  offset: const Offset(0, 8),
-                )
-              ]
-            : [],
       ),
       child: Row(
         children: [
@@ -332,16 +353,28 @@ class _StudentAttendancePageState extends State<StudentAttendancePage> {
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
                 value: value,
-                hint: Text(label,
-                    style: TextStyle(
-                        color: isDark ? Colors.white70 : Colors.black54)),
+                hint: Text(
+                  label,
+                  style: TextStyle(
+                    color: isDark ? Colors.white70 : Colors.black54,
+                  ),
+                ),
                 isExpanded: true,
                 dropdownColor: isDark ? const Color(0xFF0b132b) : Colors.white,
-                icon: Icon(Icons.keyboard_arrow_down,
-                    color: isDark ? neon : Colors.black54),
-                style: TextStyle(color: isDark ? Colors.white : Colors.black),
+                icon: Icon(
+                  Icons.keyboard_arrow_down,
+                  color: isDark ? neon : Colors.black54,
+                ),
+                style: TextStyle(
+                  color: isDark ? Colors.white : Colors.black,
+                ),
                 items: items
-                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                    .map(
+                      (e) => DropdownMenuItem<String>(
+                        value: e,
+                        child: Text(e),
+                      ),
+                    )
                     .toList(),
                 onChanged: onChanged,
               ),

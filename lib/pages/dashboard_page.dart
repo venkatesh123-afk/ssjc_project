@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:ssjc_p/controllers/auth_controller.dart';
+import 'package:ssjc_p/controllers/profile_controller.dart';
 import 'package:ssjc_p/controllers/theme_controller.dart';
+import 'package:ssjc_p/pages/profile_page.dart';
+import 'package:ssjc_p/utils/get_storage.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -156,30 +159,51 @@ class _DashboardPageState extends State<DashboardPage> {
             onPressed: themeCtrl.toggleTheme,
           ),
         ),
-
-        // 👤 PROFILE
         PopupMenuButton<String>(
           offset: const Offset(0, 50),
           onSelected: (v) async {
-            if (v == 'logout') {
-              final box = GetStorage();
-              await box.erase();
-              Get.offAllNamed('/login');
+            switch (v) {
+              case 'profile':
+                // 👉 Open Profile Page
+                Get.to(() => const ProfilePage());
+                break;
+              case 'logout':
+                // 🔥 Clear stored user session
+                AppStorage.clear();
+
+                // ✅ Delete ONLY user-based controllers
+                if (Get.isRegistered<AuthController>()) {
+                  Get.delete<AuthController>(force: true);
+                }
+
+                if (Get.isRegistered<ProfileController>()) {
+                  Get.delete<ProfileController>(force: true);
+                }
+
+                // 🚪 Clear navigation stack & go to login
+                Get.offAllNamed('/login');
+                break;
             }
           },
           itemBuilder: (_) => const [
-            PopupMenuItem(value: 'profile', child: Text("Profile")),
-            PopupMenuItem(value: 'logout', child: Text("Logout")),
+            PopupMenuItem(
+              value: 'profile',
+              child: Text("Profile"),
+            ),
+            PopupMenuItem(
+              value: 'logout',
+              child: Text("Logout"),
+            ),
           ],
           child: Padding(
             padding: const EdgeInsets.only(right: 12),
             child: CircleAvatar(
               radius: 18,
               backgroundColor: Theme.of(context).cardColor,
-              child: Icon(Icons.person, color: iconColor),
+              child: Icon(Icons.person),
             ),
           ),
-        ),
+        )
       ],
     );
   }
@@ -433,7 +457,8 @@ class _DashboardPageState extends State<DashboardPage> {
                           color: const Color(0xFF2196F3),
                           icon: Icons.groups_rounded,
                           title: "Class Attendance",
-                          onTap: () {},
+                          onTap: () => Get.toNamed('/classAttendance'),
+                          // ✅ correct route
                         ),
                         _menuCard(
                           color: const Color(0xFFFFC107),

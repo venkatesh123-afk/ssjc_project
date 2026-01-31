@@ -1,0 +1,1986 @@
+{
+  "info": {
+    "_postman_id": "c9b8ceef-144e-44ec-bbe7-ce4befd2c99a",
+    "name": "SSJC App",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "CoreApi",
+      "item": [
+        {
+          "name": "login",
+          "id": "83e780f2-05d9-4f7a-9ea7-c925671d97eb",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url_ssjc}}/login?user_login=667021&password=123456",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "login"
+              ],
+              "query": [
+                {
+                  "key": "user_login",
+                  "value": "667021"
+                },
+                {
+                  "key": "password",
+                  "value": "123456"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "MyProfle",
+          "id": "e5db3a82-8f53-4982-9b3d-45cc46693def",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{AccesToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/ssjc/public/api/myprofile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "ssjc",
+                "public",
+                "api",
+                "myprofile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BranchList",
+          "id": "6e6ad192-f033-4638-b562-c631c42453c0",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{AccesToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/branchlist",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "branchlist"
+              ],
+              "query": [
+                {
+                  "key": "branch_name",
+                  "value": "testupdate",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GroupsListByBranch",
+          "id": "0599eaec-ee35-4140-a2b6-9f8f2b1896ea",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ssjc_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/groupslistbybranch/22",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "groupslistbybranch",
+                "22"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CourseListByGroup",
+          "id": "5cb91879-58cc-44bc-ac74-e2659cc1546e",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ssjc_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/courselistbygroup/52",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "courselistbygroup",
+                "52"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "BatchListByCourse",
+          "id": "c765b141-97cd-4005-a736-6957fe597817",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ssjc_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/batchlistbycourse/69",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "batchlistbycourse",
+                "69"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "FeeHeadsByBranch",
+          "id": "a4cea1a8-70f4-4d20-b3a8-60e53b9d7794",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/feeheadsbybranch/22",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "feeheadsbybranch",
+                "22"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "9b7a9316-8960-46a7-85e7-34bc24a92cb4"
+    },
+    {
+      "name": "Fee",
+      "item": [
+        {
+          "name": "FeeHeadlist",
+          "id": "a8ee7c08-51a9-4163-aa6d-22eae563ca27",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{AccesToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/ssjc/public/api/feeheadlist",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "ssjc",
+                "public",
+                "api",
+                "feeheadlist"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "c9061db7-833d-4404-a33a-a9f5db4ee31d"
+    },
+    {
+      "name": "Hr",
+      "item": [
+        {
+          "name": "Departmentslist",
+          "id": "61bdf186-7614-47c0-99ab-d18723921fbe",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{AccesToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost/ssjc/public/api/departmentslist",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "ssjc",
+                "public",
+                "api",
+                "departmentslist"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Designationslist",
+          "id": "15434eba-587f-4ee2-b1e2-587ed3be749e",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ssjc_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/designationslist",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "designationslist"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "345d5db0-f0de-4590-b863-11f4bee21be4"
+    },
+    {
+      "name": "Student Attendance",
+      "item": [
+        {
+          "name": "Shifts By Branch",
+          "id": "f3561828-06d6-403b-9636-9f3ec4b68e3b",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ssjc_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/shiftlistbybranch/27",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "shiftlistbybranch",
+                "27"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Class Attendance By Batch-Month",
+          "id": "681ba37e-4934-43c8-9372-eb06f60aced4",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/monthlyattendanceList?branchid=24&groupid=52&courseid=69&batchid=191&month=09&shift=36",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "monthlyattendanceList"
+              ],
+              "query": [
+                {
+                  "key": "branchid",
+                  "value": "24"
+                },
+                {
+                  "key": "groupid",
+                  "value": "52"
+                },
+                {
+                  "key": "courseid",
+                  "value": "69"
+                },
+                {
+                  "key": "batchid",
+                  "value": "191"
+                },
+                {
+                  "key": "month",
+                  "value": "09"
+                },
+                {
+                  "key": "shift",
+                  "value": "36"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Attendance",
+          "id": "d4db25ce-781e-412f-ab14-bde653609837",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/verify_attendance?shift=36&branch=22",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "verify_attendance"
+              ],
+              "query": [
+                {
+                  "key": "shift",
+                  "value": "36"
+                },
+                {
+                  "key": "branch",
+                  "value": "22"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Outing List",
+          "id": "752df742-bc9a-49ff-ba0f-34efc6adf38f",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ssjc_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/outinglist?branch[]=All&report_type=All&daybookfilter=All&firstdate=&nextdate=",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "outinglist"
+              ],
+              "query": [
+                {
+                  "key": "branch[]",
+                  "value": "All",
+                  "description": "All,specific branch id"
+                },
+                {
+                  "key": "report_type",
+                  "value": "All",
+                  "description": "not_reported,reported,pending,approved,all"
+                },
+                {
+                  "key": "daybookfilter",
+                  "value": "All",
+                  "description": "Today,Yesterday,lastseven,thismonth,lastmonth,All,Custom"
+                },
+                {
+                  "key": "firstdate",
+                  "value": "",
+                  "description": "applies when daybookfilter is set to custom"
+                },
+                {
+                  "key": "nextdate",
+                  "value": "",
+                  "description": "applies when daybookfilter is set to custom"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Pending Outing List",
+          "id": "f2f56329-ccd2-4b95-88de-a847c35db9b0",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/getpendingoutinglist",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "getpendingoutinglist"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Outing Details By Sid",
+          "id": "e14b12a4-cddc-4f81-8314-f33d05ad25ed",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ssjc_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/getoutinglist/8883",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "getoutinglist",
+                "8883"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Letter Pic Upload",
+          "id": "ca94b445-d256-4c8e-9533-f53f7b97b712",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "uuid": "e29c979b-25d6-413c-8e73-2b6d0958e40e",
+                  "src": [
+                    "/C:/Users/home/Pictures/studentdoc.png"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url_ssjc}}stduent_outing_letter_update",
+              "host": [
+                "{{base_url_ssjc}}stduent_outing_letter_update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Outing Pic Upload",
+          "id": "2489a7b5-7154-4a91-bcec-35fdce6cd13f",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "uuid": "e29c979b-25d6-413c-8e73-2b6d0958e40e",
+                  "src": [
+                    "/C:/Users/home/Pictures/student.jpg"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url_ssjc}}/stduent_outing_photo_update",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "stduent_outing_photo_update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Save Outing",
+          "id": "093f93ca-c8ef-43e5-9958-eac71967aac5",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "outing_date",
+                  "value": "2026-01-21",
+                  "type": "text",
+                  "uuid": "ce4b6a30-c755-4b75-88b4-17d75d15afd8"
+                },
+                {
+                  "key": "passtype",
+                  "value": "Home Pass",
+                  "type": "text",
+                  "uuid": "2950bdb0-7c51-48b7-8603-d707bc1431e7"
+                },
+                {
+                  "key": "sid",
+                  "value": "20603",
+                  "type": "text",
+                  "uuid": "74e4ba10-b773-48b4-a566-adf7413f3a0d"
+                },
+                {
+                  "key": "admno",
+                  "value": "251238",
+                  "type": "text",
+                  "uuid": "b0aad926-a2bf-4c45-99ce-3213e80b9ae7"
+                },
+                {
+                  "key": "name",
+                  "value": "GUJJULA GANESH REDDY",
+                  "type": "text",
+                  "uuid": "6118ee63-f379-4d50-8815-2165f1a48bef"
+                },
+                {
+                  "key": "letterpic",
+                  "value": "https://object.peramsoftware.com/api/v1/file-entries/32747",
+                  "type": "text",
+                  "uuid": "87982ca3-3930-45ac-a388-6679a8b5de47"
+                },
+                {
+                  "key": "outtime",
+                  "value": "07:48 AM",
+                  "type": "text",
+                  "uuid": "ac8d68bb-cc15-4db4-a810-6d2fde0bd015"
+                },
+                {
+                  "key": "purpose",
+                  "value": "Personal",
+                  "type": "text",
+                  "uuid": "0fd1a840-2700-4214-9a76-ec4c80ea61de"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url_ssjc}}/storeouting",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "storeouting"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Approve Outing",
+          "id": "3cd45c78-3aa5-49e7-a8ea-2b84513a79b1",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ssjc_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "outing_date",
+                  "value": "2026-01-21",
+                  "type": "text",
+                  "uuid": "ce4b6a30-c755-4b75-88b4-17d75d15afd8"
+                },
+                {
+                  "key": "passtype",
+                  "value": "Home Pass",
+                  "type": "text",
+                  "uuid": "2950bdb0-7c51-48b7-8603-d707bc1431e7"
+                },
+                {
+                  "key": "sid",
+                  "value": "20603",
+                  "type": "text",
+                  "uuid": "74e4ba10-b773-48b4-a566-adf7413f3a0d"
+                },
+                {
+                  "key": "admno",
+                  "value": "251238",
+                  "type": "text",
+                  "uuid": "b0aad926-a2bf-4c45-99ce-3213e80b9ae7"
+                },
+                {
+                  "key": "name",
+                  "value": "GUJJULA GANESH REDDY",
+                  "type": "text",
+                  "uuid": "6118ee63-f379-4d50-8815-2165f1a48bef"
+                },
+                {
+                  "key": "letterpic",
+                  "value": "https://object.peramsoftware.com/api/v1/file-entries/32316",
+                  "type": "text",
+                  "uuid": "87982ca3-3930-45ac-a388-6679a8b5de47"
+                },
+                {
+                  "key": "outtime",
+                  "value": "07:48 AM",
+                  "type": "text",
+                  "uuid": "ac8d68bb-cc15-4db4-a810-6d2fde0bd015"
+                },
+                {
+                  "key": "purpose",
+                  "value": "Personal",
+                  "type": "text",
+                  "uuid": "0fd1a840-2700-4214-9a76-ec4c80ea61de"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url_ssjc}}/storeouting",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "storeouting"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "store student attendance",
+          "id": "47a58405-719f-4cc5-9bce-244626da8eb1",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer 95350|QZZnsFN2I2ebDfgT3HhTT93FomQBvDwIaGHiiWgQ"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url_ssjc}}/store_student_attendace?branch_id=22&group_id=52&course_id=69&batch_id=191&shift=36&sid[]=17772&sid[]=17887&sid[]=18137&at_status[]=P&at_status[]=A&at_status[]=P",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "store_student_attendace"
+              ],
+              "query": [
+                {
+                  "key": "branch_id",
+                  "value": "22"
+                },
+                {
+                  "key": "group_id",
+                  "value": "52"
+                },
+                {
+                  "key": "course_id",
+                  "value": "69"
+                },
+                {
+                  "key": "batch_id",
+                  "value": "191"
+                },
+                {
+                  "key": "shift",
+                  "value": "36",
+                  "description": "if 36 not working then use 26"
+                },
+                {
+                  "key": "sid[]",
+                  "value": "17772"
+                },
+                {
+                  "key": "sid[]",
+                  "value": "17887"
+                },
+                {
+                  "key": "sid[]",
+                  "value": "18137"
+                },
+                {
+                  "key": "at_status[]",
+                  "value": "P"
+                },
+                {
+                  "key": "at_status[]",
+                  "value": "A"
+                },
+                {
+                  "key": "at_status[]",
+                  "value": "P"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Attendance Summary List",
+          "id": "d1a7db0d-1dd9-4dbd-99bb-2c88d7021dad",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/attendancesummarylist",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "attendancesummarylist"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Student Attendance",
+          "id": "1b972c48-917c-412b-9e3b-549c93724dd9",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "disabled": true
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_TOKEN_HERE",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{base_url_ssjc}}/verify_store_attendance?branch_id[]=22&group_id[]=52&course_id[]=69&batch_id[]=191&total_strength[]=3&total_present[]=2&total_absent[]=1",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "verify_store_attendance"
+              ],
+              "query": [
+                {
+                  "key": "branch_id[]",
+                  "value": "22"
+                },
+                {
+                  "key": "group_id[]",
+                  "value": "52"
+                },
+                {
+                  "key": "course_id[]",
+                  "value": "69"
+                },
+                {
+                  "key": "batch_id[]",
+                  "value": "191"
+                },
+                {
+                  "key": "total_strength[]",
+                  "value": "3"
+                },
+                {
+                  "key": "total_present[]",
+                  "value": "2"
+                },
+                {
+                  "key": "total_absent[]",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Verify Attendance",
+          "id": "c481bf56-0a22-400b-804f-c8b80b60d539",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/getverify_attendance?branch_id=22&shift=36",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "getverify_attendance"
+              ],
+              "query": [
+                {
+                  "key": "branch_id",
+                  "value": "22"
+                },
+                {
+                  "key": "shift",
+                  "value": "36"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Approve Pending Outings",
+          "id": "a66d3c30-7ad0-4318-ad4e-ba16b98d0ac5",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/approve_outing/8533",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "approve_outing",
+                "8533"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Inreport Outing",
+          "id": "202fac03-7573-42d6-b6f0-200f54eed0f9",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/inreport_outing/8533",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "inreport_outing",
+                "8533"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Student Attendance Grid By Sid",
+          "id": "9e1ba056-d692-45c3-8125-e82c5dd85088",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/attendance-grid/17772",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "attendance-grid",
+                "17772"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Outing Remark ",
+          "id": "0f7f6af4-f232-4124-a12f-894cc1b37afd",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n        \"id\": 8533,\r\n        \"remarks\": \"Student violated outing rules\"\r\n      }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url_ssjc}}/add-outing-remarks",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "add-outing-remarks"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Outing Search",
+          "id": "186d050f-305e-45fb-b62f-aa53deda0dcf",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/outing-search/Ravi",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "outing-search",
+                "Ravi"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Students Attendance List",
+          "id": "d6a26d20-97b8-46fb-8a4f-b98246f41399",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/get_students_attendance_list?shift=26&date=2026-01-29&batchid=191",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "get_students_attendance_list"
+              ],
+              "query": [
+                {
+                  "key": "shift",
+                  "value": "26"
+                },
+                {
+                  "key": "date",
+                  "value": "2026-01-29"
+                },
+                {
+                  "key": "batchid",
+                  "value": "191"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Outing Search",
+          "id": "b12e470d-b64c-445e-88f0-8274de461c5a",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url_ssjc}}/outing-search/8533",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "outing-search",
+                "8533"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Store Attendance",
+          "id": "4d841200-c5cd-4c80-aec3-49956a2ef3ef",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/verify_store_attendance",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "verify_store_attendance"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "09685758-cf81-4275-b2cd-605b9fcf920b"
+    },
+    {
+      "name": "Student",
+      "item": [
+        {
+          "name": "Student Search By Adm No",
+          "id": "12e56d7e-598d-4c9c-b226-a72a0271775d",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ssjc_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/getstudentdetailsbysearch/2512",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "getstudentdetailsbysearch",
+                "2512"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "9c38c792-91c0-40e9-ac70-42821efb7e54"
+    },
+    {
+      "name": "Exam",
+      "item": [
+        {
+          "name": "Get Exam Categories List",
+          "id": "b9d952af-99b7-49c1-bfad-22520531a817",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ssjc_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/categorylist",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "categorylist"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Exams List",
+          "id": "904d34ad-d0ca-49da-83c3-b7edb2df920e",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ssjc_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/exams_list",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "exams_list"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "0e2e301e-1185-4def-b3b8-ad9e2f139e6b"
+    },
+    {
+      "name": "Hostels",
+      "item": [
+        {
+          "name": "Get Hostels By Branch by branchid",
+          "id": "038fffed-0cec-49fe-aa7e-fe9f79a2d017",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/gethostelsbybranch/22",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "gethostelsbybranch",
+                "22"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Non Hostel Students",
+          "id": "b5058894-6b2c-4d9c-800d-e82d4986a834",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/getnonhostelstudents/22",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "getnonhostelstudents",
+                "22"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Floor Incharges by Building id",
+          "id": "976f5f2a-8fa6-465f-a33a-5ac0ba4cfa2c",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/getfloorincharges/1",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "getfloorincharges",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get  Floors By Incharge",
+          "id": "00bd8164-6b36-49db-a413-ab43e619da62",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/getfloorsbyincharge/2403",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "getfloorsbyincharge",
+                "2403"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Assign Incharges",
+          "id": "6a627752-9c71-493a-a3a2-dcbe4ea0162f",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "type": "text",
+                  "key": "rooms[]",
+                  "value": "G4"
+                },
+                {
+                  "type": "text",
+                  "key": "rooms[]",
+                  "value": "G5"
+                },
+                {
+                  "type": "text",
+                  "key": "staff",
+                  "value": "2403"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url_ssjc}}/assignincharges",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "assignincharges"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Rooms By Floor",
+          "id": "f5405fd5-c929-4538-a6dd-459ccf3a5733",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/getroomsbyfloor/1",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "getroomsbyfloor",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Hostel Member",
+          "id": "3ebfd81d-c039-4287-a479-e74d561e2fed",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n        \r\n        \"floor\": \"1\",\r\n        \"hostel\": \"1\",\r\n        \"room\":[\"7\"],\r\n        \"sid\":[\"17773\"]\r\n      }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url_ssjc}}/addhostelmember",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "addhostelmember"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hostel Members List",
+          "id": "2952a312-9848-4746-97ad-5274a61d3b5a",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/hostelmemberslist?type=room&param=7",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "hostelmemberslist"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "room"
+                },
+                {
+                  "key": "param",
+                  "value": "7"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Hostel Member",
+          "id": "da47e16e-ccd0-4bc6-91e9-1e59c3167000",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{base_url_ssjc}}/deletehostelmember/25610",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "deletehostelmember",
+                "25610"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit Hostel Member",
+          "id": "871b24c7-6176-419e-a580-8cceb84c4c52",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n        \"sid\": 17772,\r\n        \"room\": 7,\r\n        \"floor\": 2\r\n      }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url_ssjc}}/edithostelmember",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "edithostelmember"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Students By Floor",
+          "id": "d045319f-a02c-48a3-9618-d59b0d3af246",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/getstudentsbyfloor/10",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "getstudentsbyfloor",
+                "10"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "a60b2fb7-f054-460b-88d0-b59e4bdf4f5f"
+    },
+    {
+      "name": "Hostel Attendance",
+      "item": [
+        {
+          "name": "Get Room Students Attendance",
+          "id": "86f372ed-5fee-4f35-8a92-a197346a47fe",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/getroomstudents_attendance?shift=1&date=2025-08-08&param=7",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "getroomstudents_attendance"
+              ],
+              "query": [
+                {
+                  "key": "shift",
+                  "value": "1"
+                },
+                {
+                  "key": "date",
+                  "value": "2025-08-08"
+                },
+                {
+                  "key": "param",
+                  "value": "7"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Store Hostel Attendace",
+          "id": "1f50772f-c6b4-44cf-9b35-9235a14a1843",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/store_hostel_attendace?branch_id=26&hostel=1&floor=2&room=7&shift=1&sid[]=17772&sid[]=17887&at_status[]=P&at_status[]=A",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "store_hostel_attendace"
+              ],
+              "query": [
+                {
+                  "key": "branch_id",
+                  "value": "26"
+                },
+                {
+                  "key": "hostel",
+                  "value": "1"
+                },
+                {
+                  "key": "floor",
+                  "value": "2"
+                },
+                {
+                  "key": "room",
+                  "value": "7"
+                },
+                {
+                  "key": "shift",
+                  "value": "1"
+                },
+                {
+                  "key": "sid[]",
+                  "value": "17772"
+                },
+                {
+                  "key": "sid[]",
+                  "value": "17887"
+                },
+                {
+                  "key": "at_status[]",
+                  "value": "P"
+                },
+                {
+                  "key": "at_status[]",
+                  "value": "A"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Room Attendance",
+          "id": "957d27ce-847f-4f93-8312-475513dca5b5",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/getroomattendance?param=7",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "getroomattendance"
+              ],
+              "query": [
+                {
+                  "key": "param",
+                  "value": "7"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Rooms Attendance",
+          "id": "92435108-05a0-4b96-98fa-8aaf15346940",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n        \"branch\": \"26\",\r\n        \"date\": \"2025-08-08\",\r\n        \"hostel\": 1,\r\n        \"floor\": 2,\r\n        \"room\": 7\r\n      }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url_ssjc}}/rooms-attendance",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "rooms-attendance"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Hostel Attendance Grid",
+          "id": "7c82b482-2645-4af1-8cc6-7c355ac8bdee",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{local_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n        \"branch\": \"26\",\r\n        \"date\": \"2025-08-08\",\r\n        \"hostel\": 1,\r\n        \"floor\": 2,\r\n        \"room\": 7\r\n      }"
+            },
+            "url": {
+              "raw": "{{base_url_ssjc}}/hostel-attendance-grid/17772",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "hostel-attendance-grid",
+                "17772"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "c158b2c7-327b-42ff-9030-9695837ec757"
+    }
+  ]
+}

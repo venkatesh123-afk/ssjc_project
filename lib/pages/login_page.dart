@@ -15,15 +15,18 @@ class _LoginPageState extends State<LoginPage> {
   bool obscure = true;
 
   late final AuthController auth;
-
   @override
   void initState() {
     super.initState();
 
-    // ✅ SAFE controller initialization
+    // ✅ Safely get or create AuthController
     auth = Get.isRegistered<AuthController>()
         ? Get.find<AuthController>()
-        : Get.put(AuthController(), permanent: true);
+        : Get.put(AuthController());
+
+    // ✅ Clear previous user input
+    userCtrl.clear();
+    passCtrl.clear();
   }
 
   @override
@@ -55,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
 
-          // ---------------- WAVE DESIGN ----------------
+          // ---------------- WAVE ----------------
           Positioned(
             bottom: -80,
             left: 0,
@@ -76,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
 
-          // ---------------- LOGIN CONTENT ----------------
+          // ---------------- CONTENT ----------------
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
@@ -92,9 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                         fit: BoxFit.cover,
                       ),
                     ),
-
                     const SizedBox(height: 25),
-
                     const Text(
                       "SSJC Login",
                       style: TextStyle(
@@ -103,9 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-
                     const SizedBox(height: 40),
-
                     Container(
                       padding: const EdgeInsets.all(25),
                       decoration: BoxDecoration(
@@ -118,34 +117,40 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       child: Column(
                         children: [
-                          // USERNAME
+                          // ---------- USERNAME ----------
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 4,
-                            ),
+                                horizontal: 12, vertical: 4),
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.80),
                               borderRadius: BorderRadius.circular(15),
                             ),
                             child: TextField(
                               controller: userCtrl,
+                              cursorColor: Colors.black,
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                              ),
                               decoration: const InputDecoration(
-                                prefixIcon: Icon(Icons.person),
+                                prefixIcon:
+                                    Icon(Icons.person, color: Colors.black),
                                 border: InputBorder.none,
                                 labelText: "Username",
+                                labelStyle: TextStyle(color: Colors.black54),
+                                floatingLabelStyle:
+                                    TextStyle(color: Colors.black),
+                                hintStyle: TextStyle(color: Colors.black45),
                               ),
                             ),
                           ),
 
                           const SizedBox(height: 20),
 
-                          // PASSWORD
+                          // ---------- PASSWORD ----------
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 4,
-                            ),
+                                horizontal: 12, vertical: 4),
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.80),
                               borderRadius: BorderRadius.circular(15),
@@ -153,15 +158,26 @@ class _LoginPageState extends State<LoginPage> {
                             child: TextField(
                               controller: passCtrl,
                               obscureText: obscure,
+                              cursorColor: Colors.black,
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                              ),
                               decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.lock),
+                                prefixIcon:
+                                    const Icon(Icons.lock, color: Colors.black),
                                 border: InputBorder.none,
                                 labelText: "Password",
+                                labelStyle:
+                                    const TextStyle(color: Colors.black54),
+                                floatingLabelStyle:
+                                    const TextStyle(color: Colors.black),
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     obscure
                                         ? Icons.visibility
                                         : Icons.visibility_off,
+                                    color: Colors.black,
                                   ),
                                   onPressed: () =>
                                       setState(() => obscure = !obscure),
@@ -172,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
 
                           const SizedBox(height: 25),
 
-                          // LOGIN BUTTON
+                          // ---------- LOGIN BUTTON ----------
                           Obx(
                             () => SizedBox(
                               width: double.infinity,
@@ -223,7 +239,6 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
                     ),
-
                     const SizedBox(height: 25),
                     const Text("@ SSJC", style: TextStyle(color: Colors.white)),
                   ],

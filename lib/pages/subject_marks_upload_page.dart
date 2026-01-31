@@ -126,13 +126,12 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
 
       // ---------------- APP BAR ----------------
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
         elevation: 0,
+        backgroundColor: isDark ? const Color(0xFF1a1a2e) : Colors.white,
         title: Text(
           "Subject Marks Upload",
           style: TextStyle(
@@ -151,8 +150,9 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
       body: SSJCBackground(
         child: Stack(
           children: [
+            /// ---------------- SCROLL CONTENT ----------------
             SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(18, 120, 18, 200),
+              padding: const EdgeInsets.fromLTRB(18, 24, 18, 200),
               child: Column(
                 children: [
                   Container(
@@ -172,86 +172,81 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                     child: Column(
                       children: [
                         /// -------- BRANCH --------
-                        Obx(
-                          () => _buildField(
-                            context: context,
-                            label: "Select Branch",
-                            icon: Icons.school,
-                            iconColor: Colors.cyanAccent,
-                            value: branch,
-                            items: branchCtrl.branches
-                                .map((b) => b.branchName)
-                                .toList(),
-                            onChanged: (v) {
-                              final b = branchCtrl.branches
-                                  .firstWhere((e) => e.branchName == v);
+                        Obx(() => _buildField(
+                              context: context,
+                              label: "Select Branch",
+                              icon: Icons.school,
+                              iconColor: Colors.cyanAccent,
+                              value: branch,
+                              items: branchCtrl.branches
+                                  .map((b) => b.branchName)
+                                  .toList(),
+                              onChanged: (v) {
+                                final b = branchCtrl.branches
+                                    .firstWhere((e) => e.branchName == v);
 
-                              setState(() {
-                                branch = v;
-                                group = null;
-                                course = null;
-                              });
+                                setState(() {
+                                  branch = v;
+                                  group = null;
+                                  course = null;
+                                });
 
-                              groupCtrl.clear();
-                              courseCtrl.clear();
-                              groupCtrl.loadGroups(b.id);
-                            },
-                          ),
-                        ),
+                                groupCtrl.clear();
+                                courseCtrl.clear();
+                                groupCtrl.loadGroups(b.id);
+                              },
+                            )),
 
                         /// -------- GROUP --------
-                        Obx(
-                          () => _buildField(
-                            context: context,
-                            label: groupCtrl.groups.isEmpty
-                                ? "Select Branch First"
-                                : "Select Group",
-                            icon: Icons.group,
-                            iconColor: Colors.purpleAccent,
-                            value: group,
-                            items: groupCtrl.groups.map((g) => g.name).toList(),
-                            onChanged: groupCtrl.groups.isEmpty
-                                ? null
-                                : (v) {
-                                    final g = groupCtrl.groups
-                                        .firstWhere((e) => e.name == v);
+                        Obx(() => _buildField(
+                              context: context,
+                              label: groupCtrl.groups.isEmpty
+                                  ? "Select Branch First"
+                                  : "Select Group",
+                              icon: Icons.group,
+                              iconColor: Colors.purpleAccent,
+                              value: group,
+                              items:
+                                  groupCtrl.groups.map((g) => g.name).toList(),
+                              onChanged: groupCtrl.groups.isEmpty
+                                  ? null
+                                  : (v) {
+                                      final g = groupCtrl.groups
+                                          .firstWhere((e) => e.name == v);
 
-                                    setState(() {
-                                      group = v;
-                                      course = null;
-                                    });
+                                      setState(() {
+                                        group = v;
+                                        course = null;
+                                      });
 
-                                    courseCtrl.clear();
-                                    courseCtrl.loadCourses(g.id);
-                                  },
-                          ),
-                        ),
+                                      courseCtrl.clear();
+                                      courseCtrl.loadCourses(g.id);
+                                    },
+                            )),
 
                         /// -------- COURSE --------
-                        Obx(
-                          () => _buildField(
-                            context: context,
-                            label: courseCtrl.courses.isEmpty
-                                ? "Select Group First"
-                                : "Select Course",
-                            icon: Icons.menu_book,
-                            iconColor: Colors.blueAccent,
-                            value: course,
-                            items: courseCtrl.courses
-                                .map((c) => c.courseName)
-                                .toList(),
-                            onChanged: courseCtrl.courses.isEmpty
-                                ? null
-                                : (v) {
-                                    final c = courseCtrl.courses
-                                        .firstWhere((e) => e.courseName == v);
-                                    setState(() {
-                                      course = v;
-                                      selectedCourseId = c.id;
-                                    });
-                                  },
-                          ),
-                        ),
+                        Obx(() => _buildField(
+                              context: context,
+                              label: courseCtrl.courses.isEmpty
+                                  ? "Select Group First"
+                                  : "Select Course",
+                              icon: Icons.menu_book,
+                              iconColor: Colors.blueAccent,
+                              value: course,
+                              items: courseCtrl.courses
+                                  .map((c) => c.courseName)
+                                  .toList(),
+                              onChanged: courseCtrl.courses.isEmpty
+                                  ? null
+                                  : (v) {
+                                      final c = courseCtrl.courses
+                                          .firstWhere((e) => e.courseName == v);
+                                      setState(() {
+                                        course = v;
+                                        selectedCourseId = c.id;
+                                      });
+                                    },
+                            )),
 
                         _buildField(
                           context: context,
@@ -338,6 +333,7 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                         label: const Text("Download Format"),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
@@ -354,6 +350,7 @@ class _SubjectMarksUploadPageState extends State<SubjectMarksUploadPage> {
                         label: const Text("Marks Bulk Upload"),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),

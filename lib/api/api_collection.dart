@@ -1,23 +1,49 @@
 class ApiCollection {
   static const String baseUrl = "https://dev.srisaraswathigroups.in/api";
 
-  // ---------------- LOGIN ----------------
-  static String login(String username, String password) =>
-      "/login?user_login=${Uri.encodeQueryComponent(username)}"
-      "&password=${Uri.encodeQueryComponent(password)}";
+  // LOGIN (QUERY PARAMS — EXACTLY LIKE POSTMAN)
+  static String login({
+    required String username,
+    required String password,
+  }) {
+    return "/login"
+        "?user_login=${Uri.encodeQueryComponent(username)}"
+        "&password=${Uri.encodeQueryComponent(password)}";
+  }
 
-  // ---------------- BRANCH ----------------
   static const String branchList = "/branchlist";
-
-  // ---------------- GROUPS ----------------
   static String groupsByBranch(int branchId) => "/groupslistbybranch/$branchId";
-
-  // ---------------- COURSES ----------------
   static String coursesByGroup(int groupId) => "/courselistbygroup/$groupId";
-
-  // ---------------- BATCHES ----------------
   static String batchesByCourse(int courseId) => "/batchlistbycourse/$courseId";
+  static String shiftsByBranch(int branchId) => "/shiftlistbybranch/$branchId";
+  static String studentByAdmNo(String admNo) =>
+      "/getstudentdetailsbysearch/$admNo";
 
-  // ---------------- FEE HEADS ----------------
+  static const String outingList =
+      "/outinglist?branch[]=All&report_type=All&daybookfilter=All&firstdate=&nextdate=";
+
+  static const String pendingOutingList = "/getpendingoutinglist";
+  static const String departmentsList = "/departmentslist";
+  static const String designationsList = "/designationslist";
+  static const String examsList = "/exams_list";
+  static const String myProfile = "/myprofile";
+
   static String feeHeadsByBranch(int branchId) => "/feeheadsbybranch/$branchId";
+
+  static String monthlyAttendance({
+    required int branchId,
+    required int groupId,
+    required int courseId,
+    required int batchId,
+    required String month,
+    required int shiftId,
+  }) {
+    return "/monthlyattendanceList"
+        "?branchid=$branchId"
+        "&groupid=$groupId"
+        "&courseid=$courseId"
+        "&batchid=$batchId"
+        "&month=$month"
+        "&shift=$shiftId";
+  }
 }

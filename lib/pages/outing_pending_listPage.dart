@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:ssjc_p/model/model2.dart';
 import 'package:ssjc_p/pages/verify_outing_page.dart';
+import 'package:ssjc_p/controllers/outing_pending_controller.dart';
 
 class OutingPendingListPage extends StatefulWidget {
   const OutingPendingListPage({super.key});
@@ -10,46 +12,7 @@ class OutingPendingListPage extends StatefulWidget {
 }
 
 class _OutingPendingListPageState extends State<OutingPendingListPage> {
-  final List<StudentModel> students = [
-    StudentModel(
-      id: "240379",
-      name: "MUPPANENI VENKATA MANI CHARAN",
-      permissionBy: "RAKINDI HARI RAMA JOGAIAH",
-      image: "assets/girl.jpg",
-    ),
-    StudentModel(
-      id: "251388",
-      name: "KUNCHALA ARAVIND BABU",
-      permissionBy: "RAKINDI HARI RAMA JOGAIAH",
-      image: "assets/girl.jpg",
-    ),
-    StudentModel(
-      id: "242380",
-      name: "MADDISANI SAI SUSHANTH",
-      permissionBy: "GURUPUTTI VENKAT REDDY",
-      image: "assets/girl.jpg",
-    ),
-  ];
-
-  late List<StudentModel> filteredStudents;
-
-  @override
-  void initState() {
-    super.initState();
-    filteredStudents = List.from(students);
-  }
-
-  void searchStudent(String value) {
-    setState(() {
-      filteredStudents = students
-          .where(
-            (s) =>
-                s.name.toLowerCase().contains(value.toLowerCase()) ||
-                s.id.contains(value),
-          )
-          .toList();
-    });
-  }
+  final OutingPendingController controller = Get.put(OutingPendingController());
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +112,7 @@ class _OutingPendingListPageState extends State<OutingPendingListPage> {
             children: [
               // ================= SEARCH =================
               TextField(
-                onChanged: searchStudent,
+                onChanged: controller.searchStudent,
                 style: TextStyle(
                   color: isDark ? Colors.white : Colors.black,
                 ),
@@ -174,100 +137,122 @@ class _OutingPendingListPageState extends State<OutingPendingListPage> {
               const SizedBox(height: 18),
 
               // ================= STUDENT LIST =================
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: filteredStudents.length,
-                itemBuilder: (context, index) {
-                  final s = filteredStudents[index];
+              Obx(() {
+                if (controller.isLoading.value) {
+                  return const Padding(
+                    padding: EdgeInsets.all(24),
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => VerifyOutingPage(
-                            adm: s.id,
-                            name: s.name,
-                            status: "Pending",
-                            time: "10:30",
-                            type: "Hospital",
+                if (controller.filteredStudents.isEmpty) {
+                  return const Padding(
+                    padding: EdgeInsets.all(24),
+                    child: Text("No pending outings found"),
+                  );
+                }
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: controller.filteredStudents.length,
+                  itemBuilder: (context, index) {
+                    final StudentModel s = controller.filteredStudents[index];
+
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => VerifyOutingPage(
+                              adm: s.admNo,
+                              name: s.name,
+                              status: s.status,
+                              time: "10:30",
+                              type: "Hospital",
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 18),
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? Colors.white.withOpacity(0.08)
+                              : Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(
+                            color: isDark
+                                ? Colors.white.withOpacity(0.2)
+                                : Theme.of(context).dividerColor,
                           ),
                         ),
-                      );
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 18),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? Colors.white.withOpacity(0.08)
-                            : Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(
-                          color: isDark
-                              ? Colors.white.withOpacity(0.2)
-                              : Theme.of(context).dividerColor,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          // IMAGE
-                          Container(
-                            width: 70,
-                            height: 70,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                image: AssetImage(s.image!),
-                                fit: BoxFit.cover,
+                        child: Row(
+                          children: [
+                            // IMAGE
+                            Container(
+                              width: 70,
+                              height: 70,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                image: DecorationImage(
+                                  image:
+                                      (s.image != null && s.image!.isNotEmpty)
+                                          ? NetworkImage(s.image!)
+                                          : const AssetImage("assets/girl.jpg")
+                                              as ImageProvider,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 16),
+                            const SizedBox(width: 16),
 
-                          // DETAILS
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  s.id,
-                                  style: TextStyle(
-                                    fontSize: 17,
-                                    color: isDark ? Colors.white : Colors.black,
-                                    fontWeight: FontWeight.bold,
+                            // DETAILS
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    s.admNo,
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      color:
+                                          isDark ? Colors.white : Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  s.name,
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color:
-                                        isDark ? Colors.white : Colors.black87,
-                                    fontWeight: FontWeight.w600,
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    s.name,
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: isDark
+                                          ? Colors.white
+                                          : Colors.black87,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  "Permission By : ${s.permissionBy}",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: isDark
-                                        ? Colors.white70
-                                        : Colors.black54,
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    "Permission By : ${s.permissionBy}",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: isDark
+                                          ? Colors.white70
+                                          : Colors.black54,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
+                    );
+                  },
+                );
+              }),
             ],
           ),
         ),

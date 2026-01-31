@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/branch_controller.dart';
+import '../controllers/exam_category_controller.dart';
 import '../model/branch_model.dart';
 
 class ExamCategoryListPage extends StatefulWidget {
@@ -19,19 +20,10 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
   static const Color neon = Color(0xFF00FFF5);
 
   final BranchController branchCtrl = Get.put(BranchController());
+  final ExamCategoryController categoryCtrl = Get.put(ExamCategoryController());
 
   String _query = "";
-
   int? selectedBranchId;
-  String selectedBranchName = "";
-
-  final List<Map<String, String>> _categories = [
-    {"sno": "1", "category": "MAINS"},
-    {"sno": "2", "category": "EAMCET"},
-    {"sno": "3", "category": "IPE"},
-    {"sno": "4", "category": "NEET"},
-    {"sno": "5", "category": "ADVANCE"},
-  ];
 
   @override
   void initState() {
@@ -41,11 +33,7 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    final filtered = _categories.where((c) {
-      return c["category"]!.toLowerCase().contains(_query.toLowerCase());
-    }).toList();
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -54,10 +42,8 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back,
-              color: isDark ? Colors.white : Colors.black),
-          onPressed: () => Get.back(),
+        iconTheme: IconThemeData(
+          color: isDark ? Colors.white : Colors.black,
         ),
         title: Text(
           "Exam Categories",
@@ -76,72 +62,49 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 )
-              : LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Theme.of(context).scaffoldBackgroundColor,
-                    Theme.of(context).colorScheme.surface,
-                  ],
-                ),
+              : null,
         ),
         child: SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-
-              // ================= SEARCH =================
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: TextField(
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              children: [
+                // ================= SEARCH =================
+                TextField(
                   onChanged: (v) => setState(() => _query = v),
                   style: TextStyle(
                     color: isDark ? Colors.white : Colors.black,
                   ),
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: isDark
-                        ? Colors.white.withOpacity(0.12)
-                        : Theme.of(context).cardColor,
+                    fillColor:
+                        isDark ? Colors.white.withOpacity(0.12) : Colors.white,
                     hintText: "Search category...",
                     hintStyle: TextStyle(
-                      color: isDark ? Colors.white60 : Colors.black54,
+                      color: isDark ? Colors.white60 : Colors.grey,
                     ),
-                    prefixIcon: Icon(Icons.search,
-                        color: isDark ? neon : Colors.black54),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: isDark ? neon : Colors.grey,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
                       borderSide: BorderSide.none,
                     ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 12),
+                const SizedBox(height: 12),
 
-              // ================= BRANCH DROPDOWN =================
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Obx(() {
+                // ================= BRANCH DROPDOWN =================
+                Obx(() {
                   if (branchCtrl.isLoading.value) {
-                    return const Padding(
-                      padding: EdgeInsets.all(12),
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-
-                  if (branchCtrl.branches.isEmpty) {
-                    return Text(
-                      "No branches available",
-                      style: TextStyle(
-                        color: isDark ? Colors.white : Colors.black,
-                      ),
-                    );
+                    return const CircularProgressIndicator();
                   }
 
                   return DropdownButtonFormField<int>(
                     value: selectedBranchId,
-                    dropdownColor: isDark ? dark1 : Theme.of(context).cardColor,
+                    dropdownColor: isDark ? dark1 : Colors.white, // ✅ FIX
                     style: TextStyle(
                       color: isDark ? Colors.white : Colors.black,
                     ),
@@ -149,10 +112,10 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
                       filled: true,
                       fillColor: isDark
                           ? Colors.white.withOpacity(0.12)
-                          : Theme.of(context).cardColor,
+                          : Colors.white,
                       hintText: "Select Branch",
                       hintStyle: TextStyle(
-                        color: isDark ? Colors.white60 : Colors.black54,
+                        color: isDark ? Colors.white60 : Colors.grey,
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
@@ -162,104 +125,172 @@ class _ExamCategoryListPageState extends State<ExamCategoryListPage> {
                         .map<DropdownMenuItem<int>>((BranchModel b) {
                       return DropdownMenuItem<int>(
                         value: b.id,
-                        child: Text(b.branchName),
+                        child: Text(
+                          b.branchName,
+                          style: TextStyle(
+                            color:
+                                isDark ? Colors.white : Colors.black, // ✅ FIX
+                          ),
+                        ),
                       );
                     }).toList(),
                     onChanged: (value) {
                       setState(() {
                         selectedBranchId = value;
-                        final selected = branchCtrl.branches
-                            .firstWhere((b) => b.id == value);
-                        selectedBranchName = selected.branchName;
                       });
                     },
                   );
                 }),
-              ),
 
-              const SizedBox(height: 15),
+                const SizedBox(height: 16),
 
-              // ================= CATEGORY LIST =================
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: filtered.length,
-                  itemBuilder: (context, index) {
-                    final item = filtered[index];
+                // ================= CARD LIST =================
+                Expanded(
+                  child: Obx(() {
+                    if (categoryCtrl.isLoading.value) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
 
-                    return InkWell(
-                      borderRadius: BorderRadius.circular(18),
-                      onTap: () {
-                        Get.toNamed(
-                          '/examList',
-                          arguments: {
-                            "category": item["category"],
-                            "branchId": selectedBranchId,
-                            "branchName": selectedBranchName,
-                          },
-                        );
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 14),
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          gradient: isDark
-                              ? LinearGradient(
-                                  colors: [
-                                    dark3.withOpacity(0.45),
-                                    purpleDark.withOpacity(0.45),
-                                  ],
-                                )
-                              : LinearGradient(
-                                  colors: [
-                                    Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withOpacity(0.08),
-                                    Theme.of(context)
-                                        .colorScheme
-                                        .secondary
-                                        .withOpacity(0.08),
-                                  ],
-                                ),
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(
-                            color: isDark
-                                ? neon.withOpacity(0.32)
-                                : Theme.of(context).dividerColor,
-                            width: 1.3,
+                    if (selectedBranchId == null) {
+                      return Center(
+                        child: Text(
+                          "Please select a branch to view categories",
+                          style: TextStyle(
+                            color: isDark ? Colors.white70 : Colors.black54,
+                            fontSize: 16,
                           ),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${item['sno']}. ${item['category']}",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: isDark ? Colors.white : Colors.black,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              "Branch: ${selectedBranchName.isEmpty ? 'All Branches' : selectedBranchName}",
-                              style: TextStyle(
-                                color: isDark
-                                    ? const Color(0xFFB5C7E8)
-                                    : Colors.black54,
-                              ),
-                            ),
-                          ],
+                      );
+                    }
+
+                    final filtered = categoryCtrl.categories.where((c) {
+                      final matchesSearch = c['category']
+                          .toString()
+                          .toLowerCase()
+                          .contains(_query.toLowerCase());
+
+                      final matchesBranch = c['branch_id'] == selectedBranchId;
+
+                      return matchesSearch && matchesBranch;
+                    }).toList();
+
+                    if (filtered.isEmpty) {
+                      return Center(
+                        child: Text(
+                          "No categories found",
+                          style: TextStyle(
+                            color: isDark ? Colors.white70 : Colors.black54,
+                          ),
                         ),
-                      ),
+                      );
+                    }
+
+                    return ListView.builder(
+                      itemCount: filtered.length,
+                      itemBuilder: (context, index) {
+                        final item = filtered[index];
+
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 14),
+                          decoration: BoxDecoration(
+                            gradient: isDark
+                                ? LinearGradient(
+                                    colors: [
+                                      dark3.withOpacity(0.6),
+                                      purpleDark.withOpacity(0.6),
+                                    ],
+                                  )
+                                : null,
+                            color: isDark ? null : Colors.white,
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(
+                              color: isDark
+                                  ? neon.withOpacity(0.35)
+                                  : Colors.grey.shade300,
+                              width: 1.2,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "S.No: ${index + 1}",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: isDark
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 5),
+                                      decoration: BoxDecoration(
+                                        color: Colors.green.withOpacity(0.2),
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: const Text(
+                                        "Active",
+                                        style: TextStyle(
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Divider(height: 24),
+                                _infoRow("Category", item['category'], isDark),
+                                _infoRow("Branch", item['branch_name'], isDark),
+                                const SizedBox(height: 12),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     );
-                  },
+                  }),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _infoRow(String title, String value, bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 90,
+            child: Text(
+              "$title:",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(
+                color: isDark ? Colors.white70 : Colors.black54,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

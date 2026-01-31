@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ssjc_p/widgets/search_field.dart';
 
 class StaffAttendancePage extends StatefulWidget {
   const StaffAttendancePage({super.key});
@@ -105,34 +106,23 @@ class _StaffAttendancePageState extends State<StaffAttendancePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: isDark ? Colors.white : Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(30),
+                    color:
+                        isDark ? Colors.white.withOpacity(0.12) : Colors.white,
+                    borderRadius: BorderRadius.circular(14),
                     border: Border.all(
                       color: isDark
-                          ? const Color(0xFFE0E0E0)
+                          ? Colors.white24
                           : Theme.of(context).dividerColor,
                     ),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.search, color: Colors.black),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          onChanged: (v) => setState(() => query = v),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                          ),
-                          decoration: const InputDecoration(
-                            hintText: "Search by name / user ID",
-                            hintStyle: TextStyle(color: Colors.grey),
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: SearchField(
+                    hint: "Search by name / user ID",
+                    hintStyle: TextStyle(
+                      color: isDark ? const Color(0xFFB5C7E8) : Colors.black54,
+                    ),
+                    textColor: isDark ? Colors.white : Colors.black,
+                    iconColor: isDark ? neon : Colors.black54,
+                    onChanged: (v) => setState(() => query = v),
                   ),
                 ),
               ),

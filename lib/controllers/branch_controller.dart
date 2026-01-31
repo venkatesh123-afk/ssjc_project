@@ -6,6 +6,7 @@ import 'package:ssjc_p/model/branch_model.dart';
 class BranchController extends GetxController {
   final RxList<BranchModel> branches = <BranchModel>[].obs;
   final RxBool isLoading = false.obs;
+  final Rxn<BranchModel> selectedBranch = Rxn<BranchModel>();
 
   Future<void> loadBranches({String? branchName}) async {
     try {

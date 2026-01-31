@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../controllers/exams_controller.dart';
+import '../model/exam_model.dart';
 
 class ExamsListPage extends StatefulWidget {
   const ExamsListPage({super.key});
@@ -16,50 +18,11 @@ class _ExamsListPageState extends State<ExamsListPage> {
   static const Color purpleDark = Color(0xFF533483);
   static const Color neon = Color(0xFF00FFF5);
 
-  String _query = "";
-
-  final List<Map<String, String>> _exams = [
-    {
-      "sno": "1",
-      "examName": "MAINS MODEL WEEKEND TEST-10",
-      "category": "MAINS",
-      "mode": "SSJC-ADARSA CAMPUS",
-    },
-    {
-      "sno": "2",
-      "examName": "WEEKEND TEST-01",
-      "category": "MAINS",
-      "mode": "SSJC-ADARSA CAMPUS",
-    },
-    {
-      "sno": "3",
-      "examName": "MAINS MODEL WEEKEND TEST-08",
-      "category": "MAINS",
-      "mode": "SSJC-ADARSA CAMPUS",
-    },
-    {
-      "sno": "4",
-      "examName": "MAINS MODEL WEEKEND TEST-03",
-      "category": "MAINS",
-      "mode": "SSJC-ADARSA CAMPUS",
-    },
-    {
-      "sno": "5",
-      "examName": "NEET MODEL WEEKEND TEST-01",
-      "category": "NEET",
-      "mode": "SSJC-ADARSA CAMPUS",
-    },
-  ];
+  final ExamsController controller = Get.put(ExamsController());
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    final filtered = _exams.where((exam) {
-      return exam["examName"]!.toLowerCase().contains(_query.toLowerCase()) ||
-          exam["category"]!.toLowerCase().contains(_query.toLowerCase()) ||
-          exam["mode"]!.toLowerCase().contains(_query.toLowerCase());
-    }).toList();
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -95,12 +58,12 @@ class _ExamsListPageState extends State<ExamsListPage> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 )
-              : LinearGradient(
+              : const LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Theme.of(context).scaffoldBackgroundColor,
-                    Theme.of(context).colorScheme.surface,
+                    Color(0xFFF5F6FA),
+                    Color(0xFFF5F6FA),
                   ],
                 ),
         ),
@@ -113,14 +76,10 @@ class _ExamsListPageState extends State<ExamsListPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? Colors.white.withOpacity(0.12)
-                      : Theme.of(context).cardColor,
+                  color: isDark ? Colors.white.withOpacity(0.12) : Colors.white,
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(
-                    color: isDark
-                        ? Colors.white24
-                        : Theme.of(context).dividerColor,
+                    color: isDark ? Colors.white24 : const Color(0xFF9E9E9E),
                   ),
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -134,7 +93,7 @@ class _ExamsListPageState extends State<ExamsListPage> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: TextField(
-                        onChanged: (v) => setState(() => _query = v),
+                        onChanged: (v) => controller.query.value = v,
                         style: TextStyle(
                           color: isDark ? Colors.white : Colors.black,
                         ),
@@ -156,88 +115,182 @@ class _ExamsListPageState extends State<ExamsListPage> {
 
             // ================= EXAMS LIST =================
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: filtered.length,
-                itemBuilder: (context, i) {
-                  final exam = filtered[i];
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 14),
-                    padding: const EdgeInsets.all(18),
-                    decoration: BoxDecoration(
-                      gradient: isDark
-                          ? LinearGradient(
-                              colors: [
-                                dark3.withOpacity(0.45),
-                                purpleDark.withOpacity(0.45),
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            )
-                          : LinearGradient(
-                              colors: [
-                                Theme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withOpacity(0.08),
-                                Theme.of(context)
-                                    .colorScheme
-                                    .secondary
-                                    .withOpacity(0.08),
+                final List<ExamModel> exams = controller.filteredExams;
+
+                if (exams.isEmpty) {
+                  return const Center(
+                    child: Text("No exams found"),
+                  );
+                }
+
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: exams.length,
+                  itemBuilder: (context, i) {
+                    final exam = exams[i];
+
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        color: isDark ? null : Colors.white,
+                        gradient: isDark
+                            ? LinearGradient(
+                                colors: [
+                                  dark3.withOpacity(0.45),
+                                  purpleDark.withOpacity(0.45),
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              )
+                            : null,
+                        borderRadius: BorderRadius.circular(22),
+                        border: Border.all(
+                          color: isDark
+                              ? neon.withOpacity(0.32)
+                              : const Color(0xFF8A8A8A),
+                          width: 1.2,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: isDark
+                                ? neon.withOpacity(0.25)
+                                : Colors.black.withOpacity(0.15),
+                            blurRadius: 18,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+
+                      // ================= CARD CONTENT =================
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /// LEFT — EXAM DETAILS
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${i + 1}. ${exam.examName}",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDark ? Colors.white : Colors.black,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                _infoRow("Category", exam.category, isDark),
+                                _infoRow("Marks", exam.marksEntry, isDark),
+                                _infoRow("Grades", exam.grades, isDark),
+                                _infoRow(
+                                  "Attendance",
+                                  exam.enableAttendance == "1"
+                                      ? "Enabled"
+                                      : "Disabled",
+                                  isDark,
+                                ),
+                                _infoRow(
+                                    "Months", exam.attendanceMonths, isDark),
+                                _infoRow("Campus", exam.branchName, isDark),
+                                _infoRow("Status", "Scheduled", isDark),
                               ],
                             ),
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(
-                        color: isDark
-                            ? neon.withOpacity(0.32)
-                            : Theme.of(context).dividerColor,
-                        width: 1.3,
+                          ),
+
+                          const SizedBox(width: 10),
+
+                          /// RIGHT
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                "Exam Details : Unknown",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color:
+                                      isDark ? Colors.white70 : Colors.black87,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "Activate : ",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: isDark
+                                          ? Colors.white70
+                                          : Colors.black87,
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      Get.snackbar(
+                                        "Activate",
+                                        exam.examName,
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.green,
+                                      ),
+                                      child: const Icon(
+                                        Icons.play_arrow,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color:
-                              isDark ? neon.withOpacity(0.25) : Colors.black12,
-                          blurRadius: 15,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "${exam['sno']}.  ${exam['examName']}",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: isDark ? Colors.white : Colors.black,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          "Category: ${exam['category']}",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: isDark
-                                ? const Color(0xFFB5C7E8)
-                                : Colors.black54,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          "Mode: ${exam['mode']}",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: isDark
-                                ? const Color(0xFFB5C7E8)
-                                : Colors.black54,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                    );
+                  },
+                );
+              }),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ================= INFO ROW =================
+  Widget _infoRow(String label, String value, bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: "$label : ",
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: isDark ? Colors.white70 : Colors.black87,
+                fontSize: 13,
+              ),
+            ),
+            TextSpan(
+              text: value,
+              style: TextStyle(
+                color: isDark ? const Color(0xFFB5C7E8) : Colors.black54,
+                fontSize: 13,
               ),
             ),
           ],

@@ -4,9 +4,8 @@ import 'package:get/get.dart';
 import '../../controllers/branch_controller.dart';
 import '../../controllers/fee_controller.dart';
 
-/// ===================
-/// FEE HEAD LIST PAGE
-/// ===================
+final TextEditingController searchCtrl = TextEditingController();
+
 class FeeHeadPage extends StatefulWidget {
   const FeeHeadPage({super.key});
 
@@ -124,8 +123,53 @@ class _FeeHeadPageState extends State<FeeHeadPage> {
                         selectedBranchId = branch.id;
                       });
 
+                      searchCtrl.clear(); // ✅ clear old search
                       feeCtrl.loadFeeHeads(branch.id);
                     },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+// ================= SEARCH BAR =================
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color:
+                        isDark ? Colors.white.withOpacity(0.12) : Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(
+                      color: isDark ? Colors.white24 : const Color(0xFF9E9E9E),
+                    ),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.search,
+                        color: isDark ? Colors.cyanAccent : Colors.black54,
+                        size: 22,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: TextField(
+                          controller: searchCtrl,
+                          onChanged: (v) {
+                            feeCtrl.searchFeeHead(v); // 🔥 SEARCH CONNECTED
+                          },
+                          style: TextStyle(
+                            color: isDark ? Colors.white : Colors.black,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: "Search fee",
+                            hintStyle: TextStyle(
+                              color: isDark ? Colors.white60 : Colors.black54,
+                            ),
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

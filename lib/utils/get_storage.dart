@@ -3,7 +3,7 @@ import 'package:get_storage/get_storage.dart';
 class AppStorage {
   static final GetStorage _box = GetStorage();
 
-  // ---------------- TOKEN (API ONLY) ----------------
+  // ---------------- TOKEN ----------------
   static void saveToken(String token) {
     _box.write('token', token);
   }
@@ -25,7 +25,7 @@ class AppStorage {
     return _box.read('userid');
   }
 
-  // ---------------- LOGIN FLAG (NEW) ----------------
+  // ---------------- LOGIN FLAG ----------------
   static void setLoggedIn(bool value) {
     _box.write('isLoggedIn', value);
   }
@@ -36,8 +36,6 @@ class AppStorage {
 
   // ---------------- LOGOUT ----------------
   static void clear() {
-    _box.remove('token');
-    _box.remove('userid');
-    _box.remove('isLoggedIn'); // ✅ VERY IMPORTANT
+    _box.erase(); // 🔥 MULTI-USER SAFE
   }
 }

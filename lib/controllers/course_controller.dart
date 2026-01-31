@@ -6,6 +6,7 @@ import '../model/course_model.dart';
 class CourseController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxList<CourseModel> courses = <CourseModel>[].obs;
+  final Rxn<CourseModel> selectedCourse = Rxn<CourseModel>();
 
   Future<void> loadCourses(int groupId) async {
     try {

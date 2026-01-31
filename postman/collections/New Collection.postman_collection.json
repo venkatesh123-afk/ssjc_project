@@ -6,10 +6,10 @@
   },
   "item": [
     {
-      "name": "New Folder",
+      "name": "SSG Staff",
       "item": [
         {
-          "name": "New Request",
+          "name": "login",
           "id": "be397e11-c9ac-4335-9a05-cdd17b3d6822",
           "request": {
             "method": "POST",
@@ -34,11 +34,13 @@
               "query": [
                 {
                   "key": "user_login",
-                  "value": "666700"
+                  "value": "666700",
+                  "uuid": "3f68517c-8dd6-47c2-a756-c64186d4099e"
                 },
                 {
                   "key": "password",
-                  "value": "199018"
+                  "value": "199018",
+                  "uuid": "80a47a26-a79d-4cfc-8bd3-269c4fc86581"
                 }
               ]
             }
@@ -46,7 +48,7 @@
           "response": []
         },
         {
-          "name": "New Request",
+          "name": "branchlist",
           "id": "a87d5db6-698b-4782-ac95-239aed1f22f6",
           "request": {
             "auth": {
@@ -87,7 +89,7 @@
           "response": []
         },
         {
-          "name": "New Request",
+          "name": "groupslistbybranch",
           "id": "d8383170-8675-445b-9c35-8096c83119f2",
           "request": {
             "method": "GET",
@@ -117,7 +119,7 @@
           "response": []
         },
         {
-          "name": "New Request",
+          "name": "courselistbygroup",
           "id": "601f18dc-86f4-43f1-8eb3-a1afbb9945f1",
           "request": {
             "auth": {
@@ -157,7 +159,7 @@
           "response": []
         },
         {
-          "name": "New Request",
+          "name": "batchlistbycourse",
           "id": "ba86dbcd-9be2-47ba-9ab9-7184fb046c8f",
           "request": {
             "auth": {
@@ -184,21 +186,553 @@
               }
             ],
             "url": {
-              "raw": "{{base_url_ssjc}}/batchlistbycourse/69",
+              "raw": "{{base_url_ssjc}}/batchlistbycourse/89",
               "host": [
                 "{{base_url_ssjc}}"
               ],
               "path": [
                 "batchlistbycourse",
-                "69"
+                "89"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "New Request",
+          "name": "feeheadsbybranch",
           "id": "72b3b355-4537-4914-8973-05bc9d5c34d8",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{AccesToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text",
+                "uuid": "c6a5c311-1c92-47d9-ac9c-6abac71ae15e"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text",
+                "uuid": "fee8d2f5-3fd6-4a1f-a1ee-a64095c9d238"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url_ssjc}}/feeheadsbybranch/22",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "feeheadsbybranch",
+                "22"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "shiftlistbybranch",
+          "id": "62c3ffe4-5042-4ff6-a153-a8a163dceaf0",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{AccesToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/shiftlistbybranch/27",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "shiftlistbybranch",
+                "27"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "monthlyattendanceList",
+          "id": "ebcb6bcb-2c8e-437b-88df-e890c77ea273",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{AccesToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/monthlyattendanceList?branchid=27&groupid=72&courseid=89&batchid=428&month=01&shift=31",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "monthlyattendanceList"
+              ],
+              "query": [
+                {
+                  "key": "branchid",
+                  "value": "27",
+                  "uuid": "3ecf6c87-ed9a-4608-8f1e-b60ea3b7995e"
+                },
+                {
+                  "key": "groupid",
+                  "value": "72",
+                  "uuid": "9234fcb8-dd7f-48db-8417-372a662669f7"
+                },
+                {
+                  "key": "courseid",
+                  "value": "89",
+                  "uuid": "4bf93d18-272c-4d7a-859e-c10a8cb34b87"
+                },
+                {
+                  "key": "batchid",
+                  "value": "428",
+                  "uuid": "883f012d-eea2-40b2-acf9-02c1201f072c"
+                },
+                {
+                  "key": "month",
+                  "value": "01",
+                  "uuid": "777e1f8d-d97e-4352-b1f3-a913ea7d4311"
+                },
+                {
+                  "key": "shift",
+                  "value": "31",
+                  "uuid": "7a30997d-c982-49bd-9109-03d4f2aba994"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "batchlistbycourse",
+          "id": "27861f4b-bc44-45f7-96b2-800118c74b50",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{AccesToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/batchlistbycourse/89",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "batchlistbycourse",
+                "89"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "exams_list",
+          "id": "58ac3db5-7b62-49ba-ad4f-269cf5aab72a",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{AccesToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/exams_list",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "exams_list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "categorylist",
+          "id": "90997c85-a639-46bc-8bd6-cd46a1ec62eb",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{AccesToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/categorylist",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "categorylist"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login2",
+          "id": "77e7ab2d-817a-4c7d-b6a6-1e0a3dd97be7",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/login?user_login=667021&password=123456",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "login"
+              ],
+              "query": [
+                {
+                  "key": "user_login",
+                  "value": "667021",
+                  "uuid": "11c7156b-74c9-4a67-94aa-c1ee9d21ec4f"
+                },
+                {
+                  "key": "password",
+                  "value": "123456",
+                  "uuid": "3a7094b4-4720-4601-9a69-82560d83f2b3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getstudentdetailsbysearch",
+          "id": "6a865d8e-92c2-4832-987e-82eab3087a47",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/getstudentdetailsbysearch/2512",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "getstudentdetailsbysearch",
+                "2512"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "designationslist",
+          "id": "14d60b74-cbaa-4210-a460-b1ebe45d9f0b",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{AccesToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/designationslist",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "designationslist"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "feeheadlist",
+          "id": "59fca3e3-fe40-4b6e-9a1d-0db9e83ccfdb",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{AccesToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/feeheadlist",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "feeheadlist"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "myprofile",
+          "id": "ed498ac8-ffcb-4221-b992-7c501c4fb7f0",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{AccesToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/myprofile",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "myprofile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "outinglist",
+          "id": "484bfa1f-5f7f-4eb5-860a-2edcb33c3fe3",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{AccesToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/outinglist?branch[]=All&report_type=All&daybookfilter=All&firstdate=&nextdate=",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "outinglist"
+              ],
+              "query": [
+                {
+                  "key": "branch[]",
+                  "value": "All",
+                  "uuid": "75e03ba1-9628-4215-8b8c-8318bb9543a3"
+                },
+                {
+                  "key": "report_type",
+                  "value": "All",
+                  "uuid": "42b3f892-9d2b-4681-929a-f70ea2029a9e"
+                },
+                {
+                  "key": "daybookfilter",
+                  "value": "All",
+                  "uuid": "f8332fda-e524-4f56-af6b-6f391ed65c06"
+                },
+                {
+                  "key": "firstdate",
+                  "value": "",
+                  "uuid": "f1a00167-3523-4ffb-98e7-412108ae816d"
+                },
+                {
+                  "key": "nextdate",
+                  "value": "",
+                  "uuid": "432f1f40-403d-493a-bbbc-c5359a5198c1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getpendingoutinglist",
+          "id": "cdb71fcc-d5f2-415c-a380-7469df749f6e",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{AccesToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/getpendingoutinglist",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "getpendingoutinglist"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getoutinglist",
+          "id": "e7e16119-6357-41f0-861d-8a569a2fa979",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{AccesToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/getoutinglist/8883",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "getoutinglist",
+                "8883"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "departmentslist",
+          "id": "a5826273-d619-4e15-8395-2dacbe6febe1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/departmentslist",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "departmentslist"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getoutinglist",
+          "id": "eb05cd9b-3862-4ec7-9c3c-b2803f8415d7",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{AccesToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url_ssjc}}/getoutinglist/8883",
+              "host": [
+                "{{base_url_ssjc}}"
+              ],
+              "path": [
+                "getoutinglist",
+                "8883"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "attendancesummarylist",
+          "id": "691a24b6-3a32-4c88-9565-cc48f915aa50",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Request",
+          "id": "39f07d12-c5fc-46da-abdb-0ddad01d7207",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Request",
+          "id": "bc3b9235-b40f-490b-8c52-aa3d1d5abe73",
           "request": {
             "method": "GET",
             "header": [],
@@ -210,6 +744,54 @@
         }
       ],
       "id": "e226c5c3-f770-4b1b-a125-8487e81cd103"
+    },
+    {
+      "name": "http://localhost:8081/auth/register",
+      "id": "3c20632d-e3a1-4746-9159-8935943e6d42",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "\r\n{\r\n    \"name\":\"Basant1\",\r\n    \"password\":\"Pwd1\",\r\n    \"email\":\"basant1@gmail.com\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8081/auth/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "id": "57ffe35f-7bcb-461b-bf86-a7de015014a5",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{base_url_ssjc}}/storeouting",
+          "host": [
+            "{{base_url_ssjc}}"
+          ],
+          "path": [
+            "storeouting"
+          ]
+        }
+      },
+      "response": []
     }
   ]
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ssjc_p/controllers/shift_controller.dart';
 import 'package:ssjc_p/model/model1.dart';
 import '../controllers/branch_controller.dart';
 import '../model/branch_model.dart';
@@ -22,16 +23,11 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
-  // ================= CONTROLLER =================
+  // ================= CONTROLLERS =================
   final BranchController branchCtrl = Get.put(BranchController());
+  final ShiftController shiftCtrl = Get.put(ShiftController());
 
   List<String> branches = [];
-
-  final List<String> shifts = const [
-    'Morning Shift',
-    'Afternoon Shift',
-    'Evening Shift',
-  ];
 
   // ================= DARK COLORS =================
   final Color darkBg1 = const Color(0xFF1a1a2e);
@@ -44,11 +40,14 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
     super.initState();
 
     _animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 700));
+      vsync: this,
+      duration: const Duration(milliseconds: 700),
+    );
 
     _fadeAnimation =
         CurvedAnimation(parent: _animationController, curve: Curves.easeIn);
 
+    // LOAD BRANCHES
     branchCtrl.loadBranches();
 
     ever(branchCtrl.branches, (_) {
@@ -56,8 +55,12 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
           .map<String>((BranchModel b) => b.branchName)
           .toList();
 
+      // AUTO SELECT FIRST BRANCH + LOAD SHIFTS
       if (branches.isNotEmpty && selectedBranch == null) {
         selectedBranch = branches.first;
+
+        final branch = branchCtrl.branches.first;
+        shiftCtrl.loadShifts(branch.id);
       }
       setState(() {});
     });
@@ -75,16 +78,6 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
       _showSnackBar('Please select Branch & Shift', Colors.orange);
       return;
     }
-
-    setState(() => isLoading = true);
-    await Future.delayed(const Duration(seconds: 2));
-
-    attendanceData = [
-      AttendanceRecord(
-          batch: 'ADA-SR-IIITIC', total: 59, present: 51, absent: 8, outing: 0),
-      AttendanceRecord(
-          batch: 'ADA-SR-MIC1', total: 67, present: 59, absent: 7, outing: 1),
-    ];
 
     setState(() => isLoading = false);
     _animationController.forward(from: 0);
@@ -134,8 +127,10 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
             style: TextStyle(color: isDark ? Colors.white : Colors.black),
           ),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back,
-                color: isDark ? Colors.white : Colors.black),
+            icon: Icon(
+              Icons.arrow_back,
+              color: isDark ? Colors.white : Colors.black,
+            ),
             onPressed: () => Get.back(),
           ),
         ),
@@ -183,19 +178,31 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
               iconColor: Colors.cyanAccent,
               value: selectedBranch,
               items: branches,
-              onChanged: (v) => setState(() => selectedBranch = v),
+              onChanged: (v) {
+                setState(() {
+                  selectedBranch = v;
+                  selectedShift = null;
+                });
+
+                final branch =
+                    branchCtrl.branches.firstWhere((b) => b.branchName == v);
+
+                shiftCtrl.loadShifts(branch.id);
+              },
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: _buildDropdown(
-              isDark: isDark,
-              label: 'Shift',
-              icon: Icons.access_time,
-              iconColor: Colors.greenAccent,
-              value: selectedShift,
-              items: shifts,
-              onChanged: (v) => setState(() => selectedShift = v),
+            child: Obx(
+              () => _buildDropdown(
+                isDark: isDark,
+                label: 'Shift',
+                icon: Icons.access_time,
+                iconColor: Colors.greenAccent,
+                value: selectedShift,
+                items: shiftCtrl.shifts.map((e) => e.shiftName).toList(),
+                onChanged: (v) => setState(() => selectedShift = v),
+              ),
             ),
           ),
         ],
@@ -251,14 +258,18 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
                 ),
               ),
               dropdownColor: isDark ? darkBg1 : Theme.of(context).cardColor,
-              icon: Icon(Icons.keyboard_arrow_down,
-                  color: isDark ? Colors.white60 : Colors.black54),
+              icon: Icon(
+                Icons.keyboard_arrow_down,
+                color: isDark ? Colors.white60 : Colors.black54,
+              ),
               style: TextStyle(
                 color: isDark ? Colors.white : Colors.black,
                 fontSize: 13,
               ),
               items: items
-                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                  .map(
+                    (e) => DropdownMenuItem(value: e, child: Text(e)),
+                  )
                   .toList(),
               onChanged: onChanged,
             ),
@@ -315,8 +326,11 @@ class _VerifyAttendancePageState extends State<VerifyAttendancePage>
       padding: const EdgeInsets.only(top: 60),
       child: Column(
         children: [
-          Icon(Icons.inbox,
-              color: isDark ? Colors.white54 : Colors.black38, size: 60),
+          Icon(
+            Icons.inbox,
+            color: isDark ? Colors.white54 : Colors.black38,
+            size: 60,
+          ),
           const SizedBox(height: 12),
           Text(
             "No Data Available",

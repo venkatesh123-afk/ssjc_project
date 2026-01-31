@@ -4,26 +4,36 @@ import '../api/api_collection.dart';
 import '../model/group_model.dart';
 
 class GroupController extends GetxController {
-  var isLoading = false.obs;
-  var groups = <GroupModel>[].obs;
+  final RxBool isLoading = false.obs;
+  final RxList<GroupModel> groups = <GroupModel>[].obs;
+
+  // ✅ selected group
+  final Rxn<GroupModel> selectedGroup = Rxn<GroupModel>();
 
   Future<void> loadGroups(int branchId) async {
     try {
       isLoading.value = true;
       groups.clear();
+      selectedGroup.value = null; // ✅ reset selection
 
-      // ✅ API CALL
       final data = await ApiService.getRequest(
         ApiCollection.groupsByBranch(branchId),
       );
 
-      if (data['success'] == "true") {
-        groups.value = (data['indexdata'] as List)
-            .map((e) => GroupModel.fromJson(e))
-            .toList(); // ✅ LOAD ALL (status 0 + 1)
+      final success = data['success'] == true || data['success'] == "true";
+
+      if (success && data['indexdata'] != null) {
+        groups.assignAll(
+          (data['indexdata'] as List)
+              .map((e) => GroupModel.fromJson(e))
+              .toList(),
+        );
+      } else {
+        groups.clear();
       }
     } catch (e) {
       print("GROUP API ERROR => $e");
+      Get.snackbar("Error", "Failed to load groups");
     } finally {
       isLoading.value = false;
     }
@@ -31,5 +41,6 @@ class GroupController extends GetxController {
 
   void clear() {
     groups.clear();
+    selectedGroup.value = null; // ✅ important
   }
 }
